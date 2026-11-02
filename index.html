@@ -858,8 +858,7 @@ document.getElementById('form').addEventListener('submit', e => {
   const mail = document.getElementById('fMail'), nom = document.getElementById('fNom'), av = document.getElementById('aviso');
   if (!nom.value.trim()) { av.textContent = T('Falta tu nombre.', 'Your name is missing.'); nom.focus(); return }
   if (!mail.value || !mail.checkValidity()) { av.textContent = T('Revisá el email: así no te podemos escribir.', 'Check your email: we can\'t reach you like this.'); mail.focus(); return }
-  const campos = [...document.querySelectorAll('#form input, #form textarea, #form select')].map(c => (c.labels && c.labels[0] ? c.labels[0].textContent.trim() : c.name || c.id) + ': ' + c.value).join('
-');
+  const campos = [...document.querySelectorAll('#form input, #form textarea, #form select')].map(c => (c.labels && c.labels[0] ? c.labels[0].textContent.trim() : c.name || c.id) + ': ' + c.value).join('\n');
   location.href = 'mailto:hola@useproteo.com?subject=' + encodeURIComponent(T('Quiero probar Proteo', 'I want to try Proteo')) + '&body=' + encodeURIComponent(campos);
   av.textContent = T('Se abre tu correo con el mensaje armado. Si no se abre, escribinos a hola@useproteo.com.', 'Your mail app opens with the message ready. If it does not, write to hola@useproteo.com.');
 });

@@ -1,0 +1,264 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Proteo · Cómo funciona por dentro</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Geist:wght@300..800&family=Geist+Mono:wght@400&family=Bricolage+Grotesque:opsz,wght@12..96,400..800&display=swap">
+<style>
+/* Títulos en Bricolage Grotesque y texto en Geist (elegida por Matías el 2026-10-28) */
+:root { --titulo: "Bricolage Grotesque", "Segoe UI", sans-serif; --peso-t: 700; --track-t: -0.03em }
+</style>
+<style>
+/* Página de detalle: misma base que la landing, tono de observatorio. */
+:root { color-scheme: light; --fondo: #F6F6F3; --tinta: #17191B; --gris: #6B6F72; --linea: #E2E2DD; --panel: #FFFFFF; --trazo: #8E9295; --bermellon: #E2492F; --cobalto: #2F4BD8; --text: "Geist", "Segoe UI", Arial, sans-serif; --mono: "Geist Mono", Consolas, monospace; --col: 1240px }
+* { box-sizing: border-box }
+html { scroll-padding-top: 84px }
+body { background: var(--fondo); color: var(--tinta); font: 400 17px/1.6 var(--text); -webkit-font-smoothing: antialiased; margin: 0; overflow-x: hidden }
+.wrap { max-width: var(--col); margin: 0 auto; padding-left: max(24px, env(safe-area-inset-left, 0px)); padding-right: max(24px, env(safe-area-inset-right, 0px)) }
+h1, h2, h3 { font-family: var(--titulo); font-weight: var(--peso-t); letter-spacing: var(--track-t); margin: 0; text-wrap: pretty }
+p { margin: 0 }
+a { color: inherit }
+button { font: inherit; color: inherit }
+:focus-visible { outline: 2px solid var(--cobalto); outline-offset: 3px }
+nav { position: sticky; top: 0; z-index: 10; padding-top: env(safe-area-inset-top, 0px); background: color-mix(in srgb, var(--fondo) 85%, transparent); backdrop-filter: blur(10px) }
+nav .wrap { display: flex; align-items: center; justify-content: space-between; gap: 16px; padding-block: 14px }
+.logo { font: var(--peso-t) 28px/1 var(--titulo); letter-spacing: var(--track-t); text-decoration: none }
+.logo b { color: var(--bermellon) }
+.links { display: flex; gap: 26px; align-items: center; font-size: 15px; color: var(--gris) }
+.links a { color: inherit; text-decoration: none }
+.links a:hover, .links a[aria-current] { color: var(--tinta) }
+.cta { background: var(--tinta); color: var(--fondo); border: 0; border-radius: 99px; padding: 12px 22px; font-size: 15px; font-weight: 700; text-decoration: none; display: inline-block }
+.menu-btn { display: none; background: none; border: 1px solid var(--linea); border-radius: 99px; padding: 9px 14px; font-size: 14px; font-weight: 700; cursor: pointer }
+@media (max-width: 860px) {
+  .menu-btn { display: inline-block }
+  .links { position: absolute; left: 0; right: 0; top: 100%; flex-direction: column; align-items: stretch; gap: 0; background: var(--panel); border-top: 1px solid var(--linea); border-bottom: 1px solid var(--linea); padding: 8px 24px 16px; display: none }
+  nav.open .links { display: flex }
+  .links a { display: block; padding: 12px 0; border-bottom: 1px solid var(--linea); font-size: 17px; color: var(--tinta) }
+  .links .cta { margin-top: 12px; text-align: center; border: 0; color: var(--fondo) }
+}
+header.cab { padding-block: 72px 40px; display: grid; gap: 18px }
+header.cab h1 { font-size: clamp(36px, 5vw, 64px); line-height: 1.04; max-width: 18ch }
+.lead { font-size: clamp(18px, 1.6vw, 21px); color: var(--gris); max-width: 60ch }
+.indice { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 10px }
+.indice a { font-size: 14px; font-weight: 700; text-decoration: none; background: var(--panel); border: 1px solid var(--linea); border-radius: 99px; padding: 8px 14px; color: var(--gris) }
+.indice a:hover { color: var(--tinta); border-color: var(--trazo) }
+section { padding-block: 56px; border-top: 1px solid var(--linea) }
+section h2 { font-size: clamp(28px, 3.4vw, 42px); line-height: 1.08; max-width: 22ch; margin-bottom: 22px }
+.dos { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.4fr); gap: 40px; align-items: start }
+.dos.par { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); align-items: center }
+.texto { max-width: 62ch; display: grid; gap: 16px; font-size: 18px }
+.texto b { font-weight: 750 }
+.cuadros { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px }
+.cuadros.cuatro { grid-template-columns: repeat(4, minmax(0, 1fr)); margin-top: 30px }
+.cuadros div { background: var(--panel); border: 1px solid var(--linea); border-radius: 16px; padding: 16px 18px; display: grid; gap: 6px }
+.cuadros b { font-size: 17px }
+.cuadros span { color: var(--gris); font-size: 15px; line-height: 1.5 }
+.pasos { display: grid; border-top: 1px solid var(--linea) }
+.paso { display: grid; grid-template-columns: 34px minmax(0, 1fr); gap: 14px; padding-block: 18px; border-bottom: 1px solid var(--linea) }
+.paso i { font: 400 11px/2 var(--mono); font-style: normal; color: var(--gris) }
+.paso b { display: block; font-size: 20px; margin-bottom: 4px; transition: color .3s }
+.paso.on b { color: var(--cobalto) }
+.paso span { color: var(--gris) }
+.fig { --hairline-plate: #FFFFFF; --hairline-hi: #17191B; --hairline-edge: #4A4E51; --hairline-mid: #9A9EA1; --hairline-lo: #DCDCD7; --hairline-stroke: 0.9; width: 100%; aspect-ratio: 5 / 4; background: transparent }
+.rueda { position: relative; aspect-ratio: 580 / 500; max-width: 500px; width: 100%; justify-self: center }
+.rueda svg { position: absolute; inset: 0; width: 100%; height: 100%; overflow: visible }
+.rueda .arco { fill: none; stroke: var(--linea); stroke-width: 2 }
+.rueda .avance { fill: none; stroke: var(--cobalto); stroke-width: 3; stroke-linecap: round }
+.nodo { cursor: pointer }
+.nodo circle { fill: var(--panel); stroke: var(--trazo); stroke-width: 1.5; transition: fill .3s, stroke .3s }
+.nodo text { font: 700 15px var(--text); fill: var(--gris); transition: fill .3s }
+.nodo.on circle { fill: var(--cobalto); stroke: var(--cobalto) }
+.nodo.on text { fill: var(--tinta) }
+.centro-f { position: absolute; left: 50%; top: 50%; width: 30%; height: 34%; transform: translate(-50%, -50%) }
+.centro-f .fig { position: absolute; inset: 0; aspect-ratio: auto; height: 100%; opacity: 0; transition: opacity .5s }
+.centro-f .fig.on { opacity: 1 }
+.ciencia { display: grid; border-top: 1px solid var(--linea) }
+.cita { display: grid; grid-template-columns: minmax(0, .5fr) minmax(0, 2fr); gap: 28px; padding-block: 24px; border-bottom: 1px solid var(--linea); align-items: start }
+.cita .q { display: grid; gap: 4px }
+.cita .q b { font-size: 15px }
+.cita .q a { font-size: 13px; color: var(--gris); text-decoration: none }
+.cita .q a:hover { color: var(--cobalto) }
+.cita h3 { font-size: 20px; line-height: 1.35; font-weight: 600 }
+.no { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px }
+.no div { background: var(--panel); border: 1px solid var(--linea); border-radius: 16px; padding: 18px; display: grid; gap: 6px }
+.no b { font-size: 18px }
+.no span { color: var(--gris); font-size: 15px }
+.cierre { padding-block: 64px 80px; text-align: center; display: grid; justify-items: center; gap: 20px }
+.cierre h2 { font-size: clamp(28px, 3.6vw, 44px) }
+footer { border-top: 1px solid var(--linea); padding-block: 36px; background: var(--panel) }
+footer .wrap { display: flex; justify-content: space-between; gap: 16px; flex-wrap: wrap; align-items: center; color: var(--gris); font-size: 14px }
+.idioma { display: inline-flex; border: 1px solid var(--linea); border-radius: 99px; overflow: hidden; background: var(--fondo) }
+.idioma button { background: none; border: 0; padding: 8px 14px; font: 400 11px/1 var(--mono); letter-spacing: .08em; color: var(--gris); cursor: pointer }
+.idioma button[aria-pressed="true"] { background: var(--tinta); color: var(--fondo) }
+@media (max-width: 860px) { .dos, .dos.par, .cuadros, .cuadros.cuatro, .no { grid-template-columns: minmax(0, 1fr) } .cita { grid-template-columns: minmax(0, 1fr); gap: 10px } }
+</style>
+</head>
+<body>
+<nav>
+  <div class="wrap">
+    <a class="logo" href="./">Proteo<b>.</b></a>
+    <div class="links" id="menuLinks">
+      <a href="./#manif" data-es="Por qué" data-en="Why">Por qué</a>
+      <a href="./#como" data-es="Cómo funciona" data-en="How it works">Cómo funciona</a>
+      <a href="ciencia.html" aria-current="page" data-es="La ciencia" data-en="The science">La ciencia</a>
+      <a href="laboratorio.html" data-es="Laboratorio" data-en="Lab">Laboratorio</a>
+      <a href="./#quienes" data-es="Para quién" data-en="Who it's for">Para quién</a>
+      <a class="cta" href="./#contacto" data-es="Hablemos" data-en="Let's talk">Hablemos</a>
+    </div>
+    <button class="menu-btn" id="menuBtn" aria-expanded="false" aria-controls="menuLinks" data-es="Menú" data-en="Menu">Menú</button>
+  </div>
+</nav>
+
+<div class="wrap">
+  <header class="cab">
+    <h1 data-es="Cómo funciona por dentro." data-en="How it works inside.">Cómo funciona por dentro.</h1>
+    <div class="indice">
+      <a href="#datos" data-es="De dónde salen los datos" data-en="Where the data comes from">De dónde salen los datos</a>
+      <a href="#ciclo" data-es="Cómo se calibra" data-en="How it is calibrated">Cómo se calibra</a>
+      <a href="#cambio" data-es="El cambio de opinión" data-en="Opinion change">El cambio de opinión</a>
+      <a href="#lecturas" data-es="Base de investigación" data-en="Research base">Base de investigación</a>
+      <a href="#no" data-es="Lo que no hacemos" data-en="What we don't do">Lo que no hacemos</a>
+    </div>
+  </header>
+
+  <section id="datos">
+    <h2 data-es="Cada agente nace de datos reales." data-en="Every agent is born from real data.">Cada agente nace de datos reales.</h2>
+    <div class="dos">
+      <div class="texto">
+        <p data-es="Cada agente del panel se sortea de las bases que describen al país: bases demográficas públicas, encuestas propias, resultados electorales por circuito y más de 20 años de investigación en opinión pública. Cada ciudad tiene la gente que tiene." data-en="Each person in the panel is drawn from the databases that describe the country: census, household surveys, precinct-level election results and public opinion polls. Each city has the people it really has.">No inventamos gente.</p>
+        <p data-es="Encima, por capas: lo que vivió, cómo se informa y cómo cambia de opinión. Cada capa con su fuente y su margen de error." data-en="On top, in layers: what they lived through, how they get informed and how they change their mind. Each layer with its source and its margin of error.">Sobre esa base se agregan capas.</p>
+        <p data-es="<b>Con datos propios del cliente</b> (clientes, usuarios, afiliados), con consentimiento y bajo su control, el panel se arma a su medida." data-en="<b>With the client&#39;s own data</b> (customers, users, members), with consent and under their control, the panel is built to measure.">Con datos del cliente, un panel a medida.</p>
+      </div>
+      <div class="cuadros">
+        <div><b data-es="Quién es" data-en="Who they are">Quién es</b><span data-es="Edad, género, dónde vive. De bases demográficas públicas." data-en="Age, gender, where they live. From public demographic data.">De bases demográficas públicas.</span></div>
+        <div><b data-es="Qué vivió" data-en="What they lived">Qué vivió</b><span data-es="Cómo votó su barrio, qué pasó en su zona. De resultados electorales y encuestas de opinión." data-en="How their neighborhood voted, what happened in their area. From election results and opinion surveys.">De resultados electorales y encuestas.</span></div>
+        <div><b data-es="Cómo se informa" data-en="How they get informed">Cómo se informa</b><span data-es="Qué medios consume y a quién le cree. De estudios de medios y de la escucha diaria." data-en="Which media they consume and who they trust. From media studies and daily listening.">De estudios de medios y de la escucha.</span></div>
+        <div><b data-es="Cómo cambia" data-en="How they change">Cómo cambia</b><span data-es="Cuánto la mueve un mensaje y cuánto le dura. Es la capa que se calibra con experimentos reales." data-en="How much a message moves them and for how long. This is the layer calibrated against real experiments.">Se calibra con experimentos reales.</span></div>
+      </div>
+    </div>
+  </section>
+
+  <section id="ciclo">
+    <h2 data-es="El panel se calibra y se mantiene al día." data-en="The panel is calibrated and kept up to date.">El panel se calibra y se mantiene al día.</h2>
+    <div class="dos par">
+      <div class="pasos">
+        <div class="paso"><i>01</i><div><b data-es="Preguntamos" data-en="We ask">Preguntamos</b><span data-es="Preguntas nuevas, de temas que el panel no vio, con encuestas reales de muestra conocida." data-en="New questions, on topics the panel never saw, with real surveys of known sample.">Preguntas nuevas sobre poblaciones con encuestas reales.</span></div></div>
+        <div class="paso"><i>02</i><div><b data-es="Comparamos" data-en="We compare">Comparamos</b><span data-es="El panel contra la gente real, pregunta por pregunta y segmento por segmento, sobre una partición que el modelo nunca vio." data-en="The panel against real people, question by question and segment by segment, on a split the model never saw.">Panel contra gente real, por pregunta y por segmento.</span></div></div>
+        <div class="paso"><i>03</i><div><b data-es="Corregimos" data-en="We correct">Corregimos</b><span data-es="Donde la distancia es mayor se recalibra el peso de cada rasgo: edad, territorio, voto, medios." data-en="Where the gap is widest, the weight of each trait is recalibrated: age, territory, vote, media.">Se recalibra cuánto pesa cada rasgo.</span></div></div>
+        <div class="paso"><i>04</i><div><b data-es="Actualizamos" data-en="We update">Actualizamos</b><span data-es="La escucha trae lo que cambió en la semana y se renuevan los datos que envejecen." data-en="Listening brings what changed during the week and aging data is refreshed.">Entra lo que cambió en la semana.</span></div></div>
+      </div>
+      <div class="rueda" id="rueda">
+        <svg viewBox="-90 -50 580 500" id="ruedaSvg" role="img" aria-label="Ciclo semanal: preguntar, comparar, corregir, actualizar"></svg>
+        <div class="centro-f"><div class="fig on" data-fig="query"></div><div class="fig" data-fig="loupe"></div><div class="fig" data-fig="format"></div><div class="fig" data-fig="rebuild"></div></div>
+      </div>
+    </div>
+    
+  </section>
+
+  <section id="cambio">
+    <h2 data-es="Cómo cambia de opinión un agente." data-en="How an agent changes its mind.">Cómo cambia de opinión un agente.</h2>
+    <div class="dos">
+      <div class="texto">
+        <p data-es="Cada agente parte de una <b>postura inicial</b> sobre el tema, tomada de lo que contestó gente real como él. Ante una narrativa, la lee como la leería esa persona: qué le llega y cuánta credibilidad le da a quien la dice." data-en="Each agent starts from an <b>initial position</b> on the issue, taken from what real people like them answered. Faced with a narrative, it reads it as that person would: what lands, and how much credibility it gives the messenger.">Cada agente parte de una postura inicial.</p>
+        <p data-es="<b>El cambio es chico y se mide.</b> Una narrativa mueve unos pocos puntos, como en los experimentos reales, y el panel conserva parte de lo que pensaba antes." data-en="<b>The change is small and measured.</b> A narrative moves a few points, as in real experiments, and the panel keeps part of what it thought before.">El cambio es chico y se mide.</p>
+        <p data-es="<b>Además se leen entre ellos.</b> Cada agente vive en una red social: lo que publica le llega a sus contactos, que comentan, responden y pueden cambiar de postura. Así se ve cómo una idea se contagia de un grupo a otro." data-en="<b>They also read each other.</b> Each agent lives in a social network: what they post reaches their contacts, who comment, reply and may change their stance. That is how you see an idea spread from one group to another.">Además se leen entre ellos.</p>
+        <p data-es="Cada prueba se compara con el <b>mismo panel sin la narrativa</b>. Lo que se informa es el impacto de cada versión, no un número suelto." data-en="Every test is compared against the <b>same panel without the narrative</b>. What we report is the impact of each version, not a loose number.">Cada prueba se compara con el mismo panel sin la narrativa.</p>
+      </div>
+      
+    </div>
+  </section>
+
+  <section id="lecturas">
+    <h2 data-es="Base de investigación." data-en="Research base.">Base de investigación.</h2>
+    <p class="lead" style="margin-bottom:24px" data-es="Estudios publicados sobre la simulación de personas con modelos de lenguaje y sobre cómo cambia la opinión pública." data-en="Published studies on simulating people with language models and on how public opinion changes.">Estudios internacionales publicados.</p>
+    <div class="ciencia" id="cienciaL"></div>
+  </section>
+
+  <section id="no">
+    <h2 data-es="Lo que no hacemos." data-en="What we don't do.">Lo que no hacemos.</h2>
+    <div class="no">
+      <div><b data-es="No pronosticamos elecciones" data-en="We don't forecast elections">No pronosticamos elecciones</b><span data-es="Una prueba compara versiones de una narrativa. No dice quién va a ganar." data-en="A test compares versions of a narrative. It does not say who will win.">No dice quién va a ganar.</span></div>
+      <div><b data-es="No reemplazamos a la encuesta" data-en="We don't replace polls">No reemplazamos a la encuesta</b><span data-es="La encuesta real sigue siendo la vara. El panel se calibra contra ella, no al revés." data-en="The real poll is still the benchmark. The panel is calibrated against it, not the other way around.">La encuesta real sigue siendo la vara.</span></div>
+      <div><b data-es="No usamos datos personales sin permiso" data-en="We don't use personal data without consent">No usamos datos personales sin permiso</b><span data-es="Solo bases públicas o bases del cliente con consentimiento firmado y bajo su control." data-en="Only public datasets or client data with signed consent and under its control.">Solo bases públicas o con consentimiento.</span></div>
+      <div><b data-es="No entregamos un número suelto" data-en="We don't hand over a loose number">No entregamos un número suelto</b><span data-es="Cada resultado va con su margen, su grupo de control y la lectura de un sociólogo." data-en="Every result comes with its margin, its control group and a sociologist's reading.">Cada resultado va con su margen y su lectura.</span></div>
+    </div>
+  </section>
+
+  <div class="cierre">
+    <h2 data-es="¿Querés verlo con tu propia pregunta?" data-en="Want to see it with your own question?">¿Querés verlo con tu propia pregunta?</h2>
+    <a class="cta" href="./#contacto" style="font-size:17px;padding:15px 28px" data-es="Hablemos" data-en="Let's talk">Hablemos</a>
+  </div>
+</div>
+
+<footer>
+  <div class="wrap">
+    <span>© 2026 Proteo · <span data-es="useproteo.com" data-en="useproteo.com">useproteo.com/span></span>
+    <div class="idioma" role="group" aria-label="Idioma / Language"><button id="es" aria-pressed="true">Español</button><button id="en" aria-pressed="false">English</button></div>
+  </div>
+</footer>
+
+<script>
+let L = 'es';
+const I = () => L === 'es' ? 0 : 1;
+const CIENCIA = [
+  { a: 'Park et al., 2023', u: 'https://arxiv.org/abs/2304.03442', t: 'Generative Agents: Interactive Simulacra of Human Behavior', h: ['Personas simuladas con memoria, que reflexionan y planean, se comportan de forma creíble y coherente en el tiempo.', 'Simulated people with memory, who reflect and plan, behave believably and consistently over time.'] },
+  { a: 'Argyle et al., 2023', u: 'https://doi.org/10.1017/pan.2023.2', t: 'Out of One, Many: Using Language Models to Simulate Human Samples', h: ['Un modelo de lenguaje al que se le da el perfil real de una persona reproduce cómo responden distintos grupos de una población.', 'A language model given a real person profile reproduces how different groups in a population answer.'] },
+  { a: 'Park et al., 2024', u: 'https://arxiv.org/abs/2411.10109', t: 'Generative Agent Simulations of 1,000 People', h: ['Agentes armados a partir de entrevistas a 1.052 personas reprodujeron sus respuestas casi tan bien como esas mismas personas dos semanas después.', 'Agents built from interviews with 1,052 people reproduced their answers almost as well as the same people did two weeks later.'] },
+  { a: 'Friedkin y Johnsen, 1990', u: 'https://doi.org/10.1080/0022250X.1990.9990069', t: 'Social influence and opinions', h: ['La opinión de cada uno se mueve por la influencia de su entorno, pero sin soltar del todo lo que pensaba antes.', 'Each person’s opinion moves with the influence of those around them, without fully letting go of what they thought before.'] },
+  { a: 'Porter y Wood, 2021', u: 'https://doi.org/10.1073/pnas.2104235118', t: 'The global effectiveness of fact-checking', h: ['En Argentina y otros tres países, corregir información falsa funciona, pero el efecto es moderado y se desvanece con el tiempo.', 'In Argentina and three other countries, correcting false information works, but the effect is modest and fades over time.'] }
+];
+const PASOS_N = [['Preguntamos', 'We ask'], ['Comparamos', 'We compare'], ['Corregimos', 'We correct'], ['Actualizamos', 'We update']];
+let pasoR = 0, parar = false;
+function rueda() {
+  const svg = document.getElementById('ruedaSvg'), Rr = 158, c = 200, L2 = 2 * Math.PI * Rr;
+  let h = `<circle class="arco" cx="${c}" cy="${c}" r="${Rr}"/><path class="avance" d="M${c + Rr * Math.cos(-Math.PI / 2 + (pasoR - 1) * Math.PI / 2)} ${c + Rr * Math.sin(-Math.PI / 2 + (pasoR - 1) * Math.PI / 2)} A${Rr} ${Rr} 0 0 1 ${c + Rr * Math.cos(-Math.PI / 2 + pasoR * Math.PI / 2)} ${c + Rr * Math.sin(-Math.PI / 2 + pasoR * Math.PI / 2)}"/>`;
+  PASOS_N.forEach((p, i) => {
+    const a = -Math.PI / 2 + i * Math.PI / 2, x = c + Rr * Math.cos(a), y = c + Rr * Math.sin(a);
+    const tx = x + (i === 1 ? 20 : i === 3 ? -20 : 0), ty = y + (i === 0 ? -22 : i === 2 ? 34 : 5), an = i === 1 ? 'start' : i === 3 ? 'end' : 'middle';
+    h += `<g class="nodo${i === pasoR ? ' on' : ''}" data-i="${i}"><circle cx="${x}" cy="${y}" r="11"/><text x="${tx}" y="${ty}" text-anchor="${an}">${p[I()]}</text></g>`;
+  });
+  svg.innerHTML = h;
+  svg.querySelectorAll('.nodo').forEach(n => n.onclick = n.onmouseenter = () => { pasoR = +n.dataset.i; parar = true; rueda() });
+  document.querySelectorAll('.centro-f .fig').forEach((f, i) => f.classList.toggle('on', i === pasoR));
+  document.querySelectorAll('#ciclo .paso').forEach((p, i) => p.classList.toggle('on', i === pasoR));
+}
+setInterval(() => { if (!parar) { pasoR = (pasoR + 1) % 4; rueda() } }, 2600);
+document.getElementById('rueda').addEventListener('pointerleave', () => parar = false);
+function idioma(l) {
+  L = l; document.documentElement.lang = l;
+  document.querySelectorAll('[data-es]').forEach(e => e.innerHTML = e.dataset[l]);
+  for (const b of ['es', 'en']) document.getElementById(b).setAttribute('aria-pressed', String(b === l));
+  try { localStorage.setItem('blister-idioma', l) } catch (e) {}
+  rueda();
+  document.getElementById('cienciaL').innerHTML = CIENCIA.map(c => `<div class="cita"><div class="q"><b>${c.a}</b><a href="${c.u}" target="_blank" rel="noopener">${c.t} ↗</a></div><h3>${c.h[I()]}</h3></div>`).join('');
+}
+const navEl = document.querySelector('nav'), menuBtn = document.getElementById('menuBtn');
+menuBtn.onclick = () => { const abierto = navEl.classList.toggle('open'); menuBtn.setAttribute('aria-expanded', String(abierto)) };
+document.getElementById('es').onclick = () => idioma('es');
+document.getElementById('en').onclick = () => idioma('en');
+let inicial = (navigator.language || 'es').toLowerCase().startsWith('es') ? 'es' : 'en';
+try { inicial = localStorage.getItem('blister-idioma') || inicial } catch (e) {}
+idioma(inicial);
+
+/* ---------- Misma altura en español y en inglés: el texto más largo fija el alto, así nada se corre al cambiar de idioma ---------- */
+let tNiv;
+function nivelar() {
+  const els = [...document.querySelectorAll('[data-es][data-en]')].filter(e => { const d = getComputedStyle(e).display; return d !== 'inline' && d !== 'none' });
+  const actual = document.documentElement.lang || 'es', h = {};
+  els.forEach(e => e.style.minHeight = '');
+  for (const l of ['es', 'en']) { els.forEach(e => e.innerHTML = e.dataset[l]); h[l] = els.map(e => e.getBoundingClientRect().height) }
+  els.forEach((e, i) => { if (h.es[i] !== h.en[i]) e.style.minHeight = Math.max(h.es[i], h.en[i]) + 'px' });
+  els.forEach(e => e.innerHTML = e.dataset[actual]);
+}
+document.fonts.ready.then(nivelar);
+addEventListener('resize', () => { clearTimeout(tNiv); tNiv = setTimeout(nivelar, 150) });
+</script>
+<script type="module">
+import * as H from 'https://cdn.jsdelivr.net/npm/@lucasmarkes/hairline@0.5.0/dist/index.js';
+for (const el of document.querySelectorAll('[data-fig]')) { const f = H[el.dataset.fig]; if (f) f(el, { theme: 'light', intensity: .7, play: true }) }
+</script>
+</body>
+</html>

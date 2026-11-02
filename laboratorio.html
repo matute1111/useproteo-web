@@ -1,0 +1,190 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Proteo · Laboratorio</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Geist:wght@300..800&family=Geist+Mono:wght@400&family=Bricolage+Grotesque:opsz,wght@12..96,400..800&display=swap">
+<style>
+/* Títulos en Bricolage Grotesque y texto en Geist (elegida por Matías el 2026-10-28) */
+:root { --titulo: "Bricolage Grotesque", "Segoe UI", sans-serif; --peso-t: 700; --track-t: -0.03em }
+</style>
+<style>
+/* Laboratorio: lecturas propias sobre temas de agenda. Misma base que la landing. */
+:root { color-scheme: light; --fondo: #F6F6F3; --tinta: #17191B; --gris: #6B6F72; --linea: #E2E2DD; --panel: #FFFFFF; --trazo: #8E9295; --bermellon: #E2492F; --cobalto: #2F4BD8; --text: "Geist", "Segoe UI", Arial, sans-serif; --mono: "Geist Mono", Consolas, monospace; --col: 1240px }
+* { box-sizing: border-box }
+html { scroll-padding-top: 84px }
+body { background: var(--fondo); color: var(--tinta); font: 400 17px/1.6 var(--text); -webkit-font-smoothing: antialiased; margin: 0; overflow-x: hidden }
+.wrap { max-width: var(--col); margin: 0 auto; padding-left: max(24px, env(safe-area-inset-left, 0px)); padding-right: max(24px, env(safe-area-inset-right, 0px)) }
+h1, h2, h3 { font-family: var(--titulo); font-weight: var(--peso-t); letter-spacing: var(--track-t); margin: 0; text-wrap: pretty }
+p { margin: 0 }
+a { color: inherit }
+button { font: inherit; color: inherit }
+:focus-visible { outline: 2px solid var(--cobalto); outline-offset: 3px }
+.nota { font: 400 10px/1.4 var(--mono); letter-spacing: .1em; text-transform: uppercase; color: var(--gris) }
+nav { position: sticky; top: 0; z-index: 10; padding-top: env(safe-area-inset-top, 0px); background: color-mix(in srgb, var(--fondo) 85%, transparent); backdrop-filter: blur(10px) }
+nav .wrap { display: flex; align-items: center; justify-content: space-between; gap: 16px; padding-block: 14px }
+.logo { font: var(--peso-t) 28px/1 var(--titulo); letter-spacing: var(--track-t); text-decoration: none }
+.logo b { color: var(--bermellon) }
+.links { display: flex; gap: 26px; align-items: center; font-size: 15px; color: var(--gris) }
+.links a { color: inherit; text-decoration: none }
+.links a:hover, .links a[aria-current] { color: var(--tinta) }
+.cta { background: var(--tinta); color: var(--fondo); border: 0; border-radius: 99px; padding: 12px 22px; font-size: 15px; font-weight: 700; text-decoration: none; display: inline-block }
+.menu-btn { display: none; background: none; border: 1px solid var(--linea); border-radius: 99px; padding: 9px 14px; font-size: 14px; font-weight: 700; cursor: pointer }
+@media (max-width: 860px) {
+  .menu-btn { display: inline-block }
+  .links { position: absolute; left: 0; right: 0; top: 100%; flex-direction: column; align-items: stretch; gap: 0; background: var(--panel); border-top: 1px solid var(--linea); border-bottom: 1px solid var(--linea); padding: 8px 24px 16px; display: none }
+  nav.open .links { display: flex }
+  .links a { display: block; padding: 12px 0; border-bottom: 1px solid var(--linea); font-size: 17px; color: var(--tinta) }
+  .links .cta { margin-top: 12px; text-align: center; border: 0; color: var(--fondo) }
+}
+header.cab { padding-block: 72px 44px; display: grid; gap: 18px }
+header.cab h1 { font-size: clamp(36px, 5vw, 64px); line-height: 1.04; max-width: 18ch }
+.lead { font-size: clamp(18px, 1.6vw, 21px); color: var(--gris); max-width: 60ch }
+.lab { display: grid; gap: 18px; padding-bottom: 80px }
+.lectura { background: var(--panel); border: 1px solid var(--linea); border-radius: 26px; display: grid; grid-template-columns: minmax(0, .9fr) minmax(0, 1.4fr); gap: 30px; padding: 26px; align-items: center }
+.lectura img { width: 100%; height: auto; display: block; filter: drop-shadow(0 18px 22px rgba(23,25,27,.10)) }
+.lectura .t { display: flex; flex-direction: column; gap: 12px; align-self: stretch }
+.lectura .t .pie-nota { margin-top: auto; padding-top: 6px }
+.pie-nota { font-size: 12px; color: var(--gris); text-align: right; margin: 0 }
+.lectura h2 { font-size: clamp(24px, 2.6vw, 34px); line-height: 1.12 }
+.lectura p { color: var(--gris) }
+.lectura .res { display: grid; gap: 6px; border-top: 1px solid var(--linea); padding-top: 14px; margin-top: 4px }
+.lectura .res div { display: grid; grid-template-columns: minmax(0, 1fr) 120px 46px; gap: 10px; align-items: center; font-size: 15px }
+.lectura .res .b { height: 6px; border-radius: 3px; background: var(--linea); overflow: hidden }
+.lectura .res .b span { display: block; height: 100%; background: var(--cobalto) }
+.lectura .res .v { font: 400 13px var(--mono); text-align: right }
+footer { border-top: 1px solid var(--linea); padding-block: 36px; background: var(--panel) }
+footer .wrap { display: flex; justify-content: space-between; gap: 16px; flex-wrap: wrap; align-items: center; color: var(--gris); font-size: 14px }
+.idioma { display: inline-flex; border: 1px solid var(--linea); border-radius: 99px; overflow: hidden; background: var(--fondo) }
+.idioma button { background: none; border: 0; padding: 8px 14px; font: 400 11px/1 var(--mono); letter-spacing: .08em; color: var(--gris); cursor: pointer }
+.idioma button[aria-pressed="true"] { background: var(--tinta); color: var(--fondo) }
+@media (max-width: 860px) { .lectura { grid-template-columns: minmax(0, 1fr) } }
+/* Un caso que prueba videos: los tres cortes arriba, como reproductores */
+.lectura.vid { grid-template-columns: minmax(0, 1fr) }
+.videos { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 14px }
+.video { margin: 0; display: grid; gap: 8px; min-width: 0 }
+.video .pant { position: relative; aspect-ratio: 16 / 9; border-radius: 14px; overflow: hidden; background: var(--fondo); border: 1px solid var(--linea) }
+.video .pant img { width: 100%; height: 100%; object-fit: cover; filter: none }
+.video .play { position: absolute; left: 50%; top: 50%; width: 46px; height: 46px; margin: -23px; border-radius: 50%; background: rgba(23,25,27,.78); display: grid; place-items: center }
+.video .play::after { content: ""; margin-left: 4px; border-left: 14px solid #fff; border-top: 9px solid transparent; border-bottom: 9px solid transparent }
+.video .dur { position: absolute; right: 8px; bottom: 10px; font: 400 11px/1 var(--mono); background: rgba(23,25,27,.78); color: #fff; border-radius: 6px; padding: 4px 6px }
+.video .prog { position: absolute; left: 0; right: 0; bottom: 0; height: 3px; background: rgba(23,25,27,.15) }
+.video .prog i { display: block; height: 100%; width: 0; background: var(--cobalto); animation: avanza 15s linear infinite }
+@keyframes avanza { to { width: 100% } }
+.video.gana .pant { outline: 2px solid var(--tinta); outline-offset: 2px }
+.video figcaption { font-size: 15px; font-weight: 700 }
+.video figcaption span { font-weight: 400; color: var(--gris) }
+@media (max-width: 640px) { .videos { grid-template-columns: minmax(0, 1fr) } }
+</style>
+</head>
+<body>
+<nav>
+  <div class="wrap">
+    <a class="logo" href="./">Proteo<b>.</b></a>
+    <div class="links" id="menuLinks">
+      <a href="./#manif" data-es="Por qué" data-en="Why">Por qué</a>
+      <a href="./#como" data-es="Cómo funciona" data-en="How it works">Cómo funciona</a>
+      <a href="ciencia.html" data-es="La ciencia" data-en="The science">La ciencia</a>
+      <a href="laboratorio.html" aria-current="page" data-es="Laboratorio" data-en="Lab">Laboratorio</a>
+      <a href="./#quienes" data-es="Para quién" data-en="Who it's for">Para quién</a>
+      <a class="cta" href="./#contacto" data-es="Hablemos" data-en="Let's talk">Hablemos</a>
+    </div>
+    <button class="menu-btn" id="menuBtn" aria-expanded="false" aria-controls="menuLinks" data-es="Menú" data-en="Menu">Menú</button>
+  </div>
+</nav>
+
+<div class="wrap">
+  <header class="cab">
+    <h1 data-es="Lo que piensa la gente de lo que pasa." data-en="What people think about the news.">Lo que piensa la gente de lo que pasa.</h1>
+    <p class="lead" data-es="Cómo reacciona la gente ante un anuncio, una imagen o un video, y qué cambia según cómo se cuente. Corridas del panel, no pronósticos. Ejemplos ilustrativos." data-en="How people react to an announcement, an image or a video, and what changes depending on how it is told. Simulations, not forecasts. Illustrative examples.">Cómo reacciona la gente ante un anuncio, una imagen o un video, y qué cambia según cómo se cuente. Corridas del panel, no pronósticos. Ejemplos ilustrativos.</p>
+  </header>
+
+  <div class="lab">
+    <article class="lectura">
+      <img src="img/muses/lab_transporte.webp" alt="">
+      <div class="t">
+        <h2 data-es="Si sube el boleto, ¿quién lo siente primero?" data-en="If bus fares go up, who feels it first?">Si sube el boleto, ¿quién lo siente primero?</h2>
+        <p data-es="Un aumento del 30% contado de tres maneras. El rechazo cambia poco con la forma de contarlo y mucho según quién viaja todos los días." data-en="A 30% increase told three ways. Rejection changes little with the wording and a lot depending on who rides every day.">Un aumento del 30% contado de tres maneras.</p>
+        <div class="res">
+          <div><span data-es="Trabajadores que viajan a diario" data-en="Daily commuters">Trabajadores que viajan a diario</span><span class="b"><span style="width:78%"></span></span><span class="v">78%</span></div>
+          <div><span data-es="Estudiantes" data-en="Students">Estudiantes</span><span class="b"><span style="width:71%"></span></span><span class="v">71%</span></div>
+          <div><span data-es="Quienes van en auto" data-en="People who drive">Quienes van en auto</span><span class="b"><span style="width:34%"></span></span><span class="v">34%</span></div>
+        </div>
+        <p class="pie-nota" data-es="Rechazo por grupo · ilustrativo" data-en="Rejection by group · illustrative">Rechazo por grupo · ilustrativo</p>
+      </div>
+    </article>
+
+    <article class="lectura vid">
+      <div class="videos">
+        <figure class="video gana"><div class="pant"><img src="img/muses/video_almacen.webp" alt=""><span class="play"></span><span class="dur">0:15</span><span class="prog"><i></i></span></div><figcaption>A · <span data-es="En el almacén del barrio" data-en="At the corner store">En el almacén del barrio</span></figcaption></figure>
+        <figure class="video"><div class="pant"><img src="img/muses/video_recital.webp" alt=""><span class="play"></span><span class="dur">0:15</span><span class="prog"><i style="animation-play-state:paused;width:0"></i></span></div><figcaption>B · <span data-es="En un recital" data-en="At a concert">En un recital</span></figcaption></figure>
+        <figure class="video"><div class="pant"><img src="img/muses/video_plaza.webp" alt=""><span class="play"></span><span class="dur">0:15</span><span class="prog"><i style="animation-play-state:paused;width:0"></i></span></div><figcaption>C · <span data-es="En la plaza" data-en="In the square">En la plaza</span></figcaption></figure>
+      </div>
+      <div class="t">
+        <h2 data-es="¿Dónde filmamos el video de la bebida nueva?" data-en="Where do we shoot the new drink's video?">¿Dónde filmamos el video de la bebida nueva?</h2>
+        <p data-es="Tres versiones del mismo video de 15 segundos, con la misma bebida y el mismo texto. Lo único que cambia es el lugar. El almacén del barrio gana en casi todos los grupos y el recital solo convence a los más jóvenes." data-en="Three versions of the same 15-second video, with the same drink and the same copy. The only thing that changes is the place. The corner store wins in almost every group and the concert only works with the youngest.">Tres versiones del mismo video.</p>
+        <div class="res">
+          <div><span data-es="A · En el almacén del barrio" data-en="A · At the corner store">A · En el almacén del barrio</span><span class="b"><span style="width:38%"></span></span><span class="v">38%</span></div>
+          <div><span data-es="B · En un recital" data-en="B · At a concert">B · En un recital</span><span class="b"><span style="width:27%"></span></span><span class="v">27%</span></div>
+          <div><span data-es="C · En la plaza" data-en="C · In the square">C · En la plaza</span><span class="b"><span style="width:22%"></span></span><span class="v">22%</span></div>
+        </div>
+        <p class="pie-nota" data-es="Lo compraría · ilustrativo" data-en="Would buy it · illustrative">Lo compraría · ilustrativo</p>
+      </div>
+    </article>
+
+    <article class="lectura">
+      <img src="img/muses/lab_campo.webp" alt="">
+      <div class="t">
+        <h2 data-es="El campo y la ciudad frente a la misma noticia." data-en="Countryside and city facing the same news.">El campo y la ciudad frente a la misma noticia.</h2>
+        <p data-es="Un cambio en los impuestos a la exportación, leído desde un pueblo agrícola y desde una ciudad grande. La misma noticia, dos países distintos." data-en="A change in export taxes, read from a farming town and from a big city. The same news, two different countries.">La misma noticia, dos países distintos.</p>
+        <div class="res">
+          <div><span data-es="Pueblos agrícolas · en contra" data-en="Farming towns · against">Pueblos agrícolas · en contra</span><span class="b"><span style="width:66%"></span></span><span class="v">66%</span></div>
+          <div><span data-es="Ciudades grandes · en contra" data-en="Big cities · against">Ciudades grandes · en contra</span><span class="b"><span style="width:28%"></span></span><span class="v">28%</span></div>
+          <div><span data-es="Ciudades grandes · sin opinión" data-en="Big cities · no opinion">Ciudades grandes · sin opinión</span><span class="b"><span style="width:45%"></span></span><span class="v">45%</span></div>
+        </div>
+        <p class="pie-nota" data-es="Por tipo de lugar · ilustrativo" data-en="By type of place · illustrative">Por tipo de lugar · ilustrativo</p>
+      </div>
+    </article>
+  </div>
+</div>
+
+<footer>
+  <div class="wrap">
+    <span>© 2026 Proteo · <span data-es="useproteo.com" data-en="useproteo.com">useproteo.com/span></span>
+    <div class="idioma" role="group" aria-label="Idioma / Language"><button id="es" aria-pressed="true">Español</button><button id="en" aria-pressed="false">English</button></div>
+  </div>
+</footer>
+
+<script>
+function idioma(l) {
+  document.documentElement.lang = l;
+  document.querySelectorAll('[data-es]').forEach(e => e.innerHTML = e.dataset[l]);
+  for (const b of ['es', 'en']) document.getElementById(b).setAttribute('aria-pressed', String(b === l));
+  try { localStorage.setItem('blister-idioma', l) } catch (e) {}
+}
+const navEl = document.querySelector('nav'), menuBtn = document.getElementById('menuBtn');
+menuBtn.onclick = () => { const abierto = navEl.classList.toggle('open'); menuBtn.setAttribute('aria-expanded', String(abierto)) };
+document.getElementById('es').onclick = () => idioma('es');
+document.getElementById('en').onclick = () => idioma('en');
+let inicial = (navigator.language || 'es').toLowerCase().startsWith('es') ? 'es' : 'en';
+try { inicial = localStorage.getItem('blister-idioma') || inicial } catch (e) {}
+idioma(inicial);
+
+/* ---------- Misma altura en español y en inglés: el texto más largo fija el alto, así nada se corre al cambiar de idioma ---------- */
+let tNiv;
+function nivelar() {
+  const els = [...document.querySelectorAll('[data-es][data-en]')].filter(e => { const d = getComputedStyle(e).display; return d !== 'inline' && d !== 'none' });
+  const actual = document.documentElement.lang || 'es', h = {};
+  els.forEach(e => e.style.minHeight = '');
+  for (const l of ['es', 'en']) { els.forEach(e => e.innerHTML = e.dataset[l]); h[l] = els.map(e => e.getBoundingClientRect().height) }
+  els.forEach((e, i) => { if (h.es[i] !== h.en[i]) e.style.minHeight = Math.max(h.es[i], h.en[i]) + 'px' });
+  els.forEach(e => e.innerHTML = e.dataset[actual]);
+}
+document.fonts.ready.then(nivelar);
+addEventListener('resize', () => { clearTimeout(tNiv); tNiv = setTimeout(nivelar, 150) });
+</script>
+</body>
+</html>

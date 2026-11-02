@@ -1,0 +1,942 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="robots" content="noindex, nofollow">
+<title>Proteo</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Geist:wght@300..800&family=Geist+Mono:wght@400&family=Bricolage+Grotesque:opsz,wght@12..96,400..800&display=swap">
+<style>
+/* Títulos en Bricolage Grotesque y texto en Geist (elegida por Matías el 2026-10-28) */
+:root { --titulo: "Bricolage Grotesque", "Segoe UI", sans-serif; --peso-t: 700; --track-t: -0.03em }
+</style>
+<style>
+/* Layout: columna central de 1240 px. Día blanco de maqueta de yeso. El hero va del dibujo del país a una zona en isometría de cubos, y ahí mismo se prueba una idea. */
+:root {
+  color-scheme: light;
+  --fondo: #F6F6F3;
+  --tinta: #17191B;
+  --gris: #6B6F72;
+  --linea: #E2E2DD;
+  --panel: #FFFFFF;
+  --trazo: #8E9295;
+  --bermellon: #E2492F;
+  --cobalto: #2F4BD8;
+  --luz: #E09B1A;
+  --text: "Geist", "Segoe UI", Arial, sans-serif;
+  --mono: "Geist Mono", Consolas, monospace;
+  --col: 1240px;
+}
+* { box-sizing: border-box }
+html { scroll-padding-top: 84px }
+body { background: var(--fondo); color: var(--tinta); font: 400 17px/1.6 var(--text); -webkit-font-smoothing: antialiased; overflow-x: hidden; margin: 0 }
+.wrap { max-width: var(--col); margin: 0 auto; padding-left: max(24px, env(safe-area-inset-left, 0px)); padding-right: max(24px, env(safe-area-inset-right, 0px)) }
+h1, h2, h3 { font-family: var(--titulo); font-weight: var(--peso-t); letter-spacing: var(--track-t); margin: 0; text-wrap: pretty }
+p { margin: 0 }
+button, input, textarea { font: inherit; color: inherit }
+:focus-visible { outline: 2px solid var(--cobalto); outline-offset: 3px }
+.big { font-size: clamp(34px, 4.4vw, 58px); line-height: 1.06; max-width: 24ch }
+.lead { font-size: clamp(18px, 1.6vw, 21px); color: var(--gris); max-width: 58ch }
+.head { display: grid; gap: 18px; margin-bottom: 52px }
+.pie-nota { font-size: 12px; color: var(--gris); text-align: right; margin: 0 }
+.nota { font: 400 10px/1.4 var(--mono); letter-spacing: .1em; text-transform: uppercase; color: var(--gris) }
+section.blk { padding-block: clamp(90px, 11vw, 140px) }
+@supports (animation-timeline: view()) {
+  .rev { animation: rev linear both; animation-timeline: view(); animation-range: entry 5% entry 55% }
+  @keyframes rev { from { opacity: 0; transform: translateY(40px) } }
+}
+.cta { background: var(--tinta); color: var(--fondo); border: 0; border-radius: 99px; padding: 12px 22px; font-size: 15px; font-weight: 700; cursor: pointer; transition: transform .25s; text-decoration: none; display: inline-block }
+.cta:hover { transform: translateY(-2px) }
+.mas { display: inline-block; font-weight: 700; color: var(--cobalto); text-decoration: none; border-bottom: 2px solid color-mix(in srgb, var(--cobalto) 30%, transparent); padding-bottom: 2px }
+.mas:hover { border-color: var(--cobalto) }
+
+/* Nav */
+nav { position: fixed; inset: 0 0 auto 0; z-index: 10; padding-top: env(safe-area-inset-top, 0px); background: color-mix(in srgb, var(--fondo) 85%, transparent); backdrop-filter: blur(10px) }
+nav .wrap { display: flex; align-items: center; justify-content: space-between; gap: 16px; padding-block: 14px }
+.logo { font: var(--peso-t) 28px/1 var(--titulo); letter-spacing: var(--track-t) }
+.logo b { color: var(--bermellon) }
+.links { display: flex; gap: 26px; align-items: center; font-size: 15px; color: var(--gris) }
+.links a { color: inherit; text-decoration: none }
+.links a:hover { color: var(--tinta) }
+.progreso { position: absolute; left: 0; bottom: 0; height: 2px; background: var(--tinta); width: 0 }
+.menu-btn { display: none; background: none; border: 1px solid var(--linea); border-radius: 99px; padding: 9px 14px; font-size: 14px; font-weight: 700; cursor: pointer }
+@media (max-width: 860px) {
+  .menu-btn { display: inline-block }
+  .links { position: absolute; left: 0; right: 0; top: 100%; flex-direction: column; align-items: stretch; gap: 0; background: var(--panel); border-top: 1px solid var(--linea); border-bottom: 1px solid var(--linea); padding: 8px 24px 16px; display: none }
+  nav.open .links { display: flex }
+  .links a { display: block; padding: 12px 0; border-bottom: 1px solid var(--linea); font-size: 17px; color: var(--tinta) }
+  .links .cta { margin-top: 12px; text-align: center }
+}
+
+/* Recorrido */
+#recorrido { height: 760vh; position: relative }
+.pegado { position: sticky; top: 0; height: 100vh; height: 100svh; overflow: hidden }
+.pegado canvas { position: absolute; inset: 0; width: 100%; height: 100%; touch-action: pan-y }
+.titulo { position: absolute; left: max(24px, calc(50% - var(--col) / 2 + 24px)); width: min(500px, 40vw); top: 27vh; z-index: 2; display: grid; gap: 18px; pointer-events: none; text-shadow: 0 0 14px var(--fondo), 0 0 6px var(--fondo) }   /* el título queda fijo sobre el mapa: el halo lo separa de las líneas */
+.titulo h1 { font-size: clamp(40px, 5.4vw, 78px); line-height: 1; letter-spacing: calc(var(--track-t) - .01em) }
+.titulo .sub { font-size: clamp(17px, 1.5vw, 20px); color: var(--gris); max-width: 38ch }
+.bajar { position: absolute; left: 50%; bottom: 26px; transform: translateX(-50%); z-index: 4; display: flex; align-items: center; gap: 10px; font: 400 11px/1 var(--mono); letter-spacing: .1em; text-transform: uppercase; color: var(--gris); pointer-events: none; white-space: nowrap; transition: opacity .4s }
+.bajar svg { width: 22px; height: 30px; overflow: visible }
+.bajar .ruedita { animation: rueda 1.8s cubic-bezier(.4,0,.6,1) infinite }
+@keyframes rueda { 0% { transform: translateY(0); opacity: 1 } 60% { transform: translateY(9px); opacity: 0 } 61% { transform: translateY(0); opacity: 0 } 100% { transform: translateY(0); opacity: 1 } }
+.bajar .toque { display: none }
+.bajar .dedo { animation: dedo 1.8s cubic-bezier(.4,0,.6,1) infinite }
+@keyframes dedo { 0% { transform: translateY(6px); opacity: 0 } 25% { opacity: 1 } 70% { transform: translateY(-10px); opacity: 1 } 100% { transform: translateY(-12px); opacity: 0 } }
+@media (hover: none) and (pointer: coarse) { .bajar .mouse { display: none } .bajar .toque { display: block } }
+.mensajes { position: absolute; left: max(24px, calc(50% - var(--col) / 2 + 24px)); top: 50%; width: min(400px, 92vw); transform: translate(0, calc(-50% + 14px)); z-index: 3; display: grid; grid-template-rows: auto auto auto repeat(3, 46px) auto auto; gap: 8px; background: var(--panel); border: 1px solid var(--linea); border-radius: 22px; padding: 18px; box-shadow: 0 16px 40px rgba(23,25,27,.1); opacity: 0; transition: opacity .5s, transform .5s; pointer-events: none }
+.mensajes.on { opacity: 1; transform: translate(0, -50%); pointer-events: auto }
+.mensajes h3 { font-size: 22px; text-align: center }
+.casos { display: flex; gap: 4px; background: var(--fondo); border-radius: 99px; padding: 4px }
+.casos button { flex: 1; background: none; border: 0; border-radius: 99px; padding: 7px 6px; font-size: 13px; font-weight: 700; color: var(--gris); cursor: pointer }
+.casos button[aria-pressed="true"] { background: var(--panel); color: var(--tinta); box-shadow: 0 1px 4px rgba(23,25,27,.1) }
+.mensajes .q { font-size: 15px; font-weight: 700; align-self: center; line-height: 1.3 }
+.mensajes .op { text-align: left; background: none; border: 1px solid var(--linea); border-radius: 12px; padding: 0 12px; font-size: 15px; cursor: pointer; display: grid; grid-template-columns: 1fr auto; gap: 10px; align-items: center; white-space: nowrap; overflow: hidden }
+.mensajes .op:hover { border-color: var(--trazo) }
+.mensajes .op[aria-pressed="true"] { border-color: var(--tinta); background: var(--fondo) }
+.mensajes .v { font: 400 12px/1 var(--mono); font-variant-numeric: tabular-nums; color: var(--gris) }
+.barra { display: flex; height: 6px; border-radius: 3px; overflow: hidden; background: var(--linea); margin-top: 4px }
+.barra span { transition: flex-grow .8s cubic-bezier(.2,.7,.2,1) }
+.ley { display: flex; justify-content: space-between; font-size: 12px; color: var(--gris) }
+.ficha { position: absolute; z-index: 4; width: 260px; background: var(--panel); border: 1px solid var(--linea); border-radius: 16px; box-shadow: 0 16px 36px rgba(23,25,27,.12); padding: 12px 14px; display: grid; gap: 3px; pointer-events: none; opacity: 0; transform: translateY(8px); transition: opacity .2s, transform .2s }
+.ficha.on { opacity: 1; transform: none }
+.ficha .r { font: 750 19px/1.15 var(--text) }
+.ficha .d { font-size: 14px; color: var(--gris); line-height: 1.4 }
+@media (max-width: 760px) {
+  .titulo { left: 0; right: 0; width: auto; top: 12vh; text-align: center; justify-items: center; padding-inline: 20px }
+  .titulo h1 { font-size: clamp(34px, 9vw, 44px) }
+  .mensajes { left: 50%; top: auto; bottom: 2vh; width: min(400px, 94vw); transform: translate(-50%, 14px); padding: 12px; gap: 6px; grid-template-rows: auto auto auto repeat(3, 40px) auto auto }
+  .mensajes.on { transform: translate(-50%, 0) }
+  .mensajes h3 { font-size: 18px }
+  .ficha { display: none }
+}
+
+/* El futuro no se adivina: el giro, centrado y de a poco */
+#manif { height: 320vh; position: relative }
+#manif .pegado { display: grid; place-items: center }
+.giro { text-align: center; display: grid; justify-items: center; gap: 28px; max-width: 900px; padding-inline: 24px }
+.frase { font-size: clamp(38px, 7vw, 100px); line-height: .98; letter-spacing: calc(var(--track-t) - .015em); max-width: 13ch }
+.frase em { font-style: normal; color: var(--cobalto) }
+.frase.chica { font-size: clamp(34px, 5.6vw, 80px); max-width: 15ch }
+.giro .ln { max-width: 52ch }
+.giro .ln { font-size: clamp(17px, 2vw, 26px); line-height: 1.45; max-width: 46ch; opacity: 0; transform: translateY(14px); transition: opacity .6s, transform .6s }
+.giro .ln.on { opacity: 1; transform: none }
+.giro .ln.off { opacity: .25 }
+.cols { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 28px; border-top: 1px solid var(--linea); padding-top: 28px; text-align: center }
+.cols h3 { font-size: 22px; margin-bottom: 8px }
+.cols p { color: var(--gris) }
+.ensayo { background: var(--panel); border: 1px solid var(--linea); border-radius: 28px; padding: 30px; display: grid; grid-template-columns: minmax(0, .9fr) minmax(0, 1.1fr); gap: 34px; align-items: center; margin-top: 40px }
+.ensayo h3 { font-size: 30px; line-height: 1.1 }
+.ensayo .ctrl { display: grid; gap: 8px; margin-top: 18px }
+.ensayo .et { font: 400 10px/1 var(--mono); letter-spacing: .12em; text-transform: uppercase; color: var(--gris) }
+.ops { display: flex; flex-wrap: wrap; gap: 6px }
+.ops button { background: var(--fondo); border: 1px solid var(--linea); border-radius: 99px; padding: 8px 14px; font-size: 14px; cursor: pointer; transition: background .2s, color .2s, border-color .2s }
+.ops button:hover { border-color: var(--trazo) }
+.ops button[aria-pressed="true"] { background: var(--tinta); color: var(--fondo); border-color: var(--tinta) }
+.arbol svg { width: 100%; height: auto; display: block; overflow: visible }
+.arbol path { fill: none; stroke: #CDCFCB; stroke-width: 1.5; transition: stroke .3s }
+.arbol .act path { stroke: var(--tinta); stroke-width: 2 }
+.arbol .mej path { stroke: var(--cobalto); stroke-width: 2.5 }
+.arbol circle { fill: #CDCFCB }
+.arbol .act circle { fill: var(--tinta) }
+.arbol .mej circle { fill: var(--cobalto) }
+.arbol text { font: 400 12px var(--mono); fill: var(--gris) }
+.arbol .act text { fill: var(--tinta) }
+.arbol .mej text { fill: var(--cobalto) }
+.res-t { font-size: 15px; color: var(--gris); margin-top: 10px }
+
+/* Llegamos antes + así lo hacemos */
+#antes { height: 260vh; position: relative }
+#antes .pegado { display: grid; align-content: center }
+.tiempo { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); position: relative; margin-top: 30px }
+.tiempo::before { content: ""; position: absolute; left: 0; right: 0; top: 13px; height: 1px; background: var(--linea) }
+.tiempo .fill { position: absolute; left: 0; top: 13px; height: 2px; background: var(--cobalto); width: 66.6%; transform-origin: left; transform: scaleX(0); transition: transform .5s }
+.momento { position: relative; padding: 44px 26px 0 0; display: grid; gap: 12px; align-content: start; min-width: 0; opacity: .3; transition: opacity .5s }
+.momento.on { opacity: 1 }
+.momento::before { content: ""; position: absolute; left: 0; top: 7px; width: 13px; height: 13px; border-radius: 50%; background: var(--fondo); border: 1.5px solid var(--trazo) }
+.momento.on::before { background: var(--tinta); border-color: var(--tinta) }
+.momento.yo.on::before { background: var(--cobalto); border-color: var(--cobalto); transform: scale(1.4) }
+.momento .cuando { font: 400 11px/1 var(--mono); letter-spacing: .12em; text-transform: uppercase; color: var(--gris) }
+.momento h3 { font-size: clamp(24px, 2.5vw, 34px); line-height: 1.12 }
+.momento.yo h3 em { font-style: normal; color: var(--cobalto) }
+.momento p { color: var(--gris); font-size: 16px }
+.remate { margin-top: 50px; font-size: clamp(22px, 2.3vw, 30px); font-weight: 750; letter-spacing: -0.02em; opacity: 0; transform: translateY(12px); transition: opacity .5s, transform .5s }
+.remate.on { opacity: 1; transform: none }
+.fig { --hairline-plate: #FFFFFF; --hairline-hi: #17191B; --hairline-edge: #4A4E51; --hairline-mid: #9A9EA1; --hairline-lo: #DCDCD7; --hairline-stroke: 0.9; width: 100%; aspect-ratio: 5 / 4; border-radius: 14px; background: var(--panel) }
+.como { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 18px }
+.tarjeta { background: var(--panel); border: 1px solid var(--linea); border-radius: 22px; padding: 18px; display: grid; gap: 12px; align-content: start; transition: transform .35s, box-shadow .35s; min-width: 0 }
+.tarjeta:hover { transform: translateY(-6px); box-shadow: 0 18px 40px rgba(23,25,27,.08) }
+.tarjeta h3 { font-size: 25px }
+.tarjeta p { color: var(--gris); font-size: 15px }
+.tarjeta .n { font: 400 10px/1 var(--mono); letter-spacing: .12em; color: var(--gris) }
+
+/* Modelo propio */
+.mejora { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 52px; align-items: center }
+.rueda { position: relative; aspect-ratio: 580 / 500; max-width: 580px; width: 100%; justify-self: center }
+.rueda svg { position: absolute; inset: 0; width: 100%; height: 100%; overflow: visible }
+.rueda .arco { fill: none; stroke: var(--linea); stroke-width: 2 }
+.rueda .avance { fill: none; stroke: var(--cobalto); stroke-width: 3; stroke-linecap: round }
+.nodo { cursor: pointer }
+.nodo circle { fill: var(--panel); stroke: var(--trazo); stroke-width: 1.5; transition: fill .4s, stroke .4s }
+.nodo text { font: 700 15px var(--text); fill: var(--gris); transition: fill .4s }
+.nodo.on circle { fill: var(--cobalto); stroke: var(--cobalto) }
+.nodo.on text { fill: var(--tinta) }
+.centro-f { position: absolute; left: 50%; top: 50%; width: 30%; height: 34%; transform: translate(-50%, -50%) }
+.centro-f .fig { position: absolute; inset: 0; aspect-ratio: auto; height: 100%; background: transparent; opacity: 0; transition: opacity .4s }
+.centro-f .fig.on { opacity: 1 }
+.paso-txt { min-height: 6.5em; display: grid; gap: 6px; margin: 26px 0 }
+.paso-txt b { font-size: 22px; letter-spacing: -0.02em }
+.paso-txt span { color: var(--gris) }
+
+/* Personas */
+.capas3 { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 40px; align-items: center }
+.escena3 { position: relative; height: 600px; perspective: 1400px }
+.pila { position: absolute; left: 50%; top: 66%; width: 290px; height: 290px; margin: -145px 0 0 -145px; transform-style: preserve-3d; transform: rotateX(58deg) rotateZ(-38deg) }
+.placa { position: absolute; inset: 0; border-radius: 22px; background-color: color-mix(in srgb, var(--panel) 86%, transparent); border: 1px solid #C9CAC6; transition: transform .5s cubic-bezier(.2,.7,.2,1), background-color .3s, border-color .3s, opacity .3s; cursor: pointer; background-image: radial-gradient(circle, #B9BBB8 1.2px, transparent 1.6px); background-size: 22px 22px }
+.placa.on { background-color: color-mix(in srgb, var(--cobalto) 12%, var(--panel)); border-color: var(--cobalto); background-image: radial-gradient(circle, var(--cobalto) 1.6px, transparent 2px) }
+.pila.dim .placa:not(.on) { opacity: .45 }
+.punto3 { position: absolute; left: 50%; top: 50%; width: 22px; height: 22px; margin: -11px; border-radius: 50%; background: var(--tinta); box-shadow: 0 0 0 6px color-mix(in srgb, var(--tinta) 12%, transparent) }
+.lista3 { display: grid; border-top: 1px solid var(--linea) }
+.it3 { display: grid; grid-template-columns: 30px minmax(0, 1fr); gap: 12px; padding-block: 14px; border-bottom: 1px solid var(--linea); cursor: pointer }
+.it3 .i { font: 400 11px/1.9 var(--mono); color: var(--gris) }
+.it3 h3 { font-size: 21px; transition: color .25s }
+.it3 .chips { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 8px }
+.it3 .chips span { font-size: 13px; background: var(--panel); border: 1px solid var(--linea); border-radius: 99px; padding: 3px 10px; color: var(--gris) }
+.it3 p { color: var(--gris); font-size: 15px; display: none }
+.it3.on h3 { color: var(--cobalto) }
+.it3.on p { display: block }
+.zona-h { margin-top: 90px; display: grid; gap: 14px; margin-bottom: 26px }
+.zona-h h3 { font-size: clamp(26px, 3vw, 38px); line-height: 1.1 }
+.temas { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 22px }
+.temas button { background: var(--panel); border: 1px solid var(--linea); border-radius: 99px; padding: 10px 18px; font-size: 15px; font-weight: 700; cursor: pointer }
+.temas button[aria-pressed="true"] { background: var(--tinta); color: var(--fondo); border-color: var(--tinta) }
+.rincones { display: grid; grid-template-columns: minmax(0, .9fr) minmax(0, 1.1fr); gap: 32px; align-items: start }
+.rincones canvas { width: 100%; aspect-ratio: 1 / 1.25; display: block; cursor: pointer }
+.ficha-r { background: var(--panel); border: 1px solid var(--linea); border-radius: 22px; padding: 22px; display: grid; gap: 12px; margin-bottom: 14px }
+.ficha-r h3 { font-size: 28px }
+.ficha-r .dat { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 10px }
+.ficha-r .dat div { background: var(--fondo); border-radius: 14px; padding: 12px; display: grid; gap: 2px }
+.ficha-r .dat b { font: 800 24px/1 var(--text); letter-spacing: -0.03em }
+.ficha-r .dat span { font-size: 12px; color: var(--gris); line-height: 1.3 }
+.ficha-r .rk { display: grid; gap: 6px }
+.ficha-r .rk div { display: grid; grid-template-columns: 22px minmax(0, 1fr) 46px; gap: 8px; align-items: center; font-size: 15px }
+.ficha-r .rk i { font: 400 11px var(--mono); font-style: normal; color: var(--gris) }
+.ficha-r .rk .v { font: 400 13px var(--mono); text-align: right }
+.lista { display: grid; gap: 2px }
+.reg { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.2fr) 48px; gap: 12px; align-items: center; padding: 9px 12px; border-radius: 12px; cursor: pointer; transition: background .2s }
+.reg:hover, .reg.on { background: var(--panel) }
+.reg .n { font-weight: 700 }
+.reg .b { height: 8px; border-radius: 4px; background: var(--linea); overflow: hidden }
+.reg .b span { display: block; height: 100%; background: var(--cobalto); transform-origin: left; transition: transform .7s cubic-bezier(.2,.7,.2,1) }
+.reg .v { font: 400 13px var(--mono); text-align: right; font-variant-numeric: tabular-nums }
+
+/* Para quién */
+.linea-t { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 10px; margin-bottom: 30px }
+.linea-t button { background: none; border: 0; padding: 0; text-align: left; cursor: pointer; display: grid; gap: 10px }
+.linea-t .pb { height: 3px; border-radius: 2px; background: var(--linea); overflow: hidden }
+.linea-t .pb i { display: block; height: 100%; width: 0; background: var(--tinta) }
+.linea-t span { font-size: 16px; font-weight: 700; color: var(--gris); transition: color .3s }
+.linea-t button[aria-current="true"] span { color: var(--tinta) }
+.seg { display: grid; grid-template-columns: minmax(0, 1.05fr) minmax(0, 1fr); gap: 40px; align-items: center }
+.seg-img { perspective: 900px }
+.seg-img img { width: 100%; height: auto; display: block; transition: transform .5s cubic-bezier(.2,.7,.2,1), opacity .35s; filter: drop-shadow(0 22px 26px rgba(23,25,27,.10)) }
+.prueba { background: var(--panel); border: 1px solid var(--linea); border-radius: 26px; padding: 26px; display: grid; gap: 14px }
+.prueba .q { font-size: 24px; font-weight: 750; letter-spacing: -0.02em; line-height: 1.2 }
+.prueba .d { color: var(--gris) }
+.opcion { display: grid; gap: 8px; background: var(--fondo); border-radius: 16px; padding: 14px 16px }
+.opcion .f { display: grid; grid-template-columns: minmax(0, 1fr) auto; align-items: start; gap: 4px 12px; font-size: 17px }   /* el texto largo envuelve en su columna y el porcentaje queda a la derecha, en la primera línea */
+.opcion .f b { white-space: nowrap }
+@media (max-width: 560px) { .opcion .f { grid-template-columns: 1fr } }   /* en celular el porcentaje va debajo del texto, igual en las tres opciones */
+.opcion .f b { font: 400 13px/1.6 var(--mono) }
+.opcion .b { height: 8px; border-radius: 4px; background: var(--linea); overflow: hidden }
+.opcion .b span { display: block; height: 100%; background: var(--trazo); transform-origin: left; transform: scaleX(0); transition: transform .9s cubic-bezier(.2,.7,.2,1) }
+.opcion.gana { background: var(--panel); outline: 1px solid var(--tinta) }
+.opcion.gana .b span { background: var(--cobalto) }
+.lect { font-size: 16px; border-top: 1px solid var(--linea); padding-top: 14px }
+
+/* Cierre */
+.cierre { text-align: center; display: grid; justify-items: center; gap: 26px }
+.formas { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 18px; width: 100%; text-align: left; margin-top: 10px }
+dialog.contacto { border: 0; padding: 0; background: transparent; width: min(980px, calc(100vw - 32px)); max-width: none; color: var(--tinta) }
+dialog.contacto::backdrop { background: color-mix(in srgb, var(--fondo) 80%, transparent); backdrop-filter: blur(8px) }
+.caja-c { background: var(--panel); border: 1px solid var(--linea); border-radius: 28px; box-shadow: 0 40px 90px rgba(23,25,27,.16); display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 36px; padding: 34px; position: relative; max-height: calc(100vh - 32px); overflow: auto }
+.cerrar { position: absolute; top: 14px; right: 14px; width: 38px; height: 38px; border-radius: 50%; border: 1px solid var(--linea); background: var(--panel); cursor: pointer; font-size: 18px; line-height: 1 }
+.pasos-c { display: grid; border-top: 1px solid var(--linea); margin-top: 24px }
+.pasos-c > div { display: grid; grid-template-columns: 30px minmax(0, 1fr); gap: 10px; padding-block: 12px; border-bottom: 1px solid var(--linea) }
+.pasos-c i { font: 400 11px/1.9 var(--mono); font-style: normal; color: var(--gris) }
+.pasos-c b { display: block; font-size: 17px }
+.pasos-c span { color: var(--gris); font-size: 14px }
+form.form { display: grid; gap: 14px; align-content: start }
+.campo { display: grid; gap: 6px }
+.campo label { font-size: 14px; font-weight: 700 }
+.campo input, .campo textarea { background: var(--fondo); border: 1px solid var(--linea); border-radius: 12px; padding: 12px 14px; font-size: 16px; width: 100% }
+.campo textarea { min-height: 110px; resize: vertical }
+.campo input:focus, .campo textarea:focus { outline: none; border-color: var(--tinta) }
+.aviso { font-size: 14px; color: var(--cobalto); min-height: 1.4em }
+
+/* Pie */
+footer { border-top: 1px solid var(--linea); padding-block: 56px 36px; background: var(--panel) }
+.pie { display: grid; grid-template-columns: minmax(0, 1.2fr) minmax(0, .7fr) minmax(0, .7fr); gap: 40px }
+.pie h4 { font: 400 10px/1.4 var(--mono); letter-spacing: .12em; text-transform: uppercase; color: var(--gris); margin: 0 0 14px }
+.pie .marca p { color: var(--gris); margin: 12px 0 18px; max-width: 32ch }
+.pie ul { list-style: none; margin: 0; padding: 0; display: grid; gap: 8px; font-size: 15px }
+.pie a { color: var(--tinta); text-decoration: none }
+.pie a:hover { color: var(--cobalto) }
+.idioma { display: inline-flex; border: 1px solid var(--linea); border-radius: 99px; overflow: hidden; background: var(--fondo) }
+.idioma button { background: none; border: 0; padding: 8px 14px; font: 400 11px/1 var(--mono); letter-spacing: .08em; color: var(--gris); cursor: pointer }
+.idioma button[aria-pressed="true"] { background: var(--tinta); color: var(--fondo) }
+.legal { display: flex; justify-content: space-between; gap: 16px; flex-wrap: wrap; margin-top: 40px; padding-top: 20px; border-top: 1px solid var(--linea); color: var(--gris); font-size: 13px }
+
+@media (max-width: 960px) { .como { grid-template-columns: repeat(2, minmax(0, 1fr)) } .pie { grid-template-columns: minmax(0, 1fr) } .big { max-width: none } }
+@media (max-width: 860px) {
+  .mejora, .rincones, .capas3, .seg, .formas, .cols, .tiempo, .ensayo, .caja-c { grid-template-columns: minmax(0, 1fr) }
+  .tiempo::before, .tiempo .fill { display: none } .momento { padding: 0 0 26px 24px } .momento::before { top: 4px }
+  .escena3 { height: 380px } .pila { width: 180px; height: 180px; margin: -90px 0 0 -90px; top: 60% }
+  .caja-c { padding: 22px; gap: 22px }
+  .linea-t { grid-template-columns: repeat(2, minmax(0, 1fr)) }
+}
+@media (max-width: 520px) { .como { grid-template-columns: minmax(0, 1fr) } }
+/* Cómo se contagia y el número medido (vienen de la propuesta 2) */
+.tres { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 18px }
+.tres .tarjeta { grid-template-columns: minmax(0, 1fr) }
+.dib { aspect-ratio: 16 / 10; display: grid; grid-template-columns: minmax(0, 1fr); place-items: center; min-width: 0; background: var(--fondo); border-radius: 14px; padding: 16px }
+.dib svg, .dib .arbol { width: 100%; height: 100%; display: block; overflow: visible }
+.red line { stroke: #CDCFCB; stroke-width: 1.2 }
+.red line.on { stroke: var(--cobalto); stroke-width: 2; stroke-dasharray: 4 4; animation: flujo 1.2s linear infinite }
+@keyframes flujo { to { stroke-dashoffset: -16 } }
+.red circle { fill: #CDCFCB } .red .az { fill: var(--cobalto) } .red .ro { fill: var(--bermellon) }
+.chat { display: grid; gap: 8px; width: 100%; font-size: 14px; line-height: 1.4 }
+.chat .quien { font-size: 12px; line-height: 1.4; color: var(--gris) }
+.chat p { padding: 9px 12px; border-radius: 14px; max-width: 88% }
+.chat .yo { justify-self: end; background: var(--tinta); color: var(--fondo); border-bottom-right-radius: 4px }
+.chat .ella { background: var(--panel); border: 1px solid var(--linea); border-bottom-left-radius: 4px }
+.cifra-u { display: flex; align-items: center; gap: 28px; max-width: 780px; background: var(--panel); border: 1px solid var(--cobalto); border-radius: 22px; padding: 28px 32px }
+.cifra-u b { font: var(--peso-t) clamp(64px, 8vw, 112px)/1 var(--titulo); letter-spacing: var(--track-t); color: var(--cobalto); white-space: nowrap }
+.cifra-u span { color: var(--gris); font-size: 18px; line-height: 1.45; max-width: 34ch }
+@media (max-width: 860px) { .tres { grid-template-columns: minmax(0, 1fr) } .cifra-u { flex-direction: column; align-items: flex-start; gap: 12px; padding: 24px } }
+/* La fuerza de cada persona: red donde el tamaño es a cuántos convence */
+.fuerza { margin-top: 18px; background: var(--panel); border: 1px solid var(--linea); border-radius: 26px; padding: 26px; display: grid; grid-template-columns: minmax(0, .75fr) minmax(0, 1.6fr); gap: 30px; align-items: center }
+.fuerza h3 { font-size: clamp(26px, 2.6vw, 34px); line-height: 1.1 }
+.fuerza .fz-t { display: grid; gap: 14px; align-content: start }
+.fuerza .fz-t > p { color: var(--gris) }
+.fz-quien { background: var(--fondo); border-radius: 16px; padding: 14px 16px; display: grid; gap: 2px; min-height: 92px }
+.fz-quien b { font: var(--peso-t) 19px/1.2 var(--titulo); letter-spacing: var(--track-t) }
+.fz-quien span { font-size: 14px; color: var(--gris); line-height: 1.45 }
+.fz-ley { display: flex; flex-wrap: wrap; gap: 6px 16px; font-size: 13px; color: var(--gris) }
+.fz-ley i { display: inline-block; width: 10px; height: 10px; border-radius: 50%; margin-right: 6px; vertical-align: -1px }
+.fz-red { width: 100%; height: auto; display: block; overflow: visible }
+.fz-red line { stroke: var(--linea); stroke-width: 1.2; transition: stroke .4s }
+.fz-red line.az, .fz-red line.ro { stroke-width: 2; stroke-dasharray: 4 4; animation: flujo 1.2s linear infinite }
+.fz-red line.az { stroke: var(--cobalto) } .fz-red line.ro { stroke: var(--bermellon) }
+.fz-red circle { fill: #CDCFCB; stroke: var(--panel); stroke-width: 1.5; transition: fill .5s; cursor: pointer }
+.fz-red circle.az { fill: var(--cobalto) } .fz-red circle.ro { fill: var(--bermellon) }
+.fz-red circle.sel { stroke: var(--tinta); stroke-width: 2.5 }
+.fuerza .pie-nota { grid-column: 1 / -1 }
+@media (max-width: 860px) { .fuerza { grid-template-columns: minmax(0, 1fr); padding: 20px } .fz-quien { min-height: 122px } .fz-ley { min-height: 48px } }
+@media (prefers-reduced-motion: reduce) { * { transition: none !important; animation: none !important } }
+</style>
+
+<nav>
+  <div class="wrap">
+    <span class="logo">Proteo<b>.</b></span>
+    <div class="links" id="menuLinks">
+      <a href="#manif" data-es="Por qué" data-en="Why">Por qué</a>
+      <a href="#como" data-es="Cómo funciona" data-en="How it works">Cómo funciona</a>
+      <a href="ciencia.html" data-es="La ciencia" data-en="The science">La ciencia</a>
+      <a href="laboratorio.html" data-es="Laboratorio" data-en="Lab">Laboratorio</a>
+      <a href="#quienes" data-es="Para quién" data-en="Who it's for">Para quién</a>
+      <button class="cta abrir-c" data-es="Hablemos" data-en="Let's talk">Hablemos</button>
+    </div>
+    <button class="menu-btn" id="menuBtn" aria-expanded="false" aria-controls="menuLinks" data-es="Menú" data-en="Menu">Menú</button>
+  </div>
+  <div class="progreso" id="progreso"></div>
+</nav>
+
+<!-- 1. Recorrido -->
+<div id="recorrido">
+  <div class="pegado">
+    <canvas id="cv" role="img" aria-label="Argentina dibujada como maqueta; con el scroll se acerca a una zona, que se vuelve una maqueta isométrica de cubos y aparece su gente"></canvas>
+    <div class="titulo" id="titulo">
+      <h1 data-es="Anticipá la reacción antes de decidir." data-en="Anticipate the reaction before you decide.">Anticipá la reacción antes de decidir.</h1>
+      <p class="sub" data-es="1.000 agentes inteligentes entrenados con datos argentinos. Reciben tus narrativas, conversan y te muestran escenarios posibles." data-en="1,000 intelligent agents trained on Argentine data. They receive your narratives, talk and show you possible scenarios.">1.000 agentes inteligentes entrenados con datos argentinos. Reciben tus narrativas, conversan y te muestran escenarios posibles.</p>
+    </div>
+    <div class="mensajes" id="mensajes" role="group" aria-label="Probar una idea">
+      <h3 data-es="Ahora, probá una idea." data-en="Now, test an idea.">Ahora, probá una idea.</h3>
+      <div class="casos" id="casos"></div>
+      <span class="q" id="casoQ"></span>
+      <button class="op" data-i="0"></button><button class="op" data-i="1"></button><button class="op" data-i="2"></button>
+      <div class="barra" aria-hidden="true"><span id="bf"></span><span id="bn"></span><span id="bc"></span></div>
+      <div class="ley"><span data-es="Le convence" data-en="Convinced">Le convence</span><span data-es="Lo rechaza" data-en="Rejects it">Lo rechaza</span></div>
+    </div>
+    <div class="ficha" id="ficha"><span class="r"></span><span class="d"></span></div>
+    <div class="bajar" id="bajar" aria-hidden="true"><span data-es="Seguí bajando" data-en="Keep scrolling">Seguí bajando</span><svg class="mouse" viewBox="0 0 24 32" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><rect x="4" y="1.5" width="16" height="27" rx="8"/><rect class="ruedita" x="11" y="7" width="2" height="5" rx="1" fill="currentColor" stroke="none"/></svg><svg class="toque" viewBox="0 0 24 32" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><path d="M12 5v22" opacity=".35"/><path d="M8 9l4-4 4 4" opacity=".35"/><circle class="dedo" cx="12" cy="20" r="4.5" fill="var(--fondo)"/></svg></div>
+  </div>
+</div>
+
+<!-- 2. El giro -->
+<div id="manif">
+  <div class="pegado">
+    <div class="giro">
+      <h2 class="frase chica" data-es="Nadie sabe cómo va a <em>reaccionar</em> la gente." data-en="Nobody knows how people will <em>react</em>.">Nadie sabe cómo va a reaccionar la gente.</h2>
+      <p class="ln" data-es="Una estrategia, un anuncio o una campaña se deciden con una encuesta vieja y la intuición del equipo." data-en="A strategy, an announcement or a campaign gets decided with an old poll and the team's gut feeling.">Una estrategia, un anuncio, un lanzamiento o una campaña.</p>
+      <p class="ln" data-es="El resultado se conoce cuando ya salió. Lo dicho no se desdice." data-en="The result is known once it is out. What was said cannot be unsaid.">El resultado se conoce cuando ya salió. Lo dicho no se desdice.</p>
+      <p class="ln" data-es="Con Proteo construís tu narrativa y la probás en un entorno seguro, con un panel de agentes inteligentes." data-en="With Proteo you build your narrative and test it in a safe environment, with a panel of intelligent agents.">Con Proteo, construí tu narrativa y probala en un entorno seguro.</p>
+    </div>
+  </div>
+</div>
+<section class="blk" style="padding-top:0">
+  <div class="wrap">
+    <div class="cols rev">
+      <div><h3 data-es="Revisar el pasado" data-en="Reviewing the past">Revisar el pasado</h3><p data-es="Toma lo que ya pasó y estira la línea. Funciona mientras nada cambie." data-en="It takes what already happened and extends the line. It works as long as nothing changes.">Toma lo que ya pasó y estira la línea.</p></div>
+      <div><h3 data-es="Mirar hacia adelante" data-en="Looking ahead">Mirar hacia adelante</h3><p data-es="Cambia lo que vas a hacer y muestra qué pasa. Diez versiones antes de elegir una." data-en="It changes what you're about to do and shows what happens. Ten versions before you pick one.">Diez versiones antes de elegir una.</p></div>
+      <div><h3 data-es="La decisión sigue siendo tuya" data-en="The decision is still yours">La decisión sigue siendo tuya</h3><p data-es="No te decimos qué va a pasar. Te mostramos qué puede pasar según lo que elijas." data-en="We don't tell you what will happen. We show you what could happen depending on what you choose.">Te mostramos qué puede pasar.</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- 2b. Cómo se contagia -->
+<section class="blk" id="distinto" style="padding-top:0">
+  <div class="wrap">
+    <div class="head rev"><h2 class="big" data-es="Una encuesta te dice qué piensa la gente. Proteo te muestra cómo se contagia." data-en="A poll tells you what people think. Proteo shows you how it spreads.">Una encuesta te dice qué piensa la gente. Proteo te muestra cómo se contagia.</h2><p class="lead" data-es="Cada persona lee a las demás, discute y cambia de idea. Así se ve cómo se llega a una decisión." data-en="Each person reads the others, argues and changes their mind. That is how you see a decision being made.">Cada persona lee a las demás, discute y cambia de idea. Así se ve cómo se llega a una decisión.</p></div>
+    <div class="tres">
+      <div class="tarjeta rev"><div class="dib"><svg class="red" viewBox="0 0 320 200" aria-hidden="true"><line x1="30" y1="40" x2="70" y2="90"/><line x1="70" y1="90" x2="40" y2="150"/><line x1="30" y1="40" x2="110" y2="30"/><line x1="70" y1="90" x2="120" y2="130"/><line x1="110" y1="30" x2="160" y2="80"/><line class="on" x1="120" y1="130" x2="160" y2="80"/><line x1="120" y1="130" x2="150" y2="175"/><line x1="160" y1="80" x2="200" y2="40"/><line class="on" x1="160" y1="80" x2="210" y2="130"/><line x1="150" y1="175" x2="210" y2="130"/><line x1="200" y1="40" x2="250" y2="85"/><line class="on" x1="210" y1="130" x2="250" y2="85"/><line x1="210" y1="130" x2="260" y2="170"/><line x1="250" y1="85" x2="290" y2="35"/><line class="on" x1="250" y1="85" x2="300" y2="125"/><line x1="260" y1="170" x2="300" y2="125"/><line x1="40" y1="150" x2="95" y2="185"/><line x1="95" y1="185" x2="150" y2="175"/><line x1="110" y1="30" x2="200" y2="40"/><line x1="290" y1="35" x2="200" y2="40"/><circle class="ro" cx="30" cy="40" r="6"/><circle cx="70" cy="90" r="6"/><circle cx="40" cy="150" r="6"/><circle cx="110" cy="30" r="6"/><circle class="az" cx="120" cy="130" r="9"/><circle class="az" cx="160" cy="80" r="6"/><circle cx="150" cy="175" r="6"/><circle cx="200" cy="40" r="6"/><circle class="az" cx="210" cy="130" r="6"/><circle class="az" cx="250" cy="85" r="6"/><circle class="ro" cx="260" cy="170" r="6"/><circle cx="290" cy="35" r="6"/><circle class="az" cx="300" cy="125" r="6"/><circle cx="95" cy="185" r="6"/></svg></div><h3 data-es="La gente se habla." data-en="People talk to each other.">La gente se habla.</h3><p data-es="Cada persona lee lo que publican las demás, comenta y cambia de idea. Como en las redes, no como en una encuesta." data-en="Each person reads what the others post, comments and changes their mind. Like on social media, not like in a poll.">Cada persona lee lo que publican las demás, comenta y cambia de idea. Como en las redes, no como en una encuesta.</p></div>
+      <div class="tarjeta rev"><div class="dib"><div class="arbol"><svg viewBox="0 0 320 200" aria-hidden="true">
+<g><path d="M28 100 C79 100 79 36 130 36"/><circle cx="130" cy="36" r="5"/><path d="M130 36 C190 36 190 22 250 22"/><circle cx="250" cy="22" r="5"/><text x="260" y="26">+3</text><path d="M28 100 C79 100 79 164 130 164"/><circle cx="130" cy="164" r="5"/><path d="M130 164 C190 164 190 178 250 178"/><circle cx="250" cy="178" r="5"/><text x="260" y="182">−4</text><path d="M130 100 C190 100 190 138 250 138"/><circle cx="250" cy="138" r="5"/><text x="260" y="142">+5</text></g>
+<g class="mej"><path d="M28 100 C79 100 79 100 130 100"/><circle cx="130" cy="100" r="5"/><path d="M130 100 C190 100 190 66 250 66"/><circle cx="250" cy="66" r="5"/><text x="260" y="70">+12</text><circle cx="28" cy="100" r="7"/><text x="10" y="80" data-es="Objeción" data-en="Objection">Objeción</text></g>
+</svg></div></div><h3 data-es="Sabés qué contestar." data-en="You know what to answer.">Sabés qué contestar.</h3><p data-es="Por cada objeción, un árbol de respuestas probadas con la gente. Queda marcada la que convence." data-en="For every objection, a tree of answers tested with people. The one that convinces is marked.">Por cada objeción, un árbol de respuestas probadas con la gente. Queda marcada la que convence.</p></div>
+      <div class="tarjeta rev"><div class="dib"><div class="chat">
+        <span class="quien" data-es="Marta · 34 · docente" data-en="Marta · 34 · teacher">Marta · 34 · docente</span>
+        <p class="yo" data-es="¿Por qué no te cambiarías a un banco digital?" data-en="Why wouldn't you switch to a digital bank?">¿Por qué no te cambiarías?</p>
+        <p class="ella" data-es="Porque mi hermana se cambió y tardó un mes en cobrar el sueldo ahí. No quiero ese lío." data-en="Because my sister switched and it took a month to get her salary paid there. I don't want that hassle.">Porque mi hermana se cambió.</p>
+      </div></div><h3 data-es="Preguntale a cualquiera." data-en="Ask anyone.">Preguntale a cualquiera.</h3><p data-es="Conversá con cualquiera de esas personas y entendé por qué piensa lo que piensa." data-en="Talk to any of those people and understand why they think what they think.">Conversá con cualquiera de esas personas y entendé por qué piensa lo que piensa.</p></div>
+    </div>
+    <div class="fuerza rev" id="fuerza">
+      <div class="fz-t">
+        <h3 data-es="Se ve cómo se contagia." data-en="You can watch it spread.">Se ve cómo se contagia.</h3>
+        <p data-es="Cada punto es una persona del panel y cada línea, con quién habla. Una narrativa entra por un lado y se ve hasta dónde llega, y a quién no llega." data-en="Each dot is a person in the panel and each line is who they talk to. A narrative comes in on one side and you can see how far it reaches, and who it misses.">Cada punto es una persona del panel y cada línea, con quién habla.</p>
+        <div class="fz-quien" id="fzQuien" aria-live="polite"></div>
+        <div class="fz-ley"><span><i style="background:var(--cobalto)"></i><span data-es="Le convence" data-en="Convinced">Le convence</span></span><span><i style="background:var(--bermellon)"></i><span data-es="Lo rechaza" data-en="Rejects it">Lo rechaza</span></span><span><i style="background:#CDCFCB"></i><span data-es="Todavía no decide" data-en="Undecided">Todavía no decide</span></span></div>
+      </div>
+      <svg class="fz-red" id="fzRed" viewBox="0 0 640 380" role="img" aria-label="Red de personas: el tamaño de cada punto es cuánto influye; una idea se contagia de unas a otras"></svg>
+      <p class="pie-nota" data-es="Ejemplo ilustrativo" data-en="Illustrative example">Ejemplo ilustrativo</p>
+    </div>
+  </div>
+</section>
+
+<!-- 3. Cómo funciona -->
+<section class="blk" id="como" style="padding-top:0">
+  <div class="wrap">
+    <div class="head rev"><h2 class="big" data-es="Cuatro servicios. Usás los que necesites." data-en="Four services. Use the ones you need.">Cuatro servicios. Usás los que necesites.</h2><p class="lead" data-es="Proteo es un servicio: nuestro equipo corre cada prueba y te entrega el resultado con la lectura de un sociólogo. Podés empezar por cualquiera." data-en="Proteo is a service: our team runs every test and hands you the result with a sociologist's reading. You can start with any of them.">Nuestro equipo corre cada prueba.</p></div>
+    <div class="como">
+      <div class="tarjeta rev"><div class="fig" data-fig="hub"></div><h3 data-es="Escuchar" data-en="Listen">Escuchar</h3><p data-es="Escucha social en redes y portales. De qué se habla en un territorio, una comunidad o una industria." data-en="Social listening across social media and news sites. What a territory, a community or an industry is talking about.">Escucha social en redes y portales.</p></div>
+      <div class="tarjeta rev"><div class="fig" data-fig="settle"></div><h3 data-es="Narrativas" data-en="Narratives">Narrativas</h3><p data-es="Las posiciones que la gente comparte sobre un tema, con su peso y su tendencia." data-en="The positions people share on a topic, with their weight and their trend.">Las posiciones que la gente comparte.</p></div>
+      <div class="tarjeta rev"><div class="fig" data-fig="query"></div><h3 data-es="Encuestar" data-en="Survey">Encuestar</h3><p data-es="Le preguntás a toda la población de una vez, abierta por segmento. En horas, no en semanas." data-en="You ask the whole population at once, broken down by segment. In hours, not weeks.">Le preguntás a toda la población de una vez, abierta por segmento. En horas, no en semanas.</p></div>
+      <div class="tarjeta rev"><div class="fig" data-fig="plot"></div><h3 data-es="Simular" data-en="Simulate">Simular</h3><p data-es="El panel conversa sobre tu narrativa o tu producto. Ves quién convence a quién y el impacto en cada grupo." data-en="The panel talks about your narrative or your product. You see who persuades whom and the impact on each group.">El panel conversa sobre tu narrativa o tu producto. Ves quién convence a quién y el impacto en cada grupo.</p></div
+
+    </div>
+  </div>
+</section>
+
+<!-- 4. Modelo propio -->
+<section class="blk" id="mejora" style="padding-top:0">
+  <div class="wrap mejora">
+    <div class="rev">
+      <h2 class="big" data-es="Un modelo propio que mejora todas las semanas." data-en="Our own model, better every week.">Un modelo propio que mejora todas las semanas.</h2>
+      <p class="lead" style="margin-top:18px" data-es="Los pesos de cada rasgo son nuestros. Se ajustan todas las semanas contra datos argentinos reales y quedan dentro de Proteo." data-en="The weight of each trait is ours. It is adjusted every week against real Argentine data and stays inside Proteo.">Los pesos de cada rasgo son nuestros y se ajustan todas las semanas.</p>
+      <div class="paso-txt" id="pasoTxt"></div>
+      <a class="mas" href="ciencia.html" data-es="Cómo funciona por dentro →" data-en="How it works inside →">Cómo funciona por dentro →</a>
+    </div>
+    <div class="rueda rev" id="rueda">
+      <svg viewBox="-90 -50 580 500" id="ruedaSvg" role="img" aria-label="Ciclo semanal: preguntar, comparar, corregir, actualizar"></svg>
+      <div class="centro-f"><div class="fig on" data-fig="query"></div><div class="fig" data-fig="loupe"></div><div class="fig" data-fig="format"></div><div class="fig" data-fig="rebuild"></div></div>
+    </div>
+  </div>
+</section>
+
+<!-- 4b. Medido: un solo número, sin detalle de la base ni del método -->
+<section class="blk" id="medido" style="padding-top:0">
+  <div class="wrap">
+    <div class="head rev"><h2 class="big" data-es="Un panel que se construye, se calibra y se mantiene al día." data-en="A panel that is built, calibrated and kept up to date.">Un panel que se construye, se calibra y se mantiene al día.</h2><p class="lead" data-es="Algoritmos y encuestas reales forman un modelo propio, calibrado todo el tiempo y adaptable a tus datos." data-en="Algorithms and real surveys form a proprietary model, calibrated all the time and adaptable to your data.">Algoritmos y encuestas reales forman un modelo propio, calibrado todo el tiempo y adaptable a tus datos.</p></div>
+    <div class="cifra-u rev"><b data-es="1.000" data-en="1,000">1.000</b><span data-es="agentes inteligentes con memoria, construidos con encuestas propias y más de 20 años de investigación en opinión pública." data-en="intelligent agents with memory, built from our own surveys and more than 20 years of public opinion research.">agentes inteligentes con memoria.</span></div>
+  </div>
+</section>
+
+<!-- 5. Personas -->
+<section class="blk" id="agente" style="padding-top:0">
+  <div class="wrap">
+    <div class="head rev">
+      <h2 class="big" data-es="Cada agente, una vida entera." data-en="Each agent, a whole life.">Cada agente, una vida entera.</h2>
+      <p class="lead" data-es="Capas de datos reales de su lugar, de lo que se sabe con certeza a lo que se aprende con el uso. Por eso la misma pregunta no se responde igual en todo el país." data-en="Layers of real data about their place, from what is known for certain to what is learned over time. That is why the same question is not answered the same way across the country.">Cada persona se arma por capas.</p>
+    </div>
+    <div class="capas3">
+      <div class="escena3 rev" id="escena3"><div class="pila" id="pila"></div></div>
+      <div class="lista3 rev" id="lista3"></div>
+    </div>
+  </div>
+</section>
+
+<!-- 6. Para quién -->
+<section class="blk" id="quienes" style="padding-top:0">
+  <div class="wrap">
+    <div class="head rev"><h2 class="big" data-es="Si depende de la gente, lo podés probar." data-en="If it depends on people, you can test it.">Si depende de la gente, lo podés probar.</h2><p class="lead" data-es="Gobiernos, campañas, empresas y estudios de mercado, clubes. Tres versiones antes de jugarse con una." data-en="Governments, campaigns, companies and market research, clubs. Three versions before betting on one.">Tres versiones antes de jugarse con una.</p></div>
+    <div class="linea-t rev" id="lineaT"></div>
+    <div class="seg rev" id="segBox">
+      <div class="seg-img" id="segImgW"><img id="segImg" src="img/muses/marcas.webp" alt=""></div>
+      <div class="prueba" id="prueba"></div>
+    </div>
+  </div>
+</section>
+
+<!-- 7. Cierre -->
+<section class="blk" style="padding-top:0">
+  <div class="wrap cierre rev">
+    <h2 class="big" style="max-width:22ch;text-align:center" data-es="Tres formas de trabajar con Proteo." data-en="Three ways to work with Proteo.">Tres formas de trabajar con Proteo.</h2>
+    <div class="formas">
+      <div class="tarjeta"><div class="fig" data-fig="drawer"></div><h3 data-es="Básico" data-en="Basic">Básico</h3><p data-es="Ocho simulaciones por mes, con su informe." data-en="Eight simulations a month, each with its report.">Ocho simulaciones por mes.</p></div>
+      <div class="tarjeta"><div class="fig" data-fig="cabinet"></div><h3 data-es="Pro" data-en="Pro">Pro</h3><p data-es="Dieciséis simulaciones por mes, seguimiento semanal de la conversación y consultoría." data-en="Sixteen simulations a month, weekly conversation tracking and advisory.">Seguimiento semanal y consultoría.</p></div>
+      <div class="tarjeta"><div class="fig" data-fig="dish"></div><h3 data-es="Max" data-en="Max">Max</h3><p data-es="Cuarenta y ocho simulaciones por mes, equipo dedicado y dos reportes por semana." data-en="Forty-eight simulations a month, a dedicated team and two reports a week.">Equipo dedicado.</p></div>
+    </div>
+    <button class="cta abrir-c" style="font-size:17px;padding:15px 28px;margin-top:10px" data-es="Hablemos" data-en="Let's talk">Hablemos</button>
+  </div>
+</section>
+
+<dialog class="contacto" id="contacto" aria-labelledby="contT">
+  <div class="caja-c">
+    <button class="cerrar" id="cerrarC" aria-label="Cerrar">×</button>
+    <div>
+      <h2 id="contT" style="font-size:clamp(28px,3.4vw,40px);line-height:1.08" data-es="Contanos qué querés probar." data-en="Tell us what you want to test.">Contanos qué querés probar.</h2>
+      <p class="lead" style="margin-top:12px;font-size:17px" data-es="Te escribimos y armamos la primera prueba." data-en="We write back and set up the first test.">Te escribimos y armamos juntos la primera prueba.</p>
+      <div class="pasos-c">
+        <div><i>01</i><div><b data-es="Charlamos" data-en="We talk">Charlamos</b><span data-es="Una reunión para entender qué tenés que decidir." data-en="One meeting to understand what you need to decide.">Una reunión.</span></div></div>
+        <div><i>02</i><div><b data-es="Armamos tu público" data-en="We build your audience">Armamos tu público</b><span data-es="El país entero o el universo que necesites, con tus datos si los tenés." data-en="The whole country or the audience you need, with your own data if you have it.">El universo que necesites.</span></div></div>
+        <div><i>03</i><div><b data-es="Primera prueba" data-en="First test">Primera prueba</b><span data-es="En días, con el informe y su lectura." data-en="In days, with the report and its reading.">En días.</span></div></div>
+        <div><i>04</i><div><b data-es="Ajustás y volvés a probar" data-en="Adjust and test again">Ajustás y volvés a probar</b><span data-es="Hasta que salga la que funciona." data-en="Until the one that works comes out.">Hasta que funcione.</span></div></div>
+      </div>
+    </div>
+    <form class="form" id="form" novalidate>
+      <div class="campo"><label for="fNom" data-es="Nombre" data-en="Name">Nombre</label><input id="fNom" autocomplete="name"></div>
+      <div class="campo"><label for="fMail" data-es="Email" data-en="Email">Email</label><input id="fMail" type="email" autocomplete="email"></div>
+      <div class="campo"><label for="fOrg" data-es="Organización" data-en="Organization">Organización</label><input id="fOrg" autocomplete="organization"></div>
+      <div class="campo"><label for="fQue" data-es="¿Qué querés probar?" data-en="What do you want to test?">¿Qué querés probar?</label><textarea id="fQue"></textarea></div>
+      <button class="cta" type="submit" data-es="Enviar" data-en="Send">Enviar</button>
+      <p class="aviso" id="aviso" aria-live="polite"></p>
+    </form>
+  </div>
+</dialog>
+
+<footer>
+  <div class="wrap">
+    <div class="pie">
+      <div class="marca"><span class="logo">Proteo<b>.</b></span><p data-es="Un panel de 1.000 agentes inteligentes que piensa como tu público." data-en="A panel of 1,000 intelligent agents that thinks like your audience.">Un panel de 1.000 agentes inteligentes que piensa como tu público.</p>
+        <div class="idioma" role="group" aria-label="Idioma / Language"><button id="es" aria-pressed="true">Español</button><button id="en" aria-pressed="false">English</button></div></div>
+      <div><h4 data-es="Página" data-en="Page">Página</h4><ul>
+        <li><a href="#manif" data-es="Por qué" data-en="Why">Por qué</a></li>
+        <li><a href="#como" data-es="Cómo funciona" data-en="How it works">Cómo funciona</a></li>
+        <li><a href="ciencia.html" data-es="La ciencia" data-en="The science">La ciencia</a></li>
+        <li><a href="laboratorio.html" data-es="Laboratorio" data-en="Lab">Laboratorio</a></li>
+        <li><a href="#quienes" data-es="Para quién" data-en="Who it's for">Para quién</a></li>
+      </ul></div>
+      <div><h4 data-es="Contacto" data-en="Contact">Contacto</h4><ul><li><a href="#" class="abrir-c" data-es="Hablemos" data-en="Let's talk">Hablemos</a></li></ul></div>
+    </div>
+    <div class="legal"><span>© 2026 Proteo</span><span data-es="useproteo.com" data-en="useproteo.com">useproteo.com/span></div>
+  </div>
+</footer>
+
+<script>
+const CELDAS = {"s":0.62,"c":[-13,19,1,-12,17,1,-12,18,0,-12,19,1,-12,20,1,-11,5,1,-11,6,0,-11,7,4,-11,15,0,-11,16,0,-11,17,0,-11,18,0,-11,19,1,-11,20,2,-11,21,5,-11,22,0,-10,1,1,-10,2,2,-10,3,14,-10,4,9,-10,5,39,-10,6,13,-10,7,4,-10,8,5,-10,9,1,-10,10,0,-10,11,0,-10,12,0,-10,13,0,-10,14,0,-10,15,1,-10,16,0,-10,17,0,-10,18,2,-10,19,2,-10,20,2,-10,21,7,-10,22,3,-9,-11,0,-9,-4,1,-9,-3,2,-9,-2,8,-9,-1,1,-9,0,2,-9,1,4,-9,2,1,-9,3,2,-9,4,3,-9,5,1,-9,6,2,-9,7,1,-9,8,2,-9,9,0,-9,10,1,-9,11,0,-9,12,0,-9,13,0,-9,14,1,-9,15,1,-9,16,0,-9,17,0,-9,18,0,-9,19,0,-9,20,2,-9,21,6,-9,22,1,-8,-16,0,-8,-15,1,-8,-14,0,-8,-13,0,-8,-12,0,-8,-11,0,-8,-10,4,-8,-9,35,-8,-8,16,-8,-7,6,-8,-6,5,-8,-5,1,-8,-4,0,-8,-3,2,-8,-2,3,-8,-1,3,-8,0,4,-8,1,10,-8,2,1,-8,3,2,-8,4,0,-8,5,0,-8,6,5,-8,7,0,-8,8,1,-8,9,0,-8,10,1,-8,11,0,-8,12,2,-8,13,1,-8,14,1,-8,15,4,-8,16,1,-8,17,0,-8,18,1,-8,19,0,-8,20,1,-8,21,7,-8,22,1,-7,-18,0,-7,-17,1,-7,-16,2,-7,-15,1,-7,-14,2,-7,-13,3,-7,-12,2,-7,-11,5,-7,-10,22,-7,-9,223,-7,-8,44,-7,-7,13,-7,-6,9,-7,-5,6,-7,-4,1,-7,-3,0,-7,-2,2,-7,-1,6,-7,0,19,-7,1,78,-7,2,3,-7,3,0,-7,4,2,-7,5,1,-7,6,0,-7,7,1,-7,8,0,-7,9,0,-7,10,0,-7,11,2,-7,12,1,-7,13,3,-7,14,3,-7,15,4,-7,16,2,-7,17,0,-7,18,1,-7,19,3,-7,20,0,-7,21,3,-7,22,5,-6,-22,0,-6,-21,0,-6,-20,0,-6,-19,0,-6,-18,3,-6,-17,1,-6,-16,0,-6,-15,1,-6,-14,1,-6,-13,2,-6,-12,8,-6,-11,213,-6,-10,17,-6,-9,141,-6,-8,55,-6,-7,7,-6,-6,14,-6,-5,9,-6,-4,3,-6,-3,2,-6,-2,1,-6,-1,9,-6,0,24,-6,1,55,-6,2,2,-6,3,0,-6,4,1,-6,5,1,-6,6,0,-6,7,0,-6,8,0,-6,9,0,-6,10,2,-6,11,12,-6,12,13,-6,13,5,-6,14,2,-6,15,1,-6,16,3,-6,17,1,-6,18,1,-6,19,0,-6,22,1,-6,23,1,-6,24,7,-6,25,12,-6,26,5,-6,27,1,-5,-23,1,-5,-22,1,-5,-21,0,-5,-20,0,-5,-19,0,-5,-18,3,-5,-17,2,-5,-16,1,-5,-15,10,-5,-14,12,-5,-13,0,-5,-12,5,-5,-11,8,-5,-10,9,-5,-9,9,-5,-8,0,-5,-7,5,-5,-6,9,-5,-5,9,-5,-4,5,-5,-3,0,-5,-2,3,-5,-1,4,-5,0,28,-5,1,33,-5,2,3,-5,3,0,-5,4,1,-5,5,0,-5,6,0,-5,7,0,-5,8,0,-5,9,0,-5,10,6,-5,11,21,-5,12,13,-5,13,2,-5,14,3,-5,15,3,-5,16,0,-5,17,1,-5,18,0,-5,25,11,-5,26,2,-5,27,2,-4,-26,1,-4,-25,1,-4,-24,0,-4,-23,1,-4,-22,2,-4,-21,1,-4,-20,1,-4,-19,2,-4,-18,6,-4,-17,4,-4,-16,9,-4,-15,9,-4,-14,26,-4,-13,7,-4,-12,2,-4,-11,4,-4,-10,3,-4,-9,2,-4,-8,21,-4,-7,20,-4,-6,22,-4,-5,8,-4,-4,1,-4,-3,1,-4,-2,0,-4,-1,0,-4,0,6,-4,1,30,-4,2,5,-4,3,0,-4,4,0,-4,5,0,-4,6,0,-4,7,0,-4,8,1,-4,9,0,-4,10,0,-4,11,5,-4,14,1,-4,15,4,-4,16,3,-4,26,3,-4,27,6,-3,-26,4,-3,-25,2,-3,-24,2,-3,-23,43,-3,-22,17,-3,-21,10,-3,-20,6,-3,-19,36,-3,-18,58,-3,-17,25,-3,-16,81,-3,-15,21,-3,-14,22,-3,-13,5,-3,-12,2,-3,-11,3,-3,-10,10,-3,-9,2,-3,-8,16,-3,-7,25,-3,-6,20,-3,-5,2,-3,-4,1,-3,-3,0,-3,-2,0,-3,-1,0,-3,0,0,-3,1,3,-3,2,2,-3,3,1,-3,4,1,-3,5,2,-3,6,5,-3,7,6,-3,8,2,-3,9,1,-3,10,0,-3,11,0,-3,14,1,-3,15,0,-3,16,1,-3,26,4,-3,27,3,-2,-26,4,-2,-25,10,-2,-24,9,-2,-23,120,-2,-22,226,-2,-21,67,-2,-20,8,-2,-19,224,-2,-18,218,-2,-17,25,-2,-16,7,-2,-15,9,-2,-14,3,-2,-13,13,-2,-12,11,-2,-11,9,-2,-10,36,-2,-9,21,-2,-8,20,-2,-7,19,-2,-6,5,-2,-5,2,-2,-4,2,-2,-3,4,-2,-2,4,-2,-1,2,-2,0,0,-2,1,1,-2,2,2,-2,3,3,-2,4,2,-2,5,3,-2,6,7,-2,7,15,-2,8,30,-2,9,1,-2,10,0,-2,26,1,-2,27,0,-1,-26,1,-1,-25,15,-1,-24,31,-1,-23,25,-1,-22,12,-1,-21,14,-1,-20,8,-1,-19,14,-1,-18,40,-1,-17,133,-1,-16,28,-1,-15,10,-1,-14,2,-1,-13,9,-1,-12,82,-1,-11,605,-1,-10,34,-1,-9,31,-1,-8,29,-1,-7,16,-1,-6,8,-1,-5,6,-1,-4,6,-1,-3,37,-1,-2,5,-1,-1,2,-1,0,0,-1,1,3,-1,2,1,-1,3,1,-1,4,9,-1,6,2,-1,7,8,-1,8,5,-1,27,2,0,-26,16,0,-25,27,0,-24,18,0,-23,7,0,-22,8,0,-21,5,0,-20,6,0,-19,8,0,-18,9,0,-17,18,0,-16,9,0,-15,8,0,-14,4,0,-13,6,0,-12,25,0,-11,34,0,-10,38,0,-9,30,0,-8,13,0,-7,13,0,-6,6,0,-5,11,0,-4,26,0,-3,8,0,-2,4,0,-1,4,0,0,1,0,1,0,0,2,1,0,3,2,0,4,8,0,6,2,0,7,5,0,27,1,1,-26,7,1,-25,5,1,-24,2,1,-23,3,1,-22,2,1,-21,4,1,-20,3,1,-19,1,1,-18,1,1,-17,6,1,-16,6,1,-15,5,1,-14,2,1,-13,6,1,-12,16,1,-11,28,1,-10,34,1,-9,27,1,-8,17,1,-7,13,1,-6,5,1,-5,8,1,-4,10,1,-3,10,1,-2,6,1,-1,9,1,0,14,1,1,6,1,2,5,1,3,4,1,4,9,2,-25,3,2,-24,5,2,-23,8,2,-22,3,2,-21,2,2,-20,7,2,-19,6,2,-18,7,2,-17,8,2,-16,10,2,-15,10,2,-14,4,2,-13,2,2,-12,31,2,-11,35,2,-10,25,2,-9,22,2,-8,34,2,-7,34,2,-6,15,2,-5,9,2,-4,16,2,-3,8,2,-2,10,2,-1,8,2,0,64,2,1,59,2,2,2,2,4,1,3,-24,1,3,-23,3,3,-22,3,3,-21,4,3,-20,4,3,-19,7,3,-18,29,3,-17,10,3,-16,0,3,-15,3,3,-14,6,3,-13,9,3,-12,34,3,-11,46,3,-10,26,3,-9,85,3,-8,109,3,-7,31,3,-6,42,3,-5,14,3,-4,17,3,-3,14,3,-2,9,3,-1,6,3,0,8,3,1,9,4,-23,2,4,-22,5,4,-21,5,4,-20,10,4,-19,43,4,-18,30,4,-17,19,4,-16,6,4,-15,0,4,-14,6,4,-13,11,4,-12,32,4,-11,178,4,-10,62,4,-9,140,4,-8,329,4,-7,48,4,-6,45,4,-5,26,4,-4,9,4,-3,12,4,-2,23,4,-1,7,4,0,16,4,1,6,4,21,0,5,-23,1,5,-22,6,5,-21,3,5,-20,12,5,-19,19,5,-18,9,5,-17,30,5,-16,25,5,-15,32,5,-14,25,5,-13,9,5,-12,16,5,-11,75,5,-10,28,5,-9,11,5,-8,22,5,-7,57,5,-6,50,5,-5,20,5,-4,17,5,-3,13,5,-2,26,5,-1,11,5,0,10,5,1,3,5,21,0,5,22,0,6,-22,4,6,-21,13,6,-20,45,6,-19,14,6,-18,63,6,-17,222,6,-16,28,6,-15,29,6,-14,19,6,-13,15,6,-12,10,6,-11,13,6,-10,26,6,-9,31,6,-8,16,6,-7,136,6,-6,2648,6,-5,91,6,-4,14,6,-3,8,6,-2,17,6,-1,25,6,0,24,6,21,0,6,22,0,7,-21,23,7,-20,55,7,-19,8,7,-18,8,7,-17,16,7,-16,11,7,-15,10,7,-14,8,7,-13,19,7,-12,47,7,-11,52,7,-10,17,7,-9,20,7,-8,2,7,-7,23,7,-6,2198,7,-5,389,7,-4,13,7,-3,8,7,-2,8,7,-1,105,7,0,55,7,21,0,7,22,0,8,-21,2,8,-17,9,8,-16,8,8,-15,5,8,-14,19,8,-13,1,8,-5,9,8,-4,5,8,-3,6,8,-2,16,8,-1,61,8,0,46,9,-17,11,9,-16,6,9,-15,4,9,-14,3,9,-3,22,9,-2,25,10,-18,46,10,-17,138,10,-16,7,11,-20,7,11,-19,18,11,-18,74,11,-17,30,12,-21,2,12,-20,47,12,-19,33,12,-18,33,13,-19,2,13,-18,1]};
+const CONT = [[7.05,-5.6,7.2,-5.44,7.04,-5.31,7.05,-5.6],[-3.88,-9.91,-3.31,-9.8,-3.01,-9.68,-2.64,-9.72,-2.52,-9.86,-2.07,-9.84,-1.58,-9.53,-1.54,-9.15,-1.2,-9.2,-1.17,-8.9,-1.16,-8.57,-1.3,-8.11,-1.36,-7.84,-1.41,-3.23,-3.35,-3.22,-3.24,-3.81,-3.2,-4.4,-3.15,-4.61,-3.23,-4.81,-3.26,-5.11,-3.36,-5.29,-3.5,-5.54,-3.5,-5.74,-3.54,-6.08,-3.39,-6.52,-3.65,-6.72,-3.82,-6.99,-3.99,-7.32,-4.04,-8.06,-4.11,-8.25,-4.02,-8.45,-4.19,-8.81,-4.22,-9.05,-4.3,-9.34,-4.29,-9.89,-3.99,-9.95],[3.75,-16.13,6.5,-16.13,6.42,-15.91,6.22,-15.77,6.29,-15.33,6.25,-15.05,6.15,-14.85,6.1,-14.47,5.91,-14.33,5.84,-14.16,5.69,-13.96,5.6,-13.6,5.52,-13.16,5.63,-12.89,5.55,-12.52,5.51,-12.31,5.53,-12.08,5.49,-11.86,5.24,-11.2,5.08,-10.91,4.97,-10.73,4.81,-10.54,4.66,-10.41,4.49,-10.16,4.27,-10.09,4.25,-9.82,4.25,-9.57,4.22,-9.16,4.16,-8.94,4.17,-8.43,4.22,-8.23,4.46,-7.85,4.7,-7.77,4.56,-7.31,4.5,-7.04,4.21,-7.12,4.04,-7.19,3.9,-7.01,2.9,-5.83,1.42,-5.83,2.64,-7.87,2.81,-8.05,2.8,-8.43,2.61,-8.58,2.65,-8.88,2.49,-9.25,2.29,-9.49,2.33,-9.7,2.23,-10.16,2.38,-10.31,2.74,-11.7,2.38,-12.13,2.91,-16.13,3.75,-16.13],[-1.73,-19.26,-1.62,-19.08,-1.32,-18.98,-1,-18.99,-0.63,-19.01,-0.68,-18.69,-0.63,-18.27,-0.79,-18.06,-1.09,-17.23,-1.28,-16.96,-1.25,-16.55,-1.32,-16.32,-1.49,-16.22,-1.74,-16.38,-2,-16.11,-2.17,-16.44,-2.37,-16.63,-2.51,-16.9,-2.51,-17.2,-2.72,-17.32,-2.36,-17.86,-2.33,-18.15,-2.6,-18.39,-2.77,-18.59,-2.67,-19,-2.18,-18.79,-2.15,-19.17,-1.97,-19.21,-1.73,-19.26],[-2.81,-26.15,-2.64,-26.07,-2.45,-25.91,-2.22,-25.63,-2,-25.68,-1.51,-25.67,-1.56,-25.29,-1.71,-24.97,-1.62,-24.76,-1.59,-24.31,-1.36,-24.12,-1.33,-23.94,-1.28,-23.73,-1.11,-23.42,-0.87,-23.46,-0.68,-23.35,-0.56,-23.16,-0.45,-23.36,-0.2,-23.36,-0.23,-22.16,-0.37,-21.92,-0.64,-21.76,-0.82,-21.59,-1.07,-21.83,-1.18,-21.61,-1.37,-21.67,-1.52,-21.84,-1.69,-21.77,-1.86,-21.89,-2.1,-21.97,-2.22,-22.48,-2.37,-22.58,-2.57,-22.8,-2.53,-23.37,-2.72,-23.51,-2.88,-23.28,-3.02,-22.99,-3.01,-22.63,-3,-22.44,-3.16,-22.24,-3.36,-22.3,-3.49,-22.44,-3.66,-22.62,-3.8,-22.76,-4.08,-23.07,-3.8,-24.19,-4.04,-24.49,-3.83,-24.75,-3.85,-24.93,-3.54,-25.1,-3.48,-25.42,-2.91,-25.67,-2.85,-26.14],[2.06,-19.92,2.91,-19.91,2.91,-16.13,2.38,-12.13,2.32,-12.35,1.88,-12.35,1.83,-12.8,1.54,-12.97,1.52,-13.17,0.69,-13.3,0.36,-13.44,0.24,-13.58,0.05,-13.51,-0.35,-13.71,-1.05,-13.59,-1,-13.86,-0.99,-14.08,-1.15,-14.77,-1.29,-14.94,-1.44,-15.09,-1.39,-15.37,-1.41,-15.83,-1.5,-16.26,-1.32,-16.32,-1.31,-16.53,-1.31,-16.8,-1.24,-17.18,-0.9,-18.03,-0.75,-18.29,-0.68,-18.69,-0.64,-18.97,-0.53,-19.17,-0.34,-19.84,-0.03,-19.75,0.67,-19.82,2.06,-19.92],[0.13,-13.5,0.36,-13.44,0.68,-13.44,1.52,-13.17,1.54,-12.97,1.71,-12.81,1.79,-12.48,2.32,-12.35,2.38,-12.13,2.74,-11.7,2.38,-10.31,2.23,-10.16,2.26,-9.86,2.29,-9.49,2.49,-9.25,2.65,-8.88,2.68,-8.69,2.8,-8.43,2.81,-8.05,2.64,-7.87,1.42,-5.83,0.78,-5.83,0.78,-4.84,-1.41,-4.81,-1.45,-7.75,-1.27,-8.06,-1.12,-8.82,-1.2,-9.2,-1.54,-9.15,-1.58,-9.53,-2.07,-9.84,-2.25,-9.86,-2.25,-11.22,-1.94,-12.11,-1.81,-12.71,-1.47,-12.83,-1.19,-13.15,-1.23,-13.55,-0.35,-13.71,0.02,-13.63],[0.78,-4.82,0.78,2.14,0.56,2.03,0.33,1.92,0.16,1.77,-0.02,1.61,-0.51,1.41,-1.42,1.29,-1.75,1.38,-2.01,1.25,-2.65,1.17,-2.94,1.23,-3.23,1.16,-3.35,0.87,-3.68,0.72,-4.01,0.58,-4.05,0.35,-4.51,0.41,-4.77,0.09,-4.96,-0.03,-4.75,-0.23,-4.79,-0.53,-5.41,-0.69,-5.4,-2.95,-5.46,-3.23,-1.41,-3.23,-1.41,-4.81,0.78,-4.82],[2.13,-22.38,2.31,-22.33,2.47,-22.24,2.66,-22.09,2.85,-22.09,2.93,-21.91,3.15,-21.74,3.52,-21.56,3.63,-21.28,3.91,-21,4.05,-20.85,4.25,-20.77,4.54,-20.46,4.67,-20.28,4.78,-20.07,5.11,-19.8,5.3,-19.53,5.43,-19.36,5.52,-19.12,5.8,-19.11,5.87,-18.93,6.03,-18.79,6.37,-18.74,6.55,-18.52,6.68,-18.38,6.9,-18.25,7.02,-18.02,7.03,-17.76,6.92,-17.56,6.87,-17.37,6.63,-17.13,6.51,-16.94,6.59,-16.64,6.51,-16.02,2.91,-16.13,2.91,-19.91,0.73,-19.92,2.11,-21.95,2.13,-22.45],[2.15,-25.02,2.23,-24.79,2.54,-24.31,2.85,-23.92,2.96,-23.73,3.19,-23.51,3.37,-23.47,3.5,-23.32,3.83,-22.88,4.01,-22.79,4.31,-22.74,4.48,-22.66,4.71,-22.51,5.03,-22.56,5.75,-22.04,5.91,-21.8,6.19,-21.58,6.39,-21.51,6.6,-21.33,6.77,-21.24,7.02,-21.19,7.2,-20.97,7.34,-21.09,7.51,-20.95,7.66,-20.83,7.94,-20.68,8,-20.45,8.18,-20.24,8.11,-19.97,7.92,-19.84,7.88,-19.64,7.76,-19.42,7.51,-19.17,7.49,-18.98,7.42,-18.79,7.33,-18.59,7.38,-18.31,7.31,-18.14,7.21,-17.95,7.02,-18.02,6.9,-18.25,6.75,-18.4,6.55,-18.52,6.37,-18.74,6.19,-18.8,5.96,-18.84,5.8,-19.11,5.58,-19.17,5.5,-19.35,5.3,-19.53,5.11,-19.8,4.9,-19.94,4.8,-20.19,4.63,-20.45,4.41,-20.69,4.23,-20.73,4.05,-20.85,3.89,-20.96,3.63,-21.28,3.55,-21.45,3.24,-21.59,3.05,-21.81,2.93,-21.99,2.7,-22.09,2.49,-22.19,2.31,-22.33,2.13,-22.38,2.11,-25.06],[-4.77,6.45,-1.36,6.45,-1.12,6.74,-0.59,6.84,-0.79,7.12,-0.56,7.16,-0.38,7.1,-0.16,7.14,-0.11,6.86,-0.48,6.84,-0.1,6.74,0.08,6.62,0.29,6.57,0.5,6.96,0.53,7.43,0.47,7.68,-0.14,7.87,-0.32,7.69,-0.27,7.46,-0.44,7.31,-0.8,7.25,-1.06,7.44,-1.25,7.5,-1.29,7.71,-0.8,7.93,-0.5,8,-0.58,8.17,-0.96,8.31,-1.24,8.48,-1.34,8.71,-1.69,9.13,-1.67,9.35,-1.65,9.57,-1.51,9.73,-1.64,9.93,-1.55,10.27,-1.7,10.41,-1.74,10.62,-2.08,10.75,-2.2,10.99,-1.93,11.18,-2.04,11.33,-2.32,11.35,-2.57,11.29,-2.79,11.26,-3,11.35,-3.2,11.45,-3.2,11.65,-3.61,11.66,-4.25,12.3,-4.28,12.56,-4.51,12.78,-9.72,12.9,-9.87,12.66,-9.92,12.45,-9.82,12.22,-9.61,12.13,-9.57,11.92,-9.32,11.81,-9.57,11.46,-9.61,11.25,-9.84,11.22,-10.22,11.13,-10.25,10.9,-10.08,10.97,-9.9,10.89,-9.5,10.87,-9.27,10.99,-9.15,10.78,-9.03,10.63,-9.06,10.44,-9.34,10.36,-9.73,10.34,-9.93,10.35,-9.95,10.11,-9.98,9.86,-9.72,9.59,-9.87,9.42,-9.74,9.2,-9.88,8.93,-10.08,8.79,-10.05,8.58,-9.83,8.57,-9.82,8.39,-10.08,8.23,-10.21,8.09,-10.35,7.9,-10.33,7.63,-10.32,7.42,-10.18,7.25,-10.34,7.07,-10.39,6.68,-10.11,6.68,-9.89,6.69,-9.88,6.45,-4.77,6.45],[-5.39,-0.67,-4.92,-0.62,-4.73,-0.31,-4.96,-0.03,-4.77,0.09,-4.65,0.33,-4.05,0.35,-4.01,0.58,-3.81,0.72,-3.35,0.87,-3.31,1.1,-2.94,1.23,-2.65,1.17,-2.15,1.35,-1.75,1.38,-1.42,1.29,-0.51,1.41,-0.08,1.63,0.09,1.76,0.27,1.79,0.56,2.03,0.78,2.14,0.79,4.37,1.03,4.38,1.33,4.55,1.52,4.81,1.12,5.09,0.27,5.1,-0.15,4.89,-0.69,4.62,-0.95,4.55,-1.15,4.52,-0.94,4.53,-1.27,4.38,-1.39,4.54,-1.48,4.8,-1.45,5.21,-1.36,5.51,-1.26,5.68,-1.27,6.08,-1.36,6.45,-9.88,6.45,-9.91,6.2,-10.02,5.82,-9.96,5.54,-10.01,5.34,-10.03,5.11,-9.94,4.94,-9.6,4.88,-9.29,5,-9.08,4.93,-8.94,4.73,-9.05,4.45,-8.87,4.27,-8.46,4.18,-8.32,4.04,-7.84,4,-7.71,3.83,-7.7,3.63,-7.63,3.3,-7.54,3.13,-7.24,2.98,-7,2.93,-6.8,2.76,-6.71,2.57,-6.5,2.44,-6.13,2.22,-5.93,1.96,-5.8,1.74,-5.47,1.57,-5.08,1.61,-5.2,1.38,-5.24,1.21,-5.41,1.1,-5.39,-0.67],[12.28,-17.03,12.04,-16.92,11.85,-16.92,11.63,-16.74,11.52,-16.5,11.33,-16.47,11.27,-16.3,11.03,-16.25,10.96,-16.07,10.73,-15.86,10.47,-16.03,10.39,-16.21,10.39,-16.46,10.09,-17.04,10.14,-17.22,10.44,-17.03,10.69,-17.21,10.65,-17.44,10.86,-17.57,10.96,-17.8,11.18,-17.79,11.26,-17.96,11.49,-18.09,11.68,-18.28,11.69,-18.49,11.81,-18.63,11.89,-18.85,11.86,-19.1,11.85,-19.35,11.96,-19.63,11.88,-19.89,12,-20.02,12.16,-19.85,12.34,-20.07,12.58,-20.17,12.58,-19.97,12.76,-19.93,12.94,-19.69,12.92,-19.4,13.04,-19.16,13.17,-19.01,13.08,-18.73,13.04,-18.48,13.02,-18.19,13.14,-17.97,13.03,-17.69,12.97,-17.51,12.77,-17.5,12.6,-17.26,12.44,-17.12,12.28,-17.03],[1.51,-25.76,1.54,-25.54,1.7,-25.4,1.88,-25.2,2.06,-25.04,2.11,-21.95,0.67,-19.82,-0.01,-19.88,-0.34,-19.84,-0.53,-19.17,-0.63,-19,-0.85,-18.96,-1.21,-18.86,-1.62,-19.08,-1.73,-19.26,-1.97,-19.21,-2.15,-19.17,-2.19,-18.79,-2.63,-18.97,-2.79,-19.14,-2.91,-18.98,-3.03,-18.68,-3.23,-18.79,-3.28,-19.1,-3.53,-19.28,-3.65,-19.73,-3.37,-19.82,-3.26,-19.96,-3.2,-20.26,-3.25,-20.48,-3.66,-20.58,-4.91,-20.58,-5.73,-20.7,-5.52,-20.79,-5.63,-21.12,-5.81,-21.3,-5.71,-21.51,-5.58,-21.8,-5.41,-21.93,-4.22,-22.53,-4.08,-23.07,-3.8,-22.76,-3.66,-22.62,-3.49,-22.44,-3.36,-22.3,-3.16,-22.24,-3,-22.44,-3.01,-23.07,-2.94,-23.29,-2.78,-23.52,-2.53,-23.37,-2.56,-22.71,-2.37,-22.58,-2.22,-22.48,-2.1,-21.97,-1.96,-21.85,-1.69,-21.77,-1.52,-21.84,-1.37,-21.67,-1.18,-21.61,-1.07,-21.83,-0.92,-21.73,-0.71,-21.65,-0.54,-21.93,-0.21,-22.22,-0.2,-23.36,-0.45,-23.36,-0.57,-23.16,-0.68,-23.35,-0.87,-23.46,-1.1,-23.41,-1.16,-23.69,-1.36,-23.84,-1.36,-24.12,-1.59,-24.31,-1.66,-24.63,-1.72,-24.84,-1.56,-25.29,-1.51,-25.67,-1.26,-25.67,-0.94,-25.49,-0.68,-25.35,-0.65,-25.14,-0.52,-24.94,-0.51,-24.65,-0.4,-24.38,-0.31,-24.91,-0.15,-25.15,0.09,-25.81,0.37,-25.81,1.51,-25.81],[4.78,-7.62,5.03,-7.34,5.3,-7.22,5.52,-7.06,5.78,-6.9,6.04,-6.9,6.19,-6.7,6.54,-6.54,6.79,-6.39,7.04,-6.45,7.18,-6.12,6.94,-5.97,7.05,-5.83,7.04,-5.6,6.95,-5.4,7.19,-5.44,7.4,-5.25,7.61,-5.19,7.79,-5.12,8.25,-4.8,8.61,-4.4,8.73,-4.12,8.43,-3.64,8.41,-3.28,8.54,-3,8.75,-2.77,8.93,-2.69,9.13,-2.69,9.28,-2.56,9.32,-1.81,8.74,-0.82,8.27,-0.28,8.2,0.16,7.81,0.48,7.21,0.78,6.21,1.13,4,1.58,3.04,1.62,2.78,1.6,2.45,1.49,2.33,1.31,2.04,1.28,2.1,1.53,2.09,1.78,2.24,2.02,2.53,2.21,2.31,2.09,2.48,2.33,2.39,2.68,2.4,2.98,2.2,3.02,2.11,3.53,1.92,3.71,2.01,3.97,2.18,4.14,2.15,4.63,1.59,4.9,1.32,4.55,1.03,4.38,0.81,4.34,0.78,-5.83,2.9,-5.83,3.9,-7.01,4.04,-7.19,4.21,-7.12,4.38,-7.02,4.56,-7.31,4.74,-7.64],[-5.81,23.72,-5.45,24.12,-5.34,24.42,-5.42,24.22,-5.77,24.43,-5.58,24.7,-5.26,24.73,-5.07,25.14,-4.68,25.48,-4.51,25.55,-4.02,26,-3.47,26.23,-3.13,26.58,-2.29,26.86,-1.97,26.85,-1.57,26.8,-1.53,27.06,-1.67,27.21,-1.88,27.24,-2.13,27.38,-2.52,27.26,-2.97,27.41,-3.12,27.51,-3.37,27.46,-3.51,27.36,-4.17,27.21,-4.46,27.18,-4.71,27.24,-5.4,27.09,-5.81,27.17,-5.85,23.64],[6.39,21.34,6.68,21.48,6.9,21.55,7.19,21.54,7.05,21.7,6.87,21.68,7.09,21.72,7.21,21.88,7.35,22.03,7.29,21.86,7.14,21.75,7.27,21.6,7.7,21.55,7.84,21.74,7.68,21.84,7.48,21.79,7.98,22.01,7.8,22.06,7.99,22.07,7.61,22.16,7.81,22.16,7.58,22.19,7.38,22.2,7.13,22.3,7.42,22.28,7.12,22.46,6.91,22.31,6.76,22.43,6.54,22.35,6.21,22.32,6.39,22.35,6.66,22.48,6.46,22.42,6.65,22.51,6.83,22.53,6.79,22.81,6.58,22.62,6.45,22.77,6.34,22.61,6.16,22.57,5.95,22.6,6.19,22.64,6.13,22.81,6.32,22.81,6.34,22.99,6.1,22.91,5.91,22.84,5.83,23.04,5.61,23,5.42,22.78,5.66,22.69,5.53,22.52,5.76,22.47,5.83,22.28,6.01,22.17,6.28,22.08,6.32,22.31,6.3,22.09,6.13,21.91,6.34,21.95,6.55,21.8,6.17,21.71,6.4,21.69,6.39,21.34],[5.86,21.51,6.11,21.61,5.93,21.81,5.72,21.81,5.91,21.79,5.8,21.99,5.6,22.03,5.38,22.28,5.26,22.52,5.08,22.59,4.78,22.61,4.63,22.84,4.44,22.76,4.6,22.87,4.39,22.76,4.32,22.99,4.19,22.81,4,22.75,4.17,22.87,3.78,22.65,3.96,22.7,4.14,22.61,4.35,22.56,4.53,22.53,4.26,22.46,4.45,22.47,4.51,22.22,4.62,22.4,4.71,22.22,4.42,22.19,4.26,22.04,4.79,22.03,5.12,22.16,4.98,22.03,4.76,21.98,4.67,21.82,4.45,21.84,4.26,21.64,4.77,21.76,5.12,21.73,5.22,21.58,5.43,21.65,5.73,21.61],[-0.42,26.99,-0.18,27.05,0.01,26.99,0.26,26.98,0.06,27.12,-0.14,27.15,-0.39,27.08,-0.57,27.22,-0.77,27.28,-0.95,27.19,-0.75,27.13,-0.52,27.07],[3.94,22.2,3.94,22.39,3.81,22.56,3.64,22.43,3.76,22.23,3.94,22.35],[4.68,21.4,4.85,21.48,4.75,21.63,4.93,21.55,4.68,21.4],[5.38,21.37,5.59,21.39,5.82,21.51,5.61,21.52,5.29,21.39],[6.88,-12.65,7.16,-12.48,7.36,-12.44,7.45,-12.25,7.58,-11.94,7.85,-11.74,7.85,-11.43,7.8,-11.22,7.65,-10.66,7.65,-10.35,7.58,-10.07,7.36,-9.88,7.45,-9.67,7.39,-9.42,7.5,-9.26,7.37,-8.93,7.52,-8.06,7.17,-7.87,7.07,-7.26,7.07,-6.9,7.09,-6.59,7.19,-6.39,6.79,-6.39,6.66,-6.54,6.36,-6.71,6.13,-6.76,5.8,-6.89,5.7,-7.05,5.52,-7.06,5.29,-7.22,5.03,-7.34,4.83,-7.59,4.7,-7.77,4.32,-8.05,4.22,-8.23,4.17,-8.43,4.1,-8.86,4.17,-9.14,4.19,-9.44,4.16,-9.71,4.22,-9.98,4.49,-10.16,4.66,-10.31,4.81,-10.54,4.97,-10.73,5.07,-10.89,5.13,-11.1,5.42,-11.49,5.55,-11.76,5.53,-12.08,5.44,-12.24,5.65,-12.37,6.06,-12.32,6.27,-12.53,6.51,-12.51,6.76,-12.64],[7.66,-17.3,7.89,-17.19,8.25,-17.03,8.48,-17.08,8.92,-16.95,9.09,-16.76,9.3,-16.81,9.25,-16.99,9.55,-16.83,9.8,-16.95,9.97,-17.21,10.1,-17.01,10.39,-16.46,10.39,-16.21,10.48,-16.03,10.65,-15.91,10.44,-15.72,10.59,-15.6,10.32,-15.55,10.32,-15.36,10.16,-15.15,9.93,-14.89,9.78,-14.68,9.65,-14.55,9.42,-14.32,9.27,-13.93,9.13,-13.74,8.95,-13.56,8.74,-13.28,8.53,-13.18,8.47,-12.92,8.29,-12.71,8.08,-12.61,8.08,-12.35,7.77,-12.08,7.87,-11.73,7.58,-11.94,7.53,-12.22,7.36,-12.44,7.16,-12.48,6.89,-12.65,6.51,-12.51,6.27,-12.53,6.06,-12.32,5.82,-12.39,5.61,-12.2,5.45,-12.46,5.63,-12.89,5.52,-13.16,5.6,-13.6,5.59,-13.88,5.72,-14.12,5.91,-14.33,6.09,-14.45,6.15,-14.85,6.25,-15.05,6.29,-15.33,6.22,-15.77,6.42,-15.91,6.57,-16.17,6.59,-16.64,6.51,-16.94,6.63,-17.13,6.99,-17.3,7.66,-17.3],[9.01,-17.06,9.24,-16.93,9.1,-16.78,8.93,-16.95],[-6.51,-9.67,-6.37,-9.49,-6.25,-9.13,-5.93,-9.13,-5.67,-9.29,-5.47,-9.45,-5.28,-9.49,-5.03,-9.53,-4.89,-9.32,-4.57,-9.28,-4.41,-9.18,-4.23,-9.11,-4.19,-8.81,-4.02,-8.45,-4.11,-8.25,-4.04,-8.06,-3.99,-7.32,-3.81,-7.04,-3.66,-6.82,-3.39,-6.52,-3.47,-6.23,-3.57,-5.9,-3.5,-5.54,-3.36,-5.29,-3.26,-5.11,-3.23,-4.81,-3.15,-4.61,-3.2,-4.4,-3.21,-3.97,-3.35,-3.22,-5.46,-3.23,-5.46,-2.95,-5.42,-0.69,-5.64,-0.73,-5.97,-0.9,-6.18,-0.97,-6.39,-1.02,-6.44,-1.25,-6.7,-1.38,-7.03,-1.33,-7.31,-1.5,-7.32,-1.82,-7.53,-1.94,-7.78,-2.3,-7.88,-2.49,-7.91,-2.7,-8.17,-3.07,-8.11,-3.24,-8.16,-3.42,-8.08,-3.63,-8.16,-3.8,-8.15,-3.99,-8.17,-4.33,-8.37,-4.4,-8.1,-4.56,-8.09,-4.83,-7.94,-5.16,-7.9,-5.35,-7.79,-5.67,-7.64,-5.79,-7.67,-5.99,-7.38,-6.05,-7.46,-6.24,-7.4,-6.43,-7.44,-6.63,-7.5,-6.82,-7.46,-7.19,-7.33,-7.51,-7.5,-7.62,-7.75,-7.98,-7.61,-8.23,-7.76,-8.39,-7.83,-8.71,-7.63,-8.82,-7.43,-8.76,-7.25,-8.88,-7.28,-9.14,-7.11,-9.45,-6.88,-9.57,-6.67,-9.65],[-7.13,-15.46,-6.85,-15.4,-6.61,-15.17,-6.56,-14.9,-6.24,-14.74,-6.24,-14.31,-6.3,-14,-6.32,-13.78,-6.38,-13.47,-6.21,-13.56,-5.68,-13.48,-5.41,-13.31,-5.29,-13.09,-4.95,-12.78,-4.56,-12.42,-4.44,-12.04,-4.33,-11.89,-4.17,-11.78,-3.92,-11.43,-3.9,-11.16,-3.94,-10.67,-3.75,-10.27,-3.56,-9.98,-3.38,-9.81,-3.99,-9.95,-4.29,-9.89,-4.3,-9.32,-4.15,-9.06,-4.41,-9.18,-4.57,-9.28,-4.89,-9.32,-5.03,-9.53,-5.28,-9.49,-5.47,-9.45,-5.67,-9.45,-5.93,-9.13,-6.25,-9.13,-6.25,-9.49,-6.5,-9.67,-6.75,-9.53,-7.03,-9.45,-7.16,-9.25,-7.25,-8.88,-7.41,-8.76,-7.63,-8.82,-7.74,-8.67,-7.82,-8.93,-7.9,-9.14,-8.01,-9.46,-8.12,-9.61,-7.89,-9.74,-8.1,-9.86,-8.22,-10.16,-8.35,-10.32,-8.32,-10.78,-8.26,-11.09,-8.03,-11.22,-8.04,-11.41,-7.87,-12.11,-7.82,-12.34,-7.57,-12.28,-7.48,-12.55,-7.58,-12.77,-7.5,-12.97,-7.52,-13.24,-7.55,-13.46,-7.58,-13.85,-7.55,-14.11,-7.47,-14.29,-7.33,-14.68,-7.24,-14.89,-7.18,-15.26,-7.18,-15.49],[-8.13,-2.97,-8.06,-2.69,-7.88,-2.49,-7.78,-2.3,-7.56,-2.06,-7.32,-1.82,-7.34,-1.63,-7.26,-1.45,-7.03,-1.33,-6.7,-1.38,-6.44,-1.25,-6.39,-1.02,-6.18,-0.97,-5.97,-0.9,-5.73,-0.88,-5.41,-0.69,-5.41,1.1,-5.24,1.21,-5.2,1.38,-5.08,1.61,-5.47,1.57,-5.8,1.74,-5.93,1.96,-6.1,2.07,-6.35,2.44,-6.71,2.57,-6.8,2.76,-7,2.93,-7.24,2.98,-7.54,3.13,-7.63,3.3,-7.56,3.51,-7.71,3.83,-7.84,4,-8.17,4.09,-8.46,4.18,-8.71,4.18,-8.93,4.39,-8.94,4.73,-9.08,4.93,-9.29,5,-9.6,4.88,-9.99,4.89,-9.99,4.65,-10.12,4.4,-9.97,4.24,-9.95,3.91,-9.73,3.81,-9.94,3.6,-9.95,3.39,-9.75,3.39,-9.65,3.08,-9.74,2.92,-9.75,2.71,-9.75,2.52,-9.53,2.64,-9.5,2.41,-9.48,2.21,-9.45,1.5,-9.27,1.41,-9.02,1.22,-8.8,1.23,-8.68,0.96,-8.88,0.69,-8.94,0.4,-8.95,0.2,-8.98,-0.05,-9.13,-0.23,-9.17,-0.49,-9.06,-0.67,-9.05,-0.86,-9.18,-1.17,-9.07,-1.37,-9.11,-1.62,-9.05,-1.82,-9.04,-2.13,-8.94,-2.46,-8.76,-2.47,-8.53,-2.54,-8.52,-2.79,-8.36,-3,-8.15,-3.05],[-5.75,-16.42,-5.65,-16.09,-5.45,-16.09,-5.26,-15.96,-4.98,-15.95,-4.88,-15.62,-4.69,-15.63,-4.29,-15.51,-4.01,-15.51,-3.91,-15.69,-3.27,-15.66,-3.17,-15.13,-2.99,-14.97,-3.05,-14.74,-2.67,-14.61,-2.31,-14.23,-1.81,-12.71,-1.94,-12.11,-2.25,-11.22,-2.25,-9.86,-2.52,-9.86,-2.64,-9.72,-2.92,-9.79,-3.46,-9.86,-3.65,-10.27,-3.94,-10.67,-3.9,-11.16,-3.92,-11.43,-4.17,-11.78,-4.33,-11.89,-4.44,-12.04,-4.55,-12.25,-4.95,-12.78,-5.15,-13.06,-5.34,-13.26,-5.64,-13.47,-6.18,-13.49,-6.38,-13.47,-6.4,-13.66,-6.36,-13.87,-6.36,-14.22,-6.3,-14.6,-6.56,-14.9,-6.61,-15.17,-6.76,-15.47,-6.95,-15.46,-7.16,-15.51,-6.93,-15.83,-6.66,-16.18,-6.48,-16.46,-6.1,-16.52,-5.88,-16.46],[-5.83,-16.42,-6.1,-16.52,-6.48,-16.47,-6.42,-16.74,-6.28,-16.91,-6.19,-17.23,-6.16,-17.48,-5.94,-17.58,-5.7,-17.53,-5.53,-17.69,-5.42,-17.87,-5.83,-18.56,-5.79,-18.89,-5.57,-19.07,-5.69,-19.84,-5.74,-20.04,-5.83,-20.24,-5.78,-20.54,-4.91,-20.58,-3.66,-20.58,-3.25,-20.48,-3.2,-20.26,-3.26,-19.96,-3.37,-19.82,-3.62,-19.81,-3.62,-19.4,-3.38,-19.23,-3.23,-18.79,-3.03,-18.68,-2.82,-19.13,-2.67,-19.01,-2.69,-18.75,-2.76,-18.34,-2.33,-18.15,-2.42,-17.96,-2.72,-17.32,-2.51,-17.2,-2.51,-16.9,-2.45,-16.7,-2.33,-16.37,-2.12,-16.17,-1.74,-16.38,-1.49,-16.22,-1.39,-15.37,-1.43,-15.14,-1.29,-14.94,-1.15,-14.77,-1.09,-14.2,-1.07,-14.01,-1.05,-13.59,-1.23,-13.55,-1.19,-13.15,-1.47,-12.83,-1.81,-12.71,-2.22,-14.08,-2.67,-14.61,-3.05,-14.74,-2.99,-14.97,-3.17,-15.13,-3.27,-15.66,-3.83,-15.72,-4.01,-15.51,-4.29,-15.51,-4.69,-15.63,-4.89,-15.52,-5,-15.85,-5.22,-15.85,-5.4,-16.01,-5.66,-16.1,-5.64,-16.33,-5.78,-16.6,-5.83,-16.42],[-11.06,17.58,-10.84,17.41,-10.91,16.91,-10.73,16.96,-10.61,16.76,-10.46,16.65,-10.57,16.51,-10.63,16.25,-10.71,16.08,-10.76,15.83,-10.7,15.58,-10.56,15.47,-10.6,15.25,-10.42,15.19,-10.23,15.06,-10.19,14.84,-10,14.89,-10.11,14.64,-10.11,14.22,-9.71,14,-9.86,13.46,-9.89,13.22,-10.06,13.13,-9.81,13.05,-4.57,12.9,-4.59,13.28,-4.37,13.79,-3.97,14.04,-3.55,14.51,-3.34,14.59,-2.79,14.66,-2.47,14.63,-2.21,14.84,-2.21,15.34,-2.34,15.72,-2.55,15.69,-2.9,15.92,-2.51,15.75,-2.36,15.92,-2.46,16.16,-2.7,16.33,-2.97,16.58,-3.11,16.7,-3.5,16.89,-3.65,17.09,-3.98,17.23,-4.09,17.48,-4.34,17.6,-4.52,17.77,-4.62,17.96,-4.76,18.19,-4.88,18.37,-4.66,18.15,-4.74,18.99,-4.9,19.3,-5.26,19.52,-5.51,19.55,-5.89,19,-5.81,19.25,-6.2,19.3,-5.94,19.34,-5.73,19.39,-5.54,19.6,-6.2,19.9,-6.46,20.27,-6.53,20.53,-6.52,20.81,-6.76,20.95,-6.95,21.15,-6.62,20.93,-6.3,21.89,-6.53,21.94,-6.79,21.86,-7.14,21.98,-6.78,21.91,-6.49,21.99,-6.31,21.97,-5.98,22.55,-5.53,23.1,-6.15,23.03,-6.6,22.82,-6.97,22.82,-7.62,22.58,-10.07,22.58,-10.11,22.37,-10.32,22.17,-10.55,22.1,-10.58,21.92,-10.58,21.73,-10.64,21.51,-10.5,21.38,-10.69,21.14,-10.51,21.02,-10.48,20.77,-10.61,20.55,-10.62,20.35,-10.92,20.45,-11.1,20.35,-11.3,20.44,-11.53,20.63,-11.78,20.68,-11.66,20.45,-11.81,20.3,-11.9,20.14,-12.06,19.97,-12.16,19.79,-12.1,19.6,-12.16,19.39,-12,18.96,-12.03,18.74,-12.12,18.55,-11.98,18.37,-12.07,18.17,-11.5,18.18,-11.62,18.05,-11.45,17.84,-11.34,17.64,-11.06,17.58]];
+const ZONA = {"sf":[[2.328,-10.002,4.032,-10,4.034,-9.933,3.983,-9.866,3.891,-9.872,3.855,-9.777,3.902,-9.507,3.861,-9.424,3.878,-9.332,3.814,-9.205,3.783,-8.969,3.737,-8.91,3.667,-8.886,3.619,-8.779,3.546,-8.757,3.53,-8.657,3.464,-8.605,3.475,-8.43,3.42,-8.157,3.494,-7.992,3.438,-7.763,3.38,-7.73,3.415,-7.634,3.37,-7.591,3.427,-7.489,3.405,-7.353,3.441,-7.286,3.248,-6.944,3.181,-6.88,3.15,-6.761,3.069,-6.71,3.084,-6.653,3.039,-6.556,2.985,-6.532,2.96,-6.47,2.89,-6.453,2.892,-6.391,2.784,-6.302,2.649,-6.258,2.619,-6.188,2.634,-6.089,2.583,-6.034,2.635,-5.933,2.6,-5.85,2.617,-5.681,2.586,-5.666,2.582,-5.544,2.54,-5.493,2.588,-5.226,2.633,-5.169,2.619,-5.1,2.763,-4.869,2.843,-4.811,2.913,-4.816,2.953,-4.725,2.829,-4.532,2.787,-4.366,2.713,-4.353,2.613,-4.415,2.536,-4.421,2.507,-4.46,2.459,-4.445,2.416,-4.345,1.797,-3.614,0.879,-3.614,1.637,-4.88,1.743,-4.994,1.737,-5.226,1.688,-5.305,1.618,-5.322,1.663,-5.389,1.634,-5.416,1.643,-5.505,1.546,-5.737,1.421,-5.885,1.444,-6.014,1.4,-6.116,1.386,-6.3,1.479,-6.395,1.7,-7.256,1.473,-7.52,1.803,-10.001,2.328,-10.002]],"ros":[[2.488,-5.18,2.507,-5.165,2.514,-5.171,2.515,-5.166,2.536,-5.167,2.536,-5.161,2.568,-5.163,2.568,-5.162,2.581,-5.163,2.581,-5.164,2.633,-5.166,2.633,-5.16,2.628,-5.145,2.624,-5.14,2.617,-5.133,2.615,-5.128,2.615,-5.121,2.619,-5.1,2.63,-5.084,2.64,-5.073,2.659,-5.059,2.663,-5.052,2.666,-5.046,2.669,-5.034,2.671,-5.009,2.675,-5,2.69,-4.975,2.707,-4.958,2.715,-4.946,2.731,-4.922,2.748,-4.887,2.763,-4.869,2.784,-4.855,2.796,-4.851,2.801,-4.847,2.814,-4.829,2.838,-4.813,2.843,-4.811,2.851,-4.811,2.868,-4.82,2.882,-4.822,2.88,-4.816,2.88,-4.808,2.881,-4.805,2.886,-4.799,2.887,-4.79,2.889,-4.787,2.889,-4.785,2.885,-4.782,2.881,-4.785,2.879,-4.789,2.865,-4.79,2.861,-4.793,2.856,-4.793,2.855,-4.795,2.851,-4.793,2.849,-4.793,2.848,-4.793,2.845,-4.795,2.843,-4.798,2.841,-4.8,2.84,-4.8,2.837,-4.797,2.835,-4.797,2.825,-4.783,2.825,-4.778,2.823,-4.776,2.82,-4.776,2.817,-4.774,2.813,-4.768,2.81,-4.767,2.809,-4.763,2.806,-4.761,2.804,-4.758,2.802,-4.757,2.802,-4.755,2.801,-4.753,2.798,-4.751,2.797,-4.749,2.795,-4.749,2.794,-4.747,2.79,-4.743,2.79,-4.739,2.788,-4.737,2.79,-4.735,2.788,-4.733,2.789,-4.728,2.781,-4.722,2.781,-4.719,2.779,-4.715,2.779,-4.712,2.777,-4.71,2.777,-4.707,2.774,-4.704,2.771,-4.699,2.772,-4.696,2.771,-4.696,2.765,-4.685,2.761,-4.684,2.759,-4.682,2.757,-4.683,2.755,-4.681,2.751,-4.684,2.748,-4.682,2.747,-4.681,2.749,-4.678,2.749,-4.676,2.744,-4.672,2.739,-4.672,2.736,-4.666,2.734,-4.665,2.732,-4.661,2.726,-4.657,2.725,-4.656,2.723,-4.654,2.717,-4.651,2.713,-4.648,2.699,-4.642,2.696,-4.638,2.693,-4.638,2.692,-4.639,2.689,-4.64,2.682,-4.638,2.672,-4.639,2.669,-4.641,2.667,-4.641,2.663,-4.643,2.66,-4.646,2.652,-4.653,2.649,-4.654,2.647,-4.653,2.642,-4.653,2.635,-4.661,2.627,-4.661,2.621,-4.663,2.618,-4.665,2.614,-4.665,2.611,-4.669,2.608,-4.67,2.602,-4.674,2.599,-4.675,2.597,-4.681,2.598,-4.685,2.596,-4.689,2.596,-4.69,2.593,-4.691,2.592,-4.693,2.589,-4.693,2.588,-4.692,2.584,-4.691,2.581,-4.688,2.579,-4.69,2.574,-4.687,2.57,-4.686,2.563,-4.687,2.559,-4.689,2.556,-4.688,2.552,-4.69,2.547,-4.694,2.546,-4.696,2.543,-4.698,2.542,-4.701,2.536,-4.708,2.536,-4.711,2.534,-4.715,2.533,-4.718,2.532,-4.719,2.531,-4.722,2.529,-4.723,2.528,-4.725,2.518,-4.732,2.518,-4.734,2.517,-4.733,2.51,-4.734,2.507,-4.734,2.502,-4.731,2.498,-4.73,2.49,-4.724,2.488,-4.721,2.486,-4.721,2.48,-4.715,2.475,-4.714,2.474,-4.712,2.469,-4.712,2.465,-4.71,2.46,-4.71,2.458,-4.708,2.454,-4.711,2.452,-4.71,2.447,-4.706,2.441,-4.696,2.437,-4.694,2.434,-4.688,2.431,-4.677,2.424,-4.66,2.391,-4.714,2.386,-4.714,2.363,-4.753,2.369,-4.753,2.378,-4.755,2.372,-4.761,2.367,-4.768,2.378,-4.808,2.407,-4.799,2.406,-4.802,2.408,-4.802,2.408,-4.803,2.407,-4.806,2.41,-4.809,2.408,-4.811,2.407,-4.815,2.408,-4.826,2.407,-4.83,2.408,-4.833,2.407,-4.836,2.407,-4.84,2.409,-4.844,2.414,-4.846,2.426,-4.856,2.436,-4.862,2.44,-4.866,2.458,-4.876,2.448,-4.893,2.443,-4.889,2.433,-4.905,2.439,-4.909,2.43,-4.925,2.442,-4.933,2.432,-4.951,2.395,-4.926,2.371,-4.967,2.388,-4.978,2.385,-4.983,2.413,-4.982,2.397,-5.009,2.389,-5.005,2.384,-5.013,2.389,-5.017,2.357,-5.07,2.46,-5.047,2.474,-5.114,2.486,-5.123,2.478,-5.136,2.478,-5.139,2.476,-5.14,2.463,-5.16,2.476,-5.171,2.488,-5.18]],"neigh":[[2.447,-4.113,2.52,-4.044,2.524,-4.048,2.598,-3.973,2.588,-3.964,2.604,-3.949,2.608,-3.948,2.62,-3.936,2.625,-3.92,2.636,-3.907,2.65,-3.904,2.654,-3.891,2.66,-3.888,2.696,-3.884,2.725,-3.863,2.746,-3.856,2.75,-3.849,2.756,-3.844,2.762,-3.829,2.76,-3.825,2.765,-3.819,2.767,-3.813,2.772,-3.809,2.775,-3.81,2.782,-3.8,2.778,-3.799,2.777,-3.794,2.766,-3.78,2.765,-3.769,2.738,-3.752,2.735,-3.749,2.735,-3.744,2.73,-3.744,2.726,-3.738,2.726,-3.732,2.723,-3.731,2.719,-3.724,2.725,-3.704,2.725,-3.69,2.73,-3.668,2.727,-3.651,2.72,-3.636,2.705,-3.619,2.702,-3.618,2.696,-3.608,2.711,-3.594,2.618,-3.491,2.554,-3.555,2.558,-3.561,2.441,-3.674,2.425,-3.664,2.406,-3.664,2.402,-3.666,2.39,-3.654,2.317,-3.731,2.353,-3.768,2.397,-3.723,2.429,-3.758,2.268,-3.928,2.283,-3.941,2.29,-3.942,2.301,-3.949,2.299,-3.952,2.315,-3.961,2.319,-3.968,2.323,-3.97,2.355,-4.018,2.407,-4.074,2.404,-4.077,2.438,-4.113,2.443,-4.117,2.447,-4.113],[2.882,-4.822,2.892,-4.823,2.907,-4.82,2.913,-4.816,2.925,-4.802,2.928,-4.79,2.926,-4.783,2.917,-4.773,2.917,-4.758,2.948,-4.738,2.953,-4.725,2.937,-4.737,2.937,-4.734,2.94,-4.734,2.939,-4.73,2.943,-4.73,2.943,-4.723,2.94,-4.722,2.944,-4.719,2.934,-4.709,2.934,-4.703,2.928,-4.694,2.929,-4.687,2.924,-4.678,2.908,-4.665,2.897,-4.649,2.898,-4.646,2.894,-4.641,2.897,-4.64,2.894,-4.633,2.899,-4.626,2.892,-4.606,2.888,-4.603,2.888,-4.588,2.878,-4.575,2.845,-4.552,2.829,-4.532,2.826,-4.516,2.824,-4.511,2.824,-4.502,2.82,-4.495,2.821,-4.474,2.818,-4.472,2.826,-4.455,2.823,-4.451,2.822,-4.441,2.818,-4.436,2.805,-4.433,2.798,-4.421,2.792,-4.418,2.792,-4.399,2.789,-4.391,2.792,-4.377,2.788,-4.366,2.783,-4.362,2.776,-4.362,2.766,-4.357,2.755,-4.354,2.743,-4.356,2.74,-4.351,2.713,-4.353,2.703,-4.36,2.702,-4.363,2.698,-4.362,2.69,-4.366,2.689,-4.369,2.687,-4.368,2.678,-4.373,2.674,-4.37,2.666,-4.375,2.664,-4.372,2.647,-4.385,2.641,-4.393,2.638,-4.393,2.628,-4.408,2.613,-4.415,2.6,-4.415,2.592,-4.411,2.573,-4.413,2.557,-4.412,2.548,-4.418,2.536,-4.421,2.514,-4.444,2.516,-4.447,2.512,-4.454,2.507,-4.456,2.507,-4.46,2.501,-4.456,2.499,-4.458,2.488,-4.454,2.473,-4.454,2.452,-4.439,2.437,-4.424,2.429,-4.412,2.424,-4.386,2.426,-4.363,2.417,-4.353,2.416,-4.345,2.265,-4.166,2.263,-4.169,2.265,-4.172,2.234,-4.205,2.243,-4.21,2.036,-4.549,2.091,-4.587,2.062,-4.633,2.117,-4.671,2.215,-4.508,2.231,-4.526,2.261,-4.542,2.284,-4.559,2.305,-4.581,2.311,-4.571,2.328,-4.587,2.349,-4.592,2.374,-4.607,2.382,-4.622,2.408,-4.634,2.416,-4.643,2.435,-4.69,2.447,-4.706,2.454,-4.711,2.458,-4.708,2.474,-4.712,2.496,-4.729,2.506,-4.733,2.518,-4.734,2.518,-4.732,2.528,-4.725,2.542,-4.699,2.553,-4.689,2.57,-4.686,2.592,-4.693,2.596,-4.69,2.599,-4.675,2.611,-4.669,2.614,-4.665,2.635,-4.661,2.642,-4.653,2.652,-4.653,2.667,-4.641,2.696,-4.638,2.732,-4.661,2.739,-4.672,2.749,-4.676,2.748,-4.682,2.751,-4.684,2.755,-4.681,2.765,-4.685,2.779,-4.712,2.781,-4.722,2.789,-4.728,2.788,-4.733,2.79,-4.735,2.788,-4.737,2.79,-4.743,2.795,-4.749,2.801,-4.753,2.802,-4.757,2.809,-4.763,2.81,-4.767,2.825,-4.778,2.825,-4.783,2.835,-4.797,2.841,-4.8,2.848,-4.793,2.855,-4.795,2.865,-4.79,2.879,-4.789,2.881,-4.785,2.885,-4.782,2.889,-4.785,2.886,-4.799,2.88,-4.808,2.882,-4.822],[2.206,-5.562,2.212,-5.561,2.214,-5.569,2.353,-5.548,2.383,-5.541,2.389,-5.544,2.445,-5.533,2.468,-5.548,2.5,-5.542,2.501,-5.54,2.497,-5.54,2.491,-5.534,2.486,-5.532,2.485,-5.529,2.478,-5.526,2.482,-5.513,2.474,-5.498,2.481,-5.489,2.477,-5.485,2.481,-5.478,2.485,-5.477,2.484,-5.47,2.48,-5.466,2.485,-5.461,2.482,-5.46,2.484,-5.452,2.482,-5.443,2.485,-5.43,2.488,-5.429,2.488,-5.414,2.492,-5.412,2.488,-5.409,2.498,-5.399,2.502,-5.386,2.507,-5.382,2.512,-5.362,2.499,-5.354,2.49,-5.352,2.471,-5.332,2.47,-5.323,2.463,-5.32,2.452,-5.331,2.433,-5.322,2.428,-5.325,2.407,-5.317,2.4,-5.317,2.392,-5.313,2.388,-5.313,2.377,-5.304,2.371,-5.307,2.368,-5.306,2.368,-5.302,2.363,-5.299,2.354,-5.286,2.355,-5.279,2.35,-5.276,2.35,-5.271,2.339,-5.255,2.337,-5.248,2.327,-5.233,2.321,-5.23,2.324,-5.227,2.323,-5.222,2.319,-5.218,2.323,-5.212,2.315,-5.197,2.284,-5.176,2.238,-5.155,2.224,-5.143,2.215,-5.131,2.215,-5.129,2.207,-5.122,2.206,-5.117,2.204,-5.116,2.208,-5.108,2.199,-5.093,2.185,-5.081,2.179,-5.068,2.17,-5.057,2.175,-5.051,2.178,-5.051,2.178,-5.049,2.171,-5.046,2.171,-5.043,2.16,-5.037,2.15,-5.035,2.141,-5.024,2.138,-5.025,2.136,-5.021,2.131,-5.021,2.13,-5.013,2.125,-5.012,2.124,-5.015,2.118,-5.012,2.118,-5.01,2.117,-5.011,2.111,-5.009,2.096,-5,2.085,-4.997,2.084,-4.999,2.079,-4.996,2.077,-4.998,2.077,-4.993,2.069,-5.002,2.063,-4.995,2.06,-4.997,2.056,-4.994,2.05,-4.993,2.047,-4.99,2.034,-4.989,2.029,-4.985,2.026,-4.988,2.023,-4.986,2.015,-4.986,1.999,-4.978,1.988,-4.976,1.987,-4.973,1.966,-4.969,1.949,-4.958,1.936,-4.959,1.932,-4.957,1.927,-4.947,1.919,-4.94,1.919,-4.936,1.911,-4.937,1.908,-4.934,1.902,-4.937,1.901,-4.934,1.892,-4.934,1.886,-4.931,1.863,-4.933,1.861,-4.922,1.859,-4.921,1.859,-4.917,1.854,-4.915,1.852,-4.911,1.849,-4.916,1.847,-4.916,1.841,-4.908,1.835,-4.912,1.834,-4.917,1.831,-4.918,1.829,-4.917,1.831,-4.917,1.832,-4.915,1.823,-4.908,1.822,-4.91,1.817,-4.906,1.803,-4.909,1.858,-5.117,1.877,-5.13,1.956,-5.151,1.944,-5.153,1.961,-5.246,1.958,-5.246,1.993,-5.42,1.982,-5.423,2.019,-5.606,2.206,-5.562],[2.507,-4.456,2.514,-4.451,2.516,-4.446,2.513,-4.446,2.514,-4.444,2.536,-4.421,2.548,-4.418,2.557,-4.412,2.573,-4.413,2.592,-4.411,2.6,-4.415,2.613,-4.415,2.628,-4.408,2.638,-4.393,2.641,-4.393,2.647,-4.385,2.664,-4.372,2.666,-4.375,2.674,-4.37,2.678,-4.373,2.687,-4.368,2.689,-4.369,2.69,-4.366,2.698,-4.362,2.702,-4.363,2.703,-4.36,2.713,-4.353,2.74,-4.351,2.743,-4.356,2.755,-4.354,2.766,-4.357,2.776,-4.362,2.783,-4.362,2.791,-4.372,2.789,-4.391,2.792,-4.396,2.792,-4.402,2.814,-4.381,2.816,-4.383,2.842,-4.358,2.847,-4.363,2.895,-4.317,2.894,-4.328,2.905,-4.349,2.963,-4.335,2.961,-4.351,3.016,-4.338,3.014,-4.326,3.026,-4.31,3.041,-4.307,3.043,-4.289,3,-4.182,2.97,-4.13,2.966,-3.989,2.957,-3.993,2.951,-3.99,2.939,-3.99,2.93,-3.993,2.926,-3.999,2.923,-3.998,2.917,-4.001,2.906,-3.999,2.826,-3.907,2.83,-3.902,2.761,-3.824,2.762,-3.829,2.756,-3.844,2.75,-3.849,2.746,-3.856,2.725,-3.863,2.696,-3.884,2.66,-3.888,2.654,-3.891,2.65,-3.904,2.636,-3.907,2.625,-3.92,2.62,-3.936,2.608,-3.948,2.604,-3.949,2.588,-3.964,2.598,-3.973,2.596,-3.975,2.524,-4.048,2.52,-4.044,2.443,-4.117,2.438,-4.112,2.409,-4.143,2.473,-4.219,2.442,-4.251,2.513,-4.325,2.488,-4.35,2.464,-4.387,2.434,-4.419,2.452,-4.439,2.469,-4.452,2.484,-4.455,2.488,-4.454,2.499,-4.458,2.501,-4.456,2.506,-4.46,2.507,-4.456],[3.066,-4.186,3.067,-4.183,3.078,-4.183,3.087,-4.191,3.114,-4.173,3.133,-4.173,3.261,-4.045,3.32,-3.989,3.326,-3.986,3.321,-3.986,3.316,-3.98,3.311,-3.983,3.31,-3.986,3.302,-3.983,3.3,-3.985,3.298,-3.977,3.295,-3.975,3.295,-3.971,3.28,-3.959,3.275,-3.947,3.268,-3.946,3.266,-3.941,3.261,-3.941,3.261,-3.939,3.243,-3.931,3.234,-3.922,3.213,-3.926,3.2,-3.922,3.194,-3.923,3.186,-3.916,3.182,-3.919,3.164,-3.915,3.16,-3.891,3.162,-3.878,3.168,-3.867,3.164,-3.845,3.167,-3.817,3.165,-3.802,3.156,-3.776,3.132,-3.741,3.121,-3.731,3.09,-3.746,3.091,-3.749,2.992,-3.796,2.989,-3.812,2.989,-3.828,2.998,-3.853,3.007,-3.864,3.008,-3.871,3.004,-3.88,3.007,-3.9,3.017,-3.926,3.016,-3.933,3.021,-3.938,2.997,-3.949,2.998,-3.954,2.991,-3.964,2.976,-3.975,2.969,-3.977,2.965,-3.989,2.97,-4.13,2.997,-4.175,3.029,-4.255,3.066,-4.186],[1.86,-6.237,1.88,-6.232,1.881,-6.245,1.939,-6.232,1.924,-6.15,2.051,-6.122,2.055,-6.142,2.09,-6.133,2.066,-6.011,2.084,-5.917,2.073,-5.865,2.07,-5.865,2.055,-5.79,2.011,-5.8,1.974,-5.617,1.645,-5.693,1.652,-5.673,1.566,-5.654,1.546,-5.737,1.475,-5.791,1.461,-5.807,1.435,-5.841,1.421,-5.885,1.433,-5.937,1.432,-5.951,1.444,-6.014,1.427,-6.078,1.4,-6.116,1.398,-6.162,1.404,-6.212,1.404,-6.259,1.386,-6.3,1.466,-6.382,1.559,-6.36,1.552,-6.326,1.806,-6.269,1.802,-6.25,1.86,-6.237],[1.953,-4.602,1.957,-4.594,1.993,-4.619,2.008,-4.596,2.062,-4.633,2.091,-4.587,2.036,-4.549,2.243,-4.21,2.234,-4.205,2.265,-4.172,2.263,-4.169,2.265,-4.166,1.797,-3.614,0.879,-3.613,1.252,-4.231,1.473,-4.602,1.563,-4.582,1.565,-4.592,1.59,-4.586,1.592,-4.597,1.633,-4.588,1.6,-4.566,1.647,-4.489,1.732,-4.548,1.762,-4.57,1.76,-4.573,1.833,-4.622,1.809,-4.661,1.886,-4.713,1.953,-4.602],[2.225,-5.058,2.315,-4.91,2.28,-4.844,2.269,-4.844,2.242,-4.835,2.26,-4.769,2.248,-4.768,2.24,-4.764,2.231,-4.756,2.286,-4.667,2.262,-4.651,2.305,-4.581,2.284,-4.559,2.261,-4.542,2.231,-4.526,2.215,-4.508,2.117,-4.671,2.008,-4.596,1.993,-4.619,1.957,-4.594,1.886,-4.713,1.809,-4.661,1.833,-4.622,1.76,-4.573,1.762,-4.57,1.732,-4.548,1.647,-4.489,1.6,-4.566,1.633,-4.588,1.592,-4.597,1.59,-4.586,1.565,-4.592,1.563,-4.582,1.473,-4.602,1.637,-4.88,1.652,-4.883,1.657,-4.887,1.673,-4.908,1.675,-4.916,1.685,-4.932,1.699,-4.947,1.714,-4.959,1.726,-4.976,1.737,-4.986,1.739,-4.985,1.738,-4.98,1.742,-4.978,1.743,-4.973,1.751,-4.968,1.75,-4.964,1.753,-4.962,1.758,-4.948,1.767,-4.943,1.771,-4.938,1.771,-4.934,1.778,-4.927,1.795,-4.921,1.802,-4.909,1.809,-4.909,1.812,-4.906,1.818,-4.907,1.821,-4.91,1.823,-4.908,1.827,-4.91,1.832,-4.915,1.829,-4.917,1.831,-4.918,1.834,-4.917,1.835,-4.912,1.841,-4.908,1.847,-4.916,1.849,-4.916,1.852,-4.911,1.854,-4.915,1.859,-4.917,1.863,-4.933,1.886,-4.931,1.892,-4.934,1.901,-4.934,1.902,-4.937,1.908,-4.934,1.911,-4.937,1.919,-4.936,1.919,-4.94,1.927,-4.947,1.932,-4.957,1.936,-4.959,1.949,-4.958,1.966,-4.969,1.987,-4.973,1.988,-4.976,1.999,-4.978,2.015,-4.986,2.023,-4.986,2.026,-4.988,2.029,-4.985,2.034,-4.989,2.047,-4.99,2.05,-4.993,2.056,-4.994,2.06,-4.997,2.063,-4.995,2.069,-5.002,2.077,-4.993,2.077,-4.998,2.079,-4.996,2.084,-4.999,2.085,-4.997,2.096,-5,2.111,-5.009,2.117,-5.011,2.118,-5.01,2.118,-5.012,2.124,-5.015,2.125,-5.012,2.13,-5.013,2.131,-5.021,2.136,-5.021,2.138,-5.025,2.141,-5.024,2.15,-5.035,2.16,-5.037,2.171,-5.043,2.171,-5.046,2.178,-5.049,2.178,-5.051,2.175,-5.051,2.17,-5.057,2.179,-5.068,2.185,-5.081,2.198,-5.092,2.201,-5.097,2.225,-5.058],[2.526,-5.547,2.521,-5.53,2.525,-5.513,2.526,-5.503,2.528,-5.501,2.546,-5.503,2.541,-5.495,2.542,-5.486,2.557,-5.463,2.563,-5.446,2.566,-5.414,2.559,-5.385,2.559,-5.378,2.58,-5.336,2.582,-5.328,2.585,-5.306,2.583,-5.253,2.588,-5.226,2.605,-5.194,2.633,-5.169,2.633,-5.166,2.536,-5.161,2.536,-5.167,2.515,-5.166,2.514,-5.171,2.507,-5.165,2.488,-5.18,2.463,-5.16,2.476,-5.14,2.478,-5.139,2.478,-5.136,2.486,-5.123,2.474,-5.114,2.46,-5.047,2.357,-5.07,2.389,-5.017,2.384,-5.013,2.389,-5.005,2.397,-5.009,2.413,-4.982,2.385,-4.983,2.388,-4.978,2.371,-4.967,2.395,-4.926,2.432,-4.951,2.442,-4.933,2.43,-4.925,2.439,-4.909,2.433,-4.905,2.443,-4.889,2.448,-4.893,2.458,-4.876,2.44,-4.866,2.414,-4.846,2.409,-4.844,2.407,-4.836,2.408,-4.833,2.407,-4.815,2.41,-4.809,2.407,-4.806,2.407,-4.799,2.378,-4.808,2.367,-4.768,2.378,-4.755,2.363,-4.753,2.386,-4.714,2.391,-4.714,2.424,-4.66,2.419,-4.648,2.408,-4.634,2.382,-4.622,2.374,-4.607,2.349,-4.592,2.328,-4.587,2.311,-4.571,2.262,-4.651,2.286,-4.667,2.231,-4.756,2.24,-4.764,2.248,-4.768,2.26,-4.769,2.242,-4.835,2.269,-4.844,2.28,-4.844,2.315,-4.91,2.201,-5.097,2.208,-5.108,2.204,-5.116,2.224,-5.143,2.237,-5.155,2.284,-5.176,2.315,-5.197,2.323,-5.212,2.319,-5.218,2.323,-5.222,2.324,-5.227,2.321,-5.23,2.327,-5.233,2.337,-5.248,2.339,-5.255,2.35,-5.271,2.35,-5.276,2.355,-5.279,2.354,-5.286,2.363,-5.299,2.368,-5.302,2.369,-5.306,2.377,-5.304,2.388,-5.313,2.392,-5.313,2.4,-5.317,2.407,-5.317,2.428,-5.325,2.433,-5.322,2.452,-5.331,2.463,-5.32,2.47,-5.323,2.471,-5.332,2.49,-5.352,2.499,-5.354,2.512,-5.362,2.507,-5.382,2.502,-5.386,2.498,-5.399,2.488,-5.409,2.492,-5.412,2.488,-5.414,2.488,-5.429,2.485,-5.43,2.482,-5.443,2.484,-5.452,2.482,-5.46,2.485,-5.461,2.48,-5.466,2.484,-5.47,2.485,-5.477,2.481,-5.478,2.477,-5.485,2.481,-5.489,2.474,-5.498,2.482,-5.511,2.478,-5.526,2.491,-5.534,2.497,-5.54,2.501,-5.54,2.499,-5.544,2.505,-5.542,2.504,-5.545,2.509,-5.549,2.511,-5.547,2.511,-5.551,2.519,-5.558,2.523,-5.555,2.526,-5.547],[2.438,-4.113,2.404,-4.077,2.407,-4.074,2.355,-4.018,2.323,-3.97,2.319,-3.968,2.315,-3.961,2.299,-3.952,2.301,-3.949,2.29,-3.942,2.283,-3.941,2.263,-3.924,2.246,-3.918,2.233,-3.907,2.226,-3.905,2.199,-3.874,2.103,-3.974,2.416,-4.345,2.417,-4.353,2.426,-4.363,2.424,-4.386,2.427,-4.407,2.435,-4.419,2.464,-4.387,2.488,-4.35,2.513,-4.325,2.442,-4.251,2.473,-4.219,2.409,-4.143,2.438,-4.113],[3.043,-4.641,3.065,-4.627,3.074,-4.617,3.083,-4.606,3.095,-4.575,3.117,-4.552,3.153,-4.53,3.184,-4.529,3.205,-4.525,3.212,-4.52,3.224,-4.5,3.235,-4.49,3.283,-4.479,3.294,-4.466,3.302,-4.448,3.301,-4.414,3.299,-4.407,3.294,-4.417,3.285,-4.42,3.12,-4.231,3.111,-4.239,3.095,-4.221,3.139,-4.174,3.114,-4.173,3.087,-4.191,3.078,-4.183,3.067,-4.183,3.029,-4.255,3.043,-4.289,3.041,-4.307,3.026,-4.31,3.014,-4.326,3.016,-4.338,2.961,-4.351,2.963,-4.335,2.905,-4.349,2.931,-4.38,2.936,-4.379,2.944,-4.385,2.959,-4.384,2.97,-4.414,2.982,-4.421,2.983,-4.428,2.986,-4.432,2.988,-4.441,2.992,-4.444,2.99,-4.448,2.995,-4.465,3.001,-4.473,3.005,-4.473,3.01,-4.487,3.016,-4.489,3.016,-4.492,3.022,-4.501,3.02,-4.505,3.026,-4.526,3.016,-4.53,3.014,-4.539,3.005,-4.54,2.999,-4.55,2.999,-4.56,3.002,-4.565,3.004,-4.565,3.006,-4.573,3.002,-4.591,3.017,-4.613,3.018,-4.62,3.016,-4.627,3.021,-4.639,3.019,-4.64,3.02,-4.647,3.022,-4.649,3.043,-4.641],[2.952,-4.735,2.972,-4.72,2.994,-4.708,3.002,-4.697,3.015,-4.656,3.022,-4.649,3.019,-4.641,3.021,-4.638,3.016,-4.627,3.018,-4.62,3.017,-4.612,3.002,-4.591,3.006,-4.573,3.004,-4.565,3,-4.562,2.999,-4.555,2.999,-4.55,3.005,-4.541,3.014,-4.539,3.014,-4.532,3.017,-4.529,3.026,-4.526,3.026,-4.521,3.02,-4.505,3.022,-4.501,3.016,-4.492,3.016,-4.489,3.01,-4.487,3.005,-4.473,3.001,-4.473,2.995,-4.465,2.99,-4.448,2.992,-4.444,2.988,-4.441,2.986,-4.432,2.983,-4.428,2.982,-4.421,2.97,-4.414,2.961,-4.387,2.954,-4.383,2.944,-4.385,2.936,-4.379,2.931,-4.38,2.926,-4.376,2.905,-4.35,2.894,-4.328,2.895,-4.317,2.847,-4.363,2.842,-4.358,2.816,-4.383,2.814,-4.381,2.792,-4.402,2.791,-4.412,2.792,-4.418,2.798,-4.421,2.805,-4.433,2.817,-4.436,2.822,-4.441,2.823,-4.451,2.826,-4.455,2.818,-4.472,2.821,-4.474,2.82,-4.495,2.824,-4.502,2.824,-4.511,2.826,-4.516,2.829,-4.532,2.845,-4.552,2.878,-4.575,2.883,-4.584,2.888,-4.587,2.889,-4.593,2.888,-4.603,2.892,-4.606,2.899,-4.626,2.894,-4.633,2.897,-4.64,2.894,-4.641,2.898,-4.646,2.897,-4.649,2.908,-4.665,2.923,-4.677,2.929,-4.686,2.928,-4.694,2.934,-4.703,2.934,-4.709,2.944,-4.719,2.94,-4.722,2.943,-4.723,2.943,-4.73,2.939,-4.73,2.94,-4.734,2.937,-4.734,2.937,-4.736,2.953,-4.724,2.948,-4.738,2.952,-4.735],[1.766,-5.665,2.019,-5.606,1.982,-5.423,1.993,-5.42,1.958,-5.246,1.961,-5.246,1.944,-5.153,1.956,-5.151,1.877,-5.13,1.858,-5.117,1.802,-4.909,1.795,-4.921,1.775,-4.929,1.767,-4.943,1.758,-4.948,1.753,-4.962,1.75,-4.964,1.751,-4.968,1.743,-4.973,1.742,-4.979,1.738,-4.981,1.738,-4.989,1.743,-4.994,1.743,-5.009,1.74,-5.011,1.742,-5.017,1.74,-5.025,1.744,-5.028,1.744,-5.036,1.741,-5.042,1.755,-5.083,1.756,-5.099,1.751,-5.104,1.751,-5.109,1.745,-5.111,1.74,-5.123,1.751,-5.17,1.745,-5.187,1.745,-5.204,1.74,-5.206,1.737,-5.214,1.735,-5.221,1.737,-5.226,1.726,-5.241,1.715,-5.242,1.711,-5.245,1.71,-5.254,1.702,-5.269,1.688,-5.305,1.661,-5.308,1.649,-5.304,1.631,-5.31,1.627,-5.32,1.618,-5.322,1.621,-5.341,1.618,-5.349,1.635,-5.362,1.658,-5.385,1.662,-5.386,1.662,-5.408,1.66,-5.41,1.649,-5.404,1.637,-5.407,1.638,-5.409,1.634,-5.417,1.653,-5.431,1.651,-5.447,1.637,-5.448,1.631,-5.455,1.632,-5.464,1.645,-5.474,1.639,-5.494,1.645,-5.5,1.643,-5.505,1.62,-5.561,1.589,-5.606,1.586,-5.615,1.566,-5.654,1.652,-5.673,1.645,-5.693,1.766,-5.665],[2.497,-6.179,2.499,-6.177,2.497,-6.175,2.5,-6.173,2.498,-6.17,2.5,-6.166,2.498,-6.153,2.497,-6.151,2.494,-6.152,2.489,-6.146,2.493,-6.144,2.492,-6.133,2.501,-6.119,2.51,-6.119,2.53,-6.128,2.537,-6.123,2.552,-6.131,2.559,-6.122,2.561,-6.124,2.564,-6.132,2.576,-6.134,2.572,-6.113,2.563,-6.091,2.564,-6.081,2.583,-6.028,2.584,-6.015,2.597,-6,2.613,-5.988,2.629,-5.962,2.633,-5.949,2.635,-5.933,2.633,-5.92,2.616,-5.897,2.605,-5.871,2.6,-5.85,2.603,-5.818,2.608,-5.803,2.619,-5.784,2.622,-5.767,2.614,-5.714,2.617,-5.68,2.614,-5.676,2.61,-5.675,2.595,-5.676,2.591,-5.674,2.585,-5.666,2.583,-5.658,2.585,-5.641,2.591,-5.607,2.582,-5.544,2.578,-5.535,2.568,-5.523,2.546,-5.503,2.528,-5.501,2.526,-5.503,2.525,-5.513,2.521,-5.529,2.526,-5.547,2.52,-5.558,2.511,-5.551,2.511,-5.547,2.509,-5.549,2.504,-5.545,2.505,-5.541,2.5,-5.544,2.5,-5.542,2.468,-5.548,2.445,-5.533,2.389,-5.544,2.383,-5.541,2.353,-5.548,2.214,-5.569,2.212,-5.561,1.974,-5.617,2.011,-5.8,2.055,-5.79,2.07,-5.865,2.073,-5.865,2.084,-5.917,2.066,-6.011,2.09,-6.133,2.055,-6.142,2.057,-6.153,2.078,-6.159,2.085,-6.17,2.129,-6.16,2.127,-6.168,2.21,-6.148,2.211,-6.135,2.218,-6.125,2.22,-6.118,2.23,-6.169,2.369,-6.136,2.381,-6.2,2.48,-6.179,2.486,-6.195,2.498,-6.214,2.506,-6.207,2.499,-6.202,2.496,-6.195,2.494,-6.187,2.497,-6.179],[3.73,-4.826,3.742,-4.792,3.764,-4.677,3.799,-4.622,3.824,-4.59,3.854,-4.578,3.865,-4.578,3.921,-4.547,3.977,-4.519,4.009,-4.51,4.059,-4.502,4.069,-4.503,4.049,-4.519,4.065,-4.558,4.096,-4.542,4.099,-4.555,4.103,-4.56,4.112,-4.554,4.11,-4.551,4.128,-4.539,4.127,-4.537,4.14,-4.523,4.189,-4.564,4.194,-4.561,4.209,-4.563,4.221,-4.556,4.223,-4.551,4.225,-4.552,4.228,-4.546,4.235,-4.544,4.235,-4.542,4.237,-4.544,4.239,-4.541,4.24,-4.544,4.241,-4.541,4.249,-4.542,4.248,-4.536,4.253,-4.54,4.255,-4.538,4.251,-4.53,4.253,-4.531,4.253,-4.527,4.257,-4.524,4.272,-4.559,4.274,-4.554,4.278,-4.554,4.285,-4.542,4.291,-4.541,4.292,-4.547,4.295,-4.548,4.299,-4.535,4.302,-4.531,4.386,-4.499,4.377,-4.459,4.35,-4.434,4.339,-4.419,4.338,-4.413,4.353,-4.35,4.376,-4.312,4.386,-4.278,4.383,-4.24,4.386,-4.171,4.394,-4.083,4.409,-4.045,4.431,-4,4.456,-3.962,4.452,-3.963,4.438,-3.982,4.429,-3.988,4.363,-3.998,4.34,-3.994,4.323,-3.985,4.292,-3.973,4.272,-3.973,4.258,-3.965,4.25,-3.962,4.231,-3.96,4.215,-3.963,4.2,-3.971,4.189,-3.981,4.15,-4.034,4.126,-4.055,4.115,-4.057,4.085,-4.045,4.074,-4.045,4.054,-4.053,4.041,-4.067,4.019,-4.109,3.992,-4.126,3.973,-4.125,3.957,-4.13,3.951,-4.139,3.95,-4.151,3.946,-4.158,3.939,-4.159,3.924,-4.151,3.917,-4.154,3.905,-4.165,3.888,-4.167,3.861,-4.155,3.846,-4.151,3.837,-4.152,3.831,-4.156,3.82,-4.168,3.803,-4.197,3.8,-4.207,3.796,-4.238,3.799,-4.254,3.772,-4.272,3.755,-4.29,3.735,-4.363,3.729,-4.374,3.712,-4.389,3.699,-4.405,3.691,-4.433,3.69,-4.452,3.687,-4.457,3.676,-4.46,3.658,-4.455,3.653,-4.457,3.636,-4.491,3.628,-4.502,3.616,-4.51,3.608,-4.53,3.601,-4.539,3.544,-4.562,3.531,-4.564,3.524,-4.567,3.519,-4.574,3.514,-4.593,3.514,-4.622,3.51,-4.625,3.498,-4.623,3.48,-4.628,3.45,-4.643,3.443,-4.652,3.443,-4.659,3.459,-4.669,3.461,-4.674,3.442,-4.679,3.432,-4.699,3.434,-4.706,3.448,-4.719,3.451,-4.735,3.471,-4.757,3.473,-4.766,3.484,-4.773,3.494,-4.794,3.508,-4.803,3.518,-4.8,3.528,-4.802,3.533,-4.795,3.532,-4.79,3.534,-4.786,3.543,-4.781,3.548,-4.774,3.573,-4.779,3.586,-4.777,3.599,-4.777,3.606,-4.772,3.61,-4.776,3.608,-4.784,3.612,-4.787,3.626,-4.778,3.632,-4.769,3.639,-4.769,3.653,-4.777,3.657,-4.77,3.662,-4.769,3.677,-4.773,3.676,-4.778,3.67,-4.782,3.67,-4.795,3.678,-4.794,3.685,-4.798,3.689,-4.79,3.693,-4.793,3.693,-4.8,3.681,-4.806,3.675,-4.817,3.686,-4.822,3.699,-4.81,3.708,-4.816,3.704,-4.824,3.699,-4.82,3.697,-4.821,3.707,-4.83,3.71,-4.846,3.726,-4.836,3.73,-4.826],[3.63,-4.263,3.642,-4.263,3.677,-4.271,3.698,-4.271,3.74,-4.278,3.751,-4.27,3.755,-4.26,3.751,-4.245,3.742,-4.227,3.739,-4.206,3.744,-4.197,3.749,-4.192,3.765,-4.187,3.737,-4.184,3.722,-4.18,3.712,-4.174,3.709,-4.171,3.71,-4.165,3.702,-4.153,3.701,-4.147,3.706,-4.141,3.726,-4.127,3.736,-4.112,3.751,-4.104,3.761,-4.08,3.76,-4.075,3.756,-4.072,3.741,-4.069,3.737,-4.065,3.735,-4.058,3.726,-4.067,3.717,-4.07,3.706,-4.068,3.697,-4.076,3.693,-4.075,3.685,-4.069,3.678,-4.075,3.675,-4.073,3.671,-4.075,3.671,-4.069,3.667,-4.065,3.669,-4.06,3.667,-4.059,3.667,-4.055,3.671,-4.052,3.668,-4.048,3.672,-4.045,3.673,-4.035,3.679,-4.02,3.676,-4.019,3.681,-4.013,3.689,-3.99,3.688,-3.976,3.671,-3.957,3.644,-3.943,3.62,-3.939,3.628,-3.925,3.575,-3.865,3.537,-3.901,3.528,-3.881,3.518,-3.87,3.513,-3.857,3.512,-3.848,3.5,-3.839,3.497,-3.832,3.479,-3.831,3.472,-3.828,3.466,-3.833,3.455,-3.833,3.446,-3.842,3.434,-3.841,3.407,-3.833,3.371,-3.869,3.378,-3.877,3.384,-3.891,3.38,-3.901,3.383,-3.906,3.376,-3.913,3.374,-3.923,3.367,-3.931,3.36,-3.948,3.357,-3.952,3.357,-3.961,3.352,-3.971,3.351,-3.979,3.346,-3.986,3.349,-3.991,3.348,-3.993,3.352,-3.996,3.352,-4.004,3.356,-4.006,3.355,-4.009,3.358,-4.009,3.363,-4.016,3.365,-4.015,3.364,-4.017,3.366,-4.018,3.364,-4.02,3.374,-4.032,3.373,-4.037,3.375,-4.037,3.376,-4.04,3.374,-4.044,3.379,-4.046,3.378,-4.051,3.38,-4.053,3.377,-4.054,3.382,-4.055,3.38,-4.056,3.384,-4.058,3.385,-4.062,3.387,-4.059,3.395,-4.067,3.397,-4.065,3.398,-4.068,3.4,-4.067,3.401,-4.073,3.405,-4.072,3.405,-4.079,3.41,-4.076,3.412,-4.079,3.425,-4.083,3.425,-4.089,3.429,-4.091,3.431,-4.099,3.44,-4.106,3.437,-4.109,3.441,-4.108,3.439,-4.111,3.442,-4.113,3.439,-4.113,3.445,-4.119,3.445,-4.121,3.449,-4.125,3.452,-4.123,3.453,-4.127,3.456,-4.127,3.456,-4.13,3.46,-4.13,3.457,-4.134,3.46,-4.134,3.459,-4.135,3.464,-4.134,3.461,-4.138,3.465,-4.15,3.468,-4.152,3.465,-4.154,3.467,-4.157,3.464,-4.169,3.465,-4.178,3.468,-4.176,3.475,-4.183,3.474,-4.185,3.475,-4.189,3.473,-4.19,3.475,-4.197,3.473,-4.205,3.477,-4.21,3.483,-4.21,3.484,-4.216,3.489,-4.224,3.493,-4.228,3.495,-4.225,3.496,-4.228,3.507,-4.227,3.513,-4.223,3.515,-4.225,3.518,-4.222,3.528,-4.225,3.535,-4.22,3.538,-4.221,3.52,-4.234,3.497,-4.241,3.549,-4.354,3.555,-4.357,3.565,-4.342,3.571,-4.296,3.58,-4.281,3.586,-4.276,3.605,-4.267,3.63,-4.263],[3.288,-4.419,3.294,-4.417,3.299,-4.407,3.301,-4.414,3.307,-4.404,3.327,-4.393,3.348,-4.391,3.367,-4.396,3.396,-4.39,3.421,-4.38,3.431,-4.37,3.439,-4.357,3.44,-4.328,3.445,-4.314,3.447,-4.31,3.457,-4.305,3.464,-4.306,3.475,-4.313,3.505,-4.353,3.523,-4.367,3.533,-4.369,3.545,-4.364,3.555,-4.357,3.549,-4.354,3.497,-4.241,3.52,-4.234,3.538,-4.221,3.535,-4.22,3.528,-4.225,3.518,-4.222,3.515,-4.225,3.513,-4.223,3.507,-4.227,3.496,-4.228,3.495,-4.225,3.493,-4.228,3.489,-4.224,3.484,-4.216,3.483,-4.21,3.477,-4.21,3.473,-4.205,3.475,-4.197,3.473,-4.19,3.475,-4.189,3.474,-4.185,3.475,-4.183,3.468,-4.176,3.465,-4.178,3.464,-4.169,3.467,-4.157,3.465,-4.154,3.468,-4.152,3.465,-4.15,3.461,-4.138,3.464,-4.134,3.459,-4.135,3.46,-4.134,3.457,-4.134,3.46,-4.13,3.456,-4.13,3.456,-4.127,3.453,-4.127,3.452,-4.123,3.449,-4.125,3.445,-4.121,3.445,-4.119,3.439,-4.113,3.442,-4.113,3.439,-4.111,3.441,-4.108,3.437,-4.109,3.44,-4.106,3.431,-4.099,3.429,-4.091,3.425,-4.089,3.425,-4.083,3.412,-4.079,3.41,-4.076,3.405,-4.079,3.405,-4.072,3.401,-4.073,3.4,-4.067,3.398,-4.068,3.397,-4.065,3.395,-4.067,3.387,-4.059,3.385,-4.062,3.384,-4.058,3.38,-4.056,3.382,-4.055,3.377,-4.055,3.377,-4.053,3.38,-4.053,3.378,-4.051,3.379,-4.046,3.374,-4.044,3.376,-4.037,3.373,-4.037,3.374,-4.032,3.364,-4.02,3.366,-4.018,3.364,-4.017,3.365,-4.015,3.363,-4.016,3.358,-4.009,3.355,-4.009,3.356,-4.006,3.352,-4.004,3.347,-3.997,3.344,-3.998,3.341,-3.993,3.338,-3.995,3.331,-3.988,3.326,-3.987,3.319,-3.99,3.163,-4.141,3.133,-4.173,3.139,-4.174,3.095,-4.221,3.111,-4.239,3.12,-4.231,3.285,-4.42,3.288,-4.419],[3.463,-6.126,3.495,-6.103,3.519,-6.075,3.492,-6.051,3.489,-6.045,3.508,-6.041,3.512,-6.047,3.52,-6.05,3.527,-6.043,3.536,-6.041,3.542,-6.042,3.545,-6.046,3.556,-6.05,3.582,-6.042,3.591,-6.029,3.599,-6.041,3.61,-6.052,3.611,-6.058,3.615,-6.056,3.617,-6.061,3.619,-6.06,3.623,-6.066,3.629,-6.067,3.632,-6.064,3.634,-6.066,3.637,-6.062,3.638,-6.066,3.642,-6.065,3.646,-6.071,3.65,-6.073,3.652,-6.071,3.654,-6.073,3.656,-6.069,3.658,-6.073,3.664,-6.073,3.673,-6.078,3.676,-6.075,3.678,-6.079,3.684,-6.08,3.688,-6.076,3.692,-6.077,3.688,-6.073,3.688,-6.069,3.684,-6.069,3.68,-6.061,3.677,-6.065,3.674,-6.06,3.67,-6.059,3.672,-6.05,3.668,-6.047,3.669,-6.045,3.666,-6.036,3.666,-6.032,3.669,-6.03,3.666,-6.025,3.665,-6.026,3.662,-6.024,3.664,-6.016,3.658,-6.015,3.661,-6.013,3.658,-6.011,3.661,-6.007,3.659,-6.006,3.66,-6.002,3.656,-6.002,3.652,-5.999,3.654,-5.996,3.654,-5.99,3.651,-5.991,3.649,-5.987,3.651,-5.984,3.646,-5.982,3.647,-5.979,3.646,-5.976,3.642,-5.977,3.643,-5.975,3.636,-5.969,3.636,-5.965,3.628,-5.964,3.623,-5.946,3.616,-5.942,3.618,-5.937,3.612,-5.934,3.613,-5.93,3.608,-5.929,3.603,-5.923,3.604,-5.917,3.6,-5.915,3.599,-5.91,3.592,-5.908,3.586,-5.897,3.581,-5.895,3.575,-5.883,3.568,-5.879,3.566,-5.875,3.579,-5.86,3.559,-5.732,3.569,-5.72,3.572,-5.719,3.575,-5.721,3.575,-5.715,3.57,-5.709,3.57,-5.703,3.563,-5.699,3.564,-5.692,3.561,-5.681,3.549,-5.662,3.565,-5.65,3.576,-5.652,3.588,-5.648,3.592,-5.645,3.565,-5.573,3.586,-5.546,3.593,-5.511,3.591,-5.488,3.582,-5.489,3.577,-5.476,3.579,-5.452,3.582,-5.449,3.583,-5.444,3.578,-5.444,3.576,-5.447,3.466,-5.448,3.465,-5.43,3.463,-5.43,3.466,-5.419,3.463,-5.403,3.468,-5.397,3.462,-5.383,3.461,-5.367,3.452,-5.377,3.437,-5.385,3.429,-5.379,3.421,-5.387,3.411,-5.386,3.41,-5.388,3.401,-5.388,3.394,-5.391,3.385,-5.39,3.378,-5.395,3.376,-5.394,3.374,-5.398,3.366,-5.402,3.362,-5.41,3.358,-5.41,3.346,-5.418,3.338,-5.413,3.332,-5.412,3.332,-5.41,3.334,-5.425,3.329,-5.43,3.327,-5.437,3.326,-5.452,3.323,-5.453,3.32,-5.458,3.313,-5.455,3.313,-5.452,3.309,-5.456,3.305,-5.454,3.3,-5.461,3.297,-5.462,3.297,-5.465,3.292,-5.461,3.29,-5.463,3.289,-5.459,3.286,-5.462,3.283,-5.46,3.282,-5.463,3.279,-5.461,3.277,-5.463,3.271,-5.462,3.261,-5.469,3.258,-5.469,3.258,-5.471,3.256,-5.47,3.253,-5.47,3.249,-5.474,3.23,-5.472,3.201,-5.482,3.197,-5.478,3.194,-5.483,3.187,-5.485,3.183,-5.49,3.181,-5.49,3.167,-5.506,3.169,-5.507,3.152,-5.509,3.158,-5.517,3.152,-5.547,3.17,-5.579,3.126,-5.615,3.122,-5.611,3.126,-5.624,3.12,-5.628,3.115,-5.649,3.086,-5.684,3.075,-5.685,3.06,-5.698,3.058,-5.715,3.048,-5.731,3.045,-5.734,3.037,-5.725,3.022,-5.735,3.021,-5.728,3.002,-5.731,3.009,-5.744,3.004,-5.748,3.012,-5.758,3.003,-5.766,3.017,-5.783,3.009,-5.808,3.041,-5.842,3.008,-5.877,2.987,-5.855,2.974,-5.884,2.983,-5.885,2.972,-5.911,2.967,-5.911,2.952,-5.947,2.994,-5.973,3.009,-5.977,3.041,-6.018,3.063,-6.001,3.083,-5.995,3.102,-5.981,3.131,-5.969,3.142,-5.999,3.141,-6.026,3.164,-6.032,3.176,-6.048,3.196,-6.049,3.195,-6.073,3.203,-6.073,3.203,-6.071,3.207,-6.071,3.205,-6.084,3.214,-6.082,3.215,-6.117,3.225,-6.112,3.238,-6.109,3.244,-6.105,3.252,-6.104,3.257,-6.108,3.264,-6.108,3.268,-6.103,3.286,-6.1,3.291,-6.091,3.3,-6.09,3.308,-6.084,3.311,-6.087,3.318,-6.08,3.326,-6.081,3.332,-6.076,3.341,-6.073,3.35,-6.076,3.352,-6.083,3.362,-6.089,3.366,-6.086,3.372,-6.087,3.381,-6.098,3.39,-6.098,3.402,-6.11,3.407,-6.108,3.41,-6.111,3.415,-6.109,3.415,-6.111,3.424,-6.115,3.43,-6.116,3.436,-6.124,3.445,-6.121,3.448,-6.125,3.455,-6.126,3.458,-6.13,3.463,-6.126],[2.579,-5.338,2.559,-5.378,2.559,-5.385,2.566,-5.414,2.563,-5.446,2.557,-5.463,2.542,-5.486,2.54,-5.493,2.547,-5.504,2.572,-5.527,2.582,-5.544,2.591,-5.607,2.585,-5.641,2.583,-5.658,2.585,-5.666,2.591,-5.674,2.595,-5.676,2.61,-5.675,2.614,-5.676,2.617,-5.68,2.614,-5.714,2.622,-5.767,2.619,-5.784,2.608,-5.803,2.603,-5.818,2.6,-5.85,2.607,-5.878,2.616,-5.897,2.633,-5.92,2.635,-5.933,2.632,-5.955,2.613,-5.988,2.597,-6,2.584,-6.015,2.582,-6.022,2.583,-6.034,2.585,-6.041,2.623,-6.07,2.632,-6.082,2.634,-6.089,2.638,-6.103,2.633,-6.122,2.631,-6.149,2.63,-6.156,2.621,-6.17,2.62,-6.183,2.679,-6.173,2.684,-6.174,2.689,-6.182,2.7,-6.185,2.702,-6.19,2.711,-6.178,2.71,-6.172,2.706,-6.173,2.705,-6.168,2.727,-6.164,2.725,-6.151,2.74,-6.147,2.728,-6.11,2.732,-6.112,2.747,-6.108,2.745,-6.074,2.77,-6.07,2.79,-6.061,2.787,-6.049,2.819,-6.043,2.822,-6.047,2.824,-6.041,2.849,-6.068,2.863,-6.052,2.882,-6.052,2.894,-6.02,2.893,-6.013,2.892,-6.011,2.881,-6.022,2.88,-6.005,2.863,-6.005,2.863,-5.998,2.869,-5.995,2.88,-5.984,2.873,-5.97,2.877,-5.967,2.874,-5.961,2.879,-5.96,2.879,-5.944,2.885,-5.944,2.882,-5.939,2.889,-5.932,2.888,-5.93,2.896,-5.921,2.902,-5.927,2.913,-5.917,2.922,-5.934,2.918,-5.941,2.926,-5.955,2.936,-5.945,2.948,-5.948,2.952,-5.947,2.967,-5.911,2.972,-5.911,2.983,-5.885,2.974,-5.884,2.987,-5.855,3.008,-5.877,3.041,-5.842,3.009,-5.808,3.017,-5.783,3.015,-5.781,2.932,-5.767,2.93,-5.766,2.934,-5.758,2.933,-5.754,2.924,-5.747,2.913,-5.727,2.908,-5.727,2.893,-5.706,2.884,-5.701,2.865,-5.705,2.857,-5.71,2.85,-5.707,2.845,-5.709,2.819,-5.698,2.815,-5.689,2.811,-5.687,2.811,-5.683,2.807,-5.677,2.807,-5.666,2.804,-5.66,2.808,-5.652,2.807,-5.649,2.809,-5.647,2.808,-5.643,2.809,-5.635,2.813,-5.634,2.815,-5.63,2.813,-5.628,2.816,-5.614,2.822,-5.612,2.824,-5.607,2.837,-5.598,2.836,-5.595,2.84,-5.582,2.839,-5.573,2.824,-5.557,2.804,-5.557,2.801,-5.561,2.804,-5.568,2.79,-5.56,2.79,-5.555,2.797,-5.548,2.795,-5.544,2.799,-5.542,2.795,-5.532,2.797,-5.517,2.797,-5.515,2.792,-5.513,2.791,-5.518,2.788,-5.516,2.786,-5.517,2.784,-5.515,2.784,-5.512,2.776,-5.509,2.781,-5.502,2.782,-5.495,2.774,-5.494,2.774,-5.49,2.781,-5.487,2.773,-5.487,2.773,-5.481,2.781,-5.485,2.782,-5.483,2.778,-5.475,2.773,-5.478,2.771,-5.475,2.772,-5.472,2.777,-5.471,2.779,-5.468,2.772,-5.456,2.765,-5.459,2.756,-5.447,2.745,-5.448,2.738,-5.454,2.749,-5.462,2.744,-5.469,2.741,-5.464,2.739,-5.464,2.737,-5.483,2.734,-5.483,2.734,-5.478,2.732,-5.476,2.725,-5.474,2.727,-5.47,2.732,-5.473,2.736,-5.471,2.732,-5.468,2.734,-5.465,2.731,-5.463,2.734,-5.46,2.731,-5.456,2.732,-5.449,2.738,-5.437,2.733,-5.426,2.742,-5.425,2.74,-5.417,2.749,-5.409,2.743,-5.398,2.743,-5.394,2.746,-5.391,2.738,-5.389,2.728,-5.38,2.718,-5.385,2.713,-5.383,2.712,-5.376,2.714,-5.365,2.711,-5.358,2.712,-5.364,2.709,-5.369,2.711,-5.378,2.708,-5.385,2.698,-5.379,2.686,-5.364,2.673,-5.359,2.666,-5.362,2.658,-5.359,2.653,-5.367,2.644,-5.369,2.642,-5.372,2.64,-5.37,2.638,-5.373,2.628,-5.368,2.625,-5.37,2.625,-5.359,2.622,-5.351,2.624,-5.341,2.613,-5.32,2.607,-5.321,2.604,-5.328,2.592,-5.338,2.58,-5.336,2.579,-5.338],[3.003,-5.766,3.012,-5.758,3.004,-5.748,3.009,-5.744,3.002,-5.731,3.021,-5.728,3.022,-5.735,3.037,-5.725,3.045,-5.734,3.048,-5.731,3.058,-5.715,3.06,-5.698,3.075,-5.685,3.086,-5.684,3.115,-5.649,3.12,-5.628,3.126,-5.624,3.122,-5.611,3.126,-5.615,3.17,-5.579,3.152,-5.547,3.158,-5.517,3.152,-5.509,3.169,-5.507,3.167,-5.506,3.181,-5.49,3.183,-5.49,3.187,-5.485,3.194,-5.483,3.197,-5.478,3.201,-5.482,3.23,-5.472,3.249,-5.474,3.253,-5.47,3.256,-5.47,3.258,-5.471,3.258,-5.469,3.261,-5.469,3.271,-5.462,3.277,-5.463,3.279,-5.461,3.282,-5.463,3.283,-5.46,3.286,-5.462,3.289,-5.459,3.29,-5.463,3.292,-5.461,3.297,-5.465,3.297,-5.462,3.3,-5.461,3.305,-5.454,3.309,-5.456,3.313,-5.452,3.313,-5.455,3.319,-5.458,3.323,-5.453,3.326,-5.452,3.327,-5.437,3.329,-5.43,3.334,-5.424,3.332,-5.41,3.327,-5.409,3.328,-5.405,3.325,-5.403,3.325,-5.397,3.321,-5.398,3.325,-5.386,3.318,-5.384,3.315,-5.38,3.32,-5.375,3.317,-5.372,3.312,-5.373,3.314,-5.363,3.311,-5.358,3.319,-5.351,3.322,-5.339,3.325,-5.341,3.328,-5.337,3.324,-5.334,3.322,-5.329,3.322,-5.317,3.325,-5.311,3.322,-5.305,3.326,-5.302,3.323,-5.298,3.323,-5.291,3.318,-5.289,3.324,-5.283,3.325,-5.27,3.318,-5.268,3.314,-5.263,3.312,-5.252,3.314,-5.244,3.312,-5.24,3.313,-5.234,3.309,-5.231,3.31,-5.227,3.301,-5.209,3.301,-5.202,3.286,-5.187,3.285,-5.182,3.274,-5.176,3.275,-5.168,3.269,-5.166,3.275,-5.164,3.274,-5.161,3.266,-5.163,3.264,-5.161,3.264,-5.15,3.258,-5.147,3.265,-5.131,3.26,-5.129,3.26,-5.125,3.257,-5.124,3.253,-5.111,3.256,-5.1,3.28,-5.087,3.278,-5.074,3.281,-5.067,3.277,-5.063,3.265,-5.062,3.256,-5.07,3.248,-5.072,3.242,-5.067,3.239,-5.073,3.235,-5.071,3.234,-5.074,3.231,-5.074,3.227,-5.069,3.222,-5.072,3.222,-5.077,3.215,-5.085,3.21,-5.084,3.208,-5.093,3.205,-5.096,3.187,-5.101,3.179,-5.097,3.169,-5.082,3.157,-5.077,3.146,-5.068,3.133,-5.049,3.136,-5.031,3.14,-5.025,3.15,-5.024,3.163,-5.035,3.17,-5.032,3.17,-5.017,3.166,-5.008,3.156,-5.003,3.147,-5.002,3.136,-5.005,3.124,-5.012,3.118,-5.01,3.116,-5.005,3.117,-4.998,3.122,-4.991,3.136,-4.982,3.155,-4.979,3.165,-4.988,3.171,-4.989,3.179,-4.97,3.182,-4.974,3.178,-4.992,3.181,-4.994,3.185,-4.993,3.195,-4.979,3.201,-4.96,3.205,-4.96,3.207,-4.968,3.213,-4.971,3.241,-4.956,3.249,-4.928,3.26,-4.918,3.264,-4.906,3.269,-4.9,3.275,-4.898,3.28,-4.904,3.279,-4.922,3.285,-4.926,3.291,-4.925,3.299,-4.917,3.303,-4.903,3.302,-4.88,3.304,-4.875,3.31,-4.872,3.325,-4.877,3.333,-4.871,3.335,-4.864,3.334,-4.855,3.327,-4.845,3.324,-4.835,3.317,-4.827,3.307,-4.826,3.296,-4.808,3.293,-4.798,3.294,-4.785,3.307,-4.773,3.315,-4.757,3.305,-4.755,3.29,-4.736,3.278,-4.727,3.264,-4.727,3.246,-4.732,3.243,-4.735,3.241,-4.762,3.228,-4.778,3.223,-4.776,3.222,-4.763,3.224,-4.743,3.23,-4.731,3.224,-4.722,3.213,-4.719,3.203,-4.72,3.199,-4.723,3.196,-4.732,3.198,-4.755,3.196,-4.761,3.191,-4.762,3.176,-4.752,3.159,-4.728,3.144,-4.716,3.139,-4.715,3.13,-4.727,3.133,-4.741,3.133,-4.75,3.124,-4.77,3.113,-4.77,3.108,-4.765,3.111,-4.761,3.124,-4.76,3.124,-4.754,3.097,-4.743,3.091,-4.746,3.084,-4.756,3.071,-4.763,3.063,-4.777,3.057,-4.78,3.033,-4.768,3.038,-4.755,3.037,-4.748,3.018,-4.744,3.014,-4.746,3.008,-4.752,3.007,-4.772,3.003,-4.776,2.996,-4.777,2.99,-4.775,2.984,-4.767,2.981,-4.759,2.982,-4.747,2.979,-4.745,2.974,-4.748,2.969,-4.762,2.97,-4.779,2.967,-4.787,2.935,-4.804,2.921,-4.807,2.911,-4.818,2.888,-4.823,2.868,-4.82,2.851,-4.811,2.838,-4.813,2.814,-4.829,2.801,-4.847,2.784,-4.855,2.763,-4.869,2.748,-4.887,2.731,-4.922,2.715,-4.946,2.69,-4.975,2.675,-5,2.671,-5.009,2.669,-5.034,2.663,-5.052,2.659,-5.059,2.63,-5.084,2.619,-5.1,2.615,-5.128,2.628,-5.145,2.633,-5.16,2.633,-5.169,2.605,-5.194,2.588,-5.226,2.583,-5.253,2.585,-5.306,2.58,-5.336,2.592,-5.338,2.604,-5.328,2.607,-5.321,2.613,-5.32,2.624,-5.341,2.622,-5.351,2.625,-5.359,2.625,-5.37,2.628,-5.368,2.638,-5.373,2.64,-5.37,2.642,-5.372,2.644,-5.369,2.653,-5.367,2.658,-5.359,2.666,-5.362,2.673,-5.359,2.686,-5.364,2.698,-5.379,2.708,-5.385,2.711,-5.378,2.709,-5.369,2.712,-5.364,2.711,-5.358,2.714,-5.365,2.712,-5.376,2.713,-5.383,2.718,-5.385,2.728,-5.38,2.738,-5.389,2.746,-5.391,2.743,-5.394,2.743,-5.398,2.749,-5.409,2.74,-5.417,2.742,-5.425,2.733,-5.426,2.738,-5.437,2.732,-5.449,2.731,-5.456,2.734,-5.46,2.731,-5.463,2.734,-5.465,2.732,-5.468,2.736,-5.471,2.732,-5.473,2.727,-5.47,2.725,-5.474,2.732,-5.476,2.734,-5.478,2.734,-5.483,2.737,-5.483,2.739,-5.464,2.741,-5.464,2.744,-5.469,2.749,-5.462,2.738,-5.454,2.745,-5.448,2.756,-5.447,2.765,-5.459,2.772,-5.456,2.779,-5.468,2.777,-5.471,2.772,-5.472,2.771,-5.475,2.773,-5.478,2.778,-5.475,2.782,-5.483,2.781,-5.485,2.773,-5.481,2.773,-5.487,2.781,-5.487,2.774,-5.49,2.774,-5.494,2.782,-5.495,2.781,-5.502,2.776,-5.509,2.784,-5.512,2.784,-5.515,2.786,-5.517,2.788,-5.516,2.791,-5.518,2.792,-5.513,2.797,-5.515,2.797,-5.517,2.795,-5.532,2.799,-5.542,2.795,-5.544,2.797,-5.548,2.79,-5.555,2.79,-5.56,2.804,-5.568,2.801,-5.561,2.804,-5.557,2.824,-5.557,2.839,-5.573,2.84,-5.582,2.836,-5.595,2.837,-5.598,2.824,-5.607,2.822,-5.612,2.816,-5.614,2.813,-5.628,2.815,-5.63,2.813,-5.634,2.809,-5.634,2.808,-5.643,2.809,-5.647,2.807,-5.649,2.808,-5.652,2.804,-5.66,2.807,-5.666,2.807,-5.677,2.819,-5.698,2.845,-5.709,2.85,-5.707,2.857,-5.71,2.865,-5.705,2.887,-5.702,2.894,-5.707,2.896,-5.713,2.903,-5.718,2.908,-5.727,2.913,-5.727,2.924,-5.747,2.933,-5.754,2.934,-5.758,2.93,-5.766,2.932,-5.767,3.015,-5.781,3.003,-5.766],[3.8,-4.204,3.805,-4.192,3.794,-4.193,3.768,-4.185,3.744,-4.197,3.739,-4.206,3.739,-4.214,3.742,-4.227,3.751,-4.245,3.755,-4.26,3.751,-4.27,3.74,-4.278,3.631,-4.263,3.605,-4.267,3.586,-4.276,3.58,-4.281,3.571,-4.296,3.565,-4.342,3.562,-4.347,3.552,-4.36,3.533,-4.369,3.523,-4.367,3.512,-4.359,3.47,-4.309,3.46,-4.305,3.451,-4.308,3.445,-4.314,3.44,-4.328,3.439,-4.357,3.431,-4.37,3.423,-4.378,3.399,-4.389,3.367,-4.396,3.348,-4.391,3.331,-4.392,3.319,-4.396,3.307,-4.404,3.301,-4.415,3.302,-4.448,3.294,-4.466,3.287,-4.475,3.273,-4.482,3.248,-4.485,3.235,-4.49,3.224,-4.5,3.212,-4.52,3.205,-4.525,3.184,-4.529,3.153,-4.53,3.117,-4.552,3.095,-4.575,3.083,-4.606,3.065,-4.627,3.043,-4.641,3.031,-4.644,3.018,-4.651,3.013,-4.661,3.002,-4.697,2.994,-4.708,2.972,-4.72,2.917,-4.758,2.917,-4.773,2.926,-4.783,2.928,-4.79,2.927,-4.796,2.921,-4.807,2.935,-4.804,2.967,-4.787,2.97,-4.779,2.969,-4.762,2.974,-4.748,2.979,-4.745,2.982,-4.747,2.981,-4.759,2.984,-4.767,2.99,-4.775,2.996,-4.777,3.003,-4.776,3.007,-4.772,3.008,-4.752,3.014,-4.746,3.018,-4.744,3.037,-4.748,3.038,-4.755,3.033,-4.768,3.057,-4.78,3.063,-4.777,3.071,-4.763,3.084,-4.756,3.091,-4.746,3.097,-4.743,3.124,-4.754,3.124,-4.76,3.111,-4.761,3.108,-4.765,3.113,-4.77,3.124,-4.77,3.133,-4.75,3.133,-4.741,3.13,-4.727,3.139,-4.715,3.144,-4.716,3.159,-4.728,3.176,-4.752,3.191,-4.762,3.196,-4.761,3.198,-4.755,3.196,-4.732,3.199,-4.723,3.203,-4.72,3.213,-4.719,3.224,-4.722,3.23,-4.731,3.224,-4.743,3.223,-4.755,3.222,-4.773,3.225,-4.778,3.229,-4.777,3.241,-4.762,3.243,-4.735,3.246,-4.732,3.264,-4.727,3.282,-4.729,3.305,-4.755,3.315,-4.757,3.307,-4.773,3.294,-4.785,3.293,-4.798,3.296,-4.808,3.307,-4.826,3.317,-4.827,3.322,-4.831,3.334,-4.855,3.335,-4.864,3.333,-4.871,3.325,-4.877,3.31,-4.872,3.304,-4.875,3.302,-4.88,3.304,-4.897,3.297,-4.921,3.288,-4.926,3.28,-4.924,3.278,-4.92,3.28,-4.904,3.276,-4.899,3.272,-4.898,3.264,-4.906,3.26,-4.918,3.249,-4.928,3.243,-4.953,3.237,-4.959,3.213,-4.971,3.207,-4.968,3.205,-4.96,3.201,-4.96,3.195,-4.979,3.183,-4.994,3.179,-4.993,3.177,-4.991,3.182,-4.976,3.18,-4.97,3.177,-4.973,3.174,-4.986,3.17,-4.989,3.155,-4.979,3.136,-4.982,3.122,-4.991,3.117,-4.998,3.116,-5.005,3.118,-5.01,3.124,-5.012,3.136,-5.005,3.147,-5.002,3.156,-5.003,3.166,-5.008,3.17,-5.017,3.17,-5.032,3.163,-5.035,3.15,-5.024,3.14,-5.025,3.136,-5.031,3.133,-5.049,3.146,-5.068,3.157,-5.077,3.169,-5.082,3.179,-5.097,3.187,-5.101,3.205,-5.096,3.208,-5.093,3.21,-5.084,3.215,-5.085,3.222,-5.077,3.222,-5.072,3.227,-5.069,3.231,-5.074,3.234,-5.074,3.235,-5.071,3.239,-5.073,3.242,-5.067,3.248,-5.072,3.256,-5.07,3.265,-5.062,3.277,-5.063,3.281,-5.067,3.278,-5.074,3.28,-5.087,3.256,-5.1,3.253,-5.107,3.257,-5.124,3.26,-5.125,3.26,-5.129,3.265,-5.131,3.259,-5.147,3.264,-5.15,3.265,-5.162,3.274,-5.161,3.275,-5.164,3.269,-5.166,3.275,-5.168,3.274,-5.176,3.285,-5.182,3.286,-5.187,3.301,-5.202,3.301,-5.209,3.31,-5.227,3.309,-5.231,3.313,-5.234,3.314,-5.263,3.318,-5.268,3.325,-5.27,3.324,-5.283,3.318,-5.289,3.323,-5.291,3.323,-5.298,3.326,-5.302,3.322,-5.305,3.325,-5.311,3.322,-5.317,3.322,-5.329,3.324,-5.334,3.328,-5.337,3.325,-5.341,3.322,-5.339,3.319,-5.351,3.311,-5.357,3.314,-5.363,3.312,-5.373,3.319,-5.374,3.319,-5.376,3.315,-5.377,3.315,-5.38,3.318,-5.384,3.325,-5.385,3.323,-5.39,3.324,-5.393,3.321,-5.398,3.326,-5.397,3.325,-5.403,3.328,-5.405,3.327,-5.409,3.331,-5.409,3.332,-5.412,3.338,-5.413,3.346,-5.418,3.358,-5.41,3.362,-5.41,3.366,-5.402,3.374,-5.398,3.376,-5.394,3.378,-5.395,3.385,-5.39,3.394,-5.391,3.401,-5.388,3.41,-5.388,3.411,-5.386,3.421,-5.387,3.429,-5.379,3.437,-5.385,3.452,-5.377,3.461,-5.367,3.462,-5.383,3.468,-5.397,3.463,-5.403,3.466,-5.419,3.463,-5.43,3.465,-5.43,3.466,-5.448,3.576,-5.447,3.578,-5.444,3.584,-5.444,3.586,-5.442,3.583,-5.438,3.588,-5.434,3.593,-5.435,3.593,-5.43,3.602,-5.425,3.602,-5.422,3.607,-5.417,3.612,-5.405,3.618,-5.405,3.621,-5.401,3.622,-5.39,3.617,-5.387,3.611,-5.372,3.613,-5.36,3.619,-5.362,3.714,-5.325,3.727,-5.323,3.725,-5.318,3.744,-5.307,3.761,-5.301,3.802,-5.288,3.826,-5.287,3.826,-5.282,3.838,-5.28,3.839,-5.274,3.837,-5.268,3.833,-5.266,3.835,-5.261,3.833,-5.255,3.836,-5.252,3.833,-5.25,3.843,-5.248,3.85,-5.251,3.852,-5.25,3.852,-5.242,3.843,-5.232,3.85,-5.226,3.844,-5.222,3.839,-5.227,3.836,-5.223,3.843,-5.215,3.842,-5.211,3.847,-5.207,3.844,-5.201,3.849,-5.198,3.849,-5.193,3.835,-5.187,3.835,-5.18,3.83,-5.18,3.828,-5.174,3.833,-5.167,3.842,-5.164,3.838,-5.157,3.84,-5.151,3.835,-5.148,3.828,-5.151,3.828,-5.139,3.824,-5.126,3.819,-5.124,3.814,-5.128,3.812,-5.126,3.813,-5.122,3.819,-5.117,3.817,-5.103,3.822,-5.101,3.82,-5.094,3.826,-5.095,3.828,-5.088,3.817,-5.082,3.812,-5.081,3.81,-5.071,3.807,-5.07,3.799,-5.072,3.792,-5.065,3.793,-5.055,3.789,-5.041,3.783,-5.041,3.78,-5.038,3.781,-5.034,3.785,-5.032,3.781,-5.027,3.782,-5.014,3.777,-5.012,3.776,-5.018,3.773,-5.02,3.767,-5.014,3.767,-5.004,3.763,-5.004,3.758,-4.995,3.762,-4.98,3.758,-4.981,3.753,-4.978,3.755,-4.966,3.751,-4.965,3.75,-4.962,3.746,-4.963,3.746,-4.957,3.741,-4.956,3.742,-4.953,3.746,-4.951,3.744,-4.945,3.739,-4.945,3.736,-4.939,3.734,-4.944,3.73,-4.94,3.729,-4.927,3.733,-4.927,3.733,-4.923,3.727,-4.917,3.725,-4.921,3.721,-4.909,3.724,-4.903,3.728,-4.901,3.727,-4.895,3.736,-4.892,3.733,-4.887,3.727,-4.887,3.729,-4.882,3.736,-4.879,3.741,-4.884,3.742,-4.883,3.736,-4.876,3.737,-4.871,3.733,-4.871,3.73,-4.866,3.725,-4.868,3.721,-4.865,3.717,-4.859,3.718,-4.855,3.71,-4.846,3.707,-4.83,3.697,-4.822,3.698,-4.819,3.703,-4.824,3.706,-4.823,3.708,-4.816,3.706,-4.813,3.7,-4.81,3.697,-4.811,3.686,-4.822,3.675,-4.817,3.681,-4.806,3.693,-4.8,3.693,-4.792,3.688,-4.791,3.685,-4.798,3.678,-4.794,3.67,-4.795,3.67,-4.782,3.676,-4.776,3.675,-4.771,3.658,-4.769,3.653,-4.777,3.641,-4.77,3.634,-4.768,3.63,-4.769,3.624,-4.78,3.612,-4.787,3.608,-4.784,3.61,-4.776,3.606,-4.772,3.599,-4.777,3.586,-4.777,3.573,-4.779,3.548,-4.774,3.543,-4.781,3.534,-4.786,3.532,-4.79,3.533,-4.795,3.528,-4.802,3.518,-4.8,3.508,-4.803,3.494,-4.794,3.484,-4.773,3.473,-4.766,3.471,-4.757,3.451,-4.735,3.448,-4.719,3.434,-4.706,3.432,-4.702,3.442,-4.679,3.461,-4.674,3.459,-4.669,3.443,-4.659,3.443,-4.652,3.45,-4.643,3.48,-4.628,3.498,-4.623,3.51,-4.625,3.514,-4.622,3.514,-4.593,3.519,-4.574,3.524,-4.567,3.531,-4.564,3.544,-4.562,3.601,-4.539,3.608,-4.53,3.616,-4.51,3.628,-4.502,3.636,-4.491,3.653,-4.457,3.658,-4.455,3.676,-4.46,3.687,-4.457,3.69,-4.452,3.691,-4.433,3.699,-4.405,3.712,-4.389,3.729,-4.374,3.735,-4.363,3.755,-4.29,3.772,-4.272,3.799,-4.254,3.796,-4.238,3.8,-4.204]],"ag":[[2.622,-4.898,1,1,1,"80 a 84",0],[2.634,-4.919,1,1,1,"40 a 44",1],[2.61,-4.919,0,0,2,"25 a 29",0],[2.646,-4.898,0,0,0,"25 a 29",1],[2.598,-4.898,2,2,2,"25 a 29",0],[2.622,-4.94,2,2,2,"70 a 74",0],[2.634,-4.877,1,1,1,"20 a 24",0],[2.61,-4.877,0,0,2,"45 a 49",1],[2.658,-4.919,0,0,0,"70 a 74",1],[2.646,-4.94,1,1,2,"35 a 39",1],[2.586,-4.919,1,1,1,"35 a 39",0],[2.598,-4.94,0,0,0,"65 a 69",0],[2.658,-4.877,2,2,2,"25 a 29",1],[2.67,-4.898,1,1,1,"60 a 64",1],[2.586,-4.877,2,2,2,"45 a 49",1],[2.574,-4.898,0,0,0,"75 a 79",0],[2.622,-4.856,0,0,0,"30 a 34",0],[2.634,-4.961,0,0,0,"35 a 39",1],[2.61,-4.961,0,0,0,"60 a 64",0],[2.67,-4.94,2,2,2,"60 a 64",0],[2.646,-4.856,0,0,0,"30 a 34",0],[2.574,-4.94,1,1,1,"55 a 59",0],[2.598,-4.856,1,1,1,"55 a 59",1],[2.683,-4.919,0,0,0,"50 a 54",1],[2.562,-4.919,0,0,0,"25 a 29",1],[2.658,-4.961,0,0,0,"75 a 79",0],[2.586,-4.961,2,2,2,"50 a 54",0],[2.683,-4.877,2,2,2,"65 a 69",1],[2.562,-4.877,0,0,0,"15 a 19",0],[2.67,-4.856,1,1,1,"60 a 64",0],[2.695,-4.898,1,1,1,"55 a 59",1],[2.574,-4.856,2,2,2,"30 a 34",1],[2.622,-4.981,0,0,1,"20 a 24",1],[2.55,-4.898,0,0,0,"65 a 69",0],[2.634,-4.835,0,0,0,"30 a 34",1],[2.61,-4.835,2,2,2,"40 a 44",0],[2.646,-4.981,0,1,0,"40 a 44",0],[2.598,-4.981,0,0,0,"90 a 94",0],[2.695,-4.94,0,0,0,"35 a 39",1],[2.683,-4.961,2,2,2,"65 a 69",0],[2.55,-4.94,1,1,1,"60 a 64",1],[2.562,-4.961,2,2,2,"50 a 54",0],[2.658,-4.835,0,0,0,"60 a 64",1],[2.586,-4.835,1,1,1,"25 a 29",0],[2.707,-4.919,0,0,0,"40 a 44",1],[2.538,-4.919,2,2,2,"50 a 54",1],[2.67,-4.981,0,0,0,"60 a 64",0],[2.574,-4.981,1,1,1,"35 a 39",0],[2.695,-4.856,0,0,1,"45 a 49",1],[2.707,-4.877,1,1,1,"25 a 29",1],[2.55,-4.856,2,2,2,"40 a 44",0],[2.538,-4.877,0,0,2,"45 a 49",0],[2.634,-5.002,0,0,1,"50 a 54",1],[2.683,-4.835,1,1,1,"70 a 74",0],[2.622,-4.815,0,0,0,"90 a 94",1],[2.61,-5.002,1,1,2,"60 a 64",0],[2.562,-4.835,2,2,2,"40 a 44",0],[2.719,-4.898,1,1,1,"70 a 74",0],[2.646,-4.815,0,0,2,"60 a 64",1],[2.598,-4.815,1,1,1,"25 a 29",1],[2.526,-4.898,0,0,0,"55 a 59",0],[2.658,-5.002,2,2,2,"40 a 44",1],[2.538,-4.961,1,1,1,"40 a 44",1],[2.719,-4.94,2,2,2,"75 a 79",1],[2.586,-5.002,1,1,1,"25 a 29",0],[2.526,-4.94,0,0,0,"55 a 59",0],[2.55,-4.981,1,1,1,"60 a 64",1],[2.67,-4.815,2,2,2,"20 a 24",0],[2.574,-4.815,0,0,0,"30 a 34",0],[2.731,-4.919,1,1,1,"25 a 29",0],[2.719,-4.856,0,0,0,"20 a 24",0],[2.514,-4.919,1,1,1,"30 a 34",1],[2.526,-4.856,1,1,2,"75 a 79",1],[2.707,-4.835,2,2,2,"75 a 79",1],[2.562,-5.002,2,2,2,"20 a 24",1],[2.731,-4.877,2,2,2,"20 a 24",0],[2.538,-4.835,0,0,1,"30 a 34",1],[2.514,-4.877,0,1,0,"30 a 34",1],[2.622,-5.023,2,2,2,"40 a 44",1],[2.634,-4.794,1,1,2,"25 a 29",1],[2.61,-4.794,1,1,1,"25 a 29",1],[2.646,-5.023,0,0,0,"75 a 79",0],[2.598,-5.023,1,1,1,"35 a 39",1],[2.695,-4.815,0,0,0,"35 a 39",1],[2.55,-4.815,0,0,2,"25 a 29",1],[2.658,-4.794,1,1,1,"70 a 74",1],[2.586,-4.794,0,0,0,"40 a 44",1],[2.514,-4.961,0,0,1,"20 a 24",1],[2.526,-4.981,0,0,2,"50 a 54",1],[2.502,-4.898,2,2,2,"30 a 34",1],[2.574,-5.023,0,0,0,"20 a 24",1],[2.502,-4.94,1,1,1,"25 a 29",1],[2.538,-5.002,0,0,2,"25 a 29",1],[2.683,-4.794,0,0,0,"65 a 69",1],[2.731,-4.835,2,2,2,"40 a 44",1],[2.743,-4.856,1,1,2,"30 a 34",1],[2.562,-4.794,1,1,1,"45 a 49",1],[2.514,-4.835,0,0,0,"50 a 54",1],[2.502,-4.856,1,1,1,"35 a 39",1],[2.49,-4.919,2,2,2,"40 a 44",0],[2.719,-4.815,0,0,0,"45 a 49",1],[2.755,-4.877,0,0,0,"60 a 64",1],[2.526,-4.815,0,0,0,"25 a 29",1],[2.634,-5.044,0,0,0,"50 a 54",1],[2.61,-5.044,1,1,1,"30 a 34",0],[2.55,-5.023,1,1,1,"75 a 79",0],[2.622,-4.773,0,0,0,"35 a 39",0],[2.49,-4.877,0,0,2,"50 a 54",1],[2.646,-4.773,0,1,0,"20 a 24",1],[2.598,-4.773,0,0,0,"40 a 44",1],[2.658,-5.044,0,0,0,"50 a 54",1],[2.586,-5.044,1,1,1,"60 a 64",1],[2.502,-4.981,0,0,0,"25 a 29",1],[2.707,-4.794,1,1,1,"65 a 69",1],[2.49,-4.961,0,1,0,"25 a 29",1],[2.538,-4.794,2,2,2,"30 a 34",0],[2.67,-4.773,1,1,1,"25 a 29",1],[2.514,-5.002,0,0,0,"30 a 34",0],[2.574,-4.773,0,0,0,"35 a 39",1],[2.478,-4.898,0,0,0,"30 a 34",0],[2.562,-5.044,0,0,0,"80 a 84",1],[2.478,-4.94,1,1,1,"70 a 74",1],[2.526,-5.023,0,0,0,"40 a 44",0],[2.755,-4.835,2,2,2,"35 a 39",1],[2.743,-4.815,2,2,2,"25 a 29",0],[2.49,-4.835,0,0,0,"25 a 29",1],[2.767,-4.856,0,0,0,"50 a 54",1],[2.695,-4.773,2,2,2,"50 a 54",1],[2.502,-4.815,2,2,2,"50 a 54",1],[2.55,-4.773,0,0,1,"40 a 44",1],[2.478,-4.856,0,0,0,"25 a 29",0],[2.622,-5.065,2,2,2,"20 a 24",1],[2.634,-4.752,1,1,1,"25 a 29",0],[2.731,-4.794,2,2,2,"55 a 59",1],[2.61,-4.752,2,2,2,"55 a 59",1],[2.646,-5.065,0,0,0,"15 a 19",1],[2.466,-4.919,2,2,2,"25 a 29",0],[2.598,-5.065,0,0,0,"50 a 54",0],[2.514,-4.794,0,0,0,"25 a 29",0],[2.538,-5.044,2,2,2,"35 a 39",1],[2.658,-4.752,0,0,1,"45 a 49",1],[2.466,-4.877,0,0,0,"25 a 29",1],[2.586,-4.752,0,0,0,"30 a 34",0],[2.478,-4.981,2,2,2,"15 a 19",0],[2.49,-5.002,2,2,2,"40 a 44",1],[2.574,-5.065,0,0,0,"40 a 44",1],[2.466,-4.961,0,0,0,"45 a 49",0],[2.719,-4.773,1,1,1,"20 a 24",0],[2.502,-5.023,2,2,2,"65 a 69",1],[2.526,-4.773,2,2,2,"40 a 44",1],[2.683,-4.752,2,2,2,"40 a 44",0],[2.562,-4.752,1,1,1,"20 a 24",1],[2.454,-4.898,0,0,0,"65 a 69",1],[2.767,-4.815,0,0,0,"25 a 29",1],[2.779,-4.835,2,2,2,"60 a 64",1],[2.55,-5.065,2,2,2,"35 a 39",1],[2.454,-4.94,0,0,0,"70 a 74",0],[2.478,-4.815,1,1,1,"20 a 24",1],[2.466,-4.835,2,2,2,"35 a 39",0],[2.514,-5.044,0,0,2,"40 a 44",1],[2.755,-4.794,0,0,0,"80 a 84",1],[2.49,-4.794,0,0,0,"40 a 44",1],[2.61,-5.086,2,2,2,"40 a 44",0],[2.707,-4.752,2,2,2,"15 a 19",1],[2.454,-4.856,2,2,2,"25 a 29",0],[2.622,-4.731,1,1,1,"70 a 74",0],[2.538,-4.752,1,1,1,"25 a 29",0],[2.646,-4.731,1,1,1,"15 a 19",1],[2.598,-4.731,1,1,1,"55 a 59",0],[2.586,-5.086,1,1,1,"25 a 29",0],[2.743,-4.773,0,0,0,"20 a 24",0],[2.442,-4.919,1,1,1,"60 a 64",1],[2.502,-4.773,0,0,0,"70 a 74",0],[2.466,-5.002,0,0,0,"35 a 39",0],[2.67,-4.731,0,0,0,"45 a 49",0],[2.526,-5.065,1,1,1,"80 a 84",0],[2.574,-4.731,1,1,1,"40 a 44",1],[2.454,-4.981,1,1,1,"55 a 59",0],[2.478,-5.023,0,0,0,"45 a 49",0],[2.562,-5.086,0,0,0,"40 a 44",1],[2.442,-4.961,2,2,2,"60 a 64",1],[2.731,-4.752,0,1,0,"30 a 34",0],[2.49,-5.044,1,1,1,"30 a 34",0],[2.514,-4.752,0,0,0,"50 a 54",1],[2.695,-4.731,0,0,0,"30 a 34",0],[2.791,-4.815,0,0,0,"65 a 69",0],[2.55,-4.731,0,0,0,"20 a 24",1],[2.779,-4.794,2,2,2,"45 a 49",0],[2.803,-4.835,0,0,0,"50 a 54",1],[2.454,-4.815,0,0,0,"60 a 64",1],[2.466,-4.794,0,0,0,"30 a 34",0],[2.442,-4.835,0,0,1,"40 a 44",1],[2.538,-5.086,0,0,0,"35 a 39",0],[2.767,-4.773,1,1,1,"65 a 69",0],[2.502,-5.065,2,2,2,"30 a 34",1],[2.634,-4.71,0,0,0,"75 a 79",0],[2.61,-4.71,2,2,2,"35 a 39",1],[2.478,-4.773,0,0,2,"40 a 44",0],[2.598,-5.107,2,2,2,"30 a 34",1],[2.43,-4.856,1,1,1,"25 a 29",1],[2.719,-4.731,0,0,0,"45 a 49",1],[2.658,-4.71,1,1,1,"30 a 34",1],[2.586,-4.71,1,1,1,"30 a 34",1],[2.526,-4.731,1,1,2,"60 a 64",1],[2.574,-5.107,1,1,1,"70 a 74",1],[2.442,-5.002,0,1,0,"35 a 39",0],[2.755,-4.752,1,1,1,"80 a 84",0],[2.454,-5.023,1,1,1,"50 a 54",0],[2.49,-4.752,1,1,2,"20 a 24",0],[2.43,-4.981,2,2,2,"55 a 59",1],[2.683,-4.71,0,0,0,"20 a 24",0],[2.466,-5.044,2,2,2,"30 a 34",1],[2.562,-4.71,1,1,1,"45 a 49",0],[2.514,-5.086,0,0,2,"20 a 24",1],[2.55,-5.107,1,1,1,"35 a 39",0],[2.417,-4.961,0,0,0,"35 a 39",0],[2.803,-4.794,2,2,2,"90 a 94",1],[2.478,-5.065,2,2,2,"30 a 34",1],[2.815,-4.815,0,0,0,"65 a 69",1],[2.743,-4.731,0,0,0,"20 a 24",0],[2.442,-4.794,1,1,1,"75 a 79",1],[2.707,-4.71,0,0,0,"20 a 24",1],[2.502,-4.731,1,1,1,"35 a 39",0],[2.43,-4.815,2,2,2,"50 a 54",1],[2.791,-4.773,0,0,0,"50 a 54",0],[2.538,-4.71,0,0,2,"25 a 29",0],[2.454,-4.773,0,1,0,"25 a 29",1],[2.417,-4.835,1,1,1,"35 a 39",0],[2.61,-5.128,2,2,2,"20 a 24",1],[2.622,-4.689,2,2,2,"35 a 39",1],[2.405,-4.94,1,1,1,"65 a 69",1],[2.526,-5.107,1,1,1,"85 a 89",1],[2.646,-4.689,2,2,2,"40 a 44",0],[2.779,-4.752,0,0,0,"25 a 29",1],[2.598,-4.689,1,1,1,"30 a 34",1],[2.49,-5.086,2,2,2,"25 a 29",1],[2.586,-5.128,0,0,1,"55 a 59",1],[2.466,-4.752,2,2,2,"75 a 79",1],[2.67,-4.689,2,2,2,"45 a 49",1],[2.574,-4.689,1,1,1,"15 a 19",1],[2.43,-5.023,0,0,0,"45 a 49",1],[2.731,-4.71,1,1,1,"20 a 24",0],[2.417,-5.002,2,2,2,"30 a 34",0],[2.442,-5.044,1,1,1,"55 a 59",0],[2.562,-5.128,0,0,0,"30 a 34",1],[2.767,-4.731,1,1,1,"40 a 44",0],[2.405,-4.981,0,0,0,"20 a 24",1],[2.478,-4.731,0,0,0,"40 a 44",0],[2.695,-4.689,0,0,0,"65 a 69",1],[2.502,-5.107,2,2,2,"30 a 34",1],[2.827,-4.794,0,0,0,"30 a 34",0],[2.538,-5.128,0,0,0,"80 a 84",0],[2.815,-4.773,0,0,0,"65 a 69",1],[2.393,-4.961,1,1,2,"50 a 54",0],[2.417,-4.794,2,2,2,"25 a 29",1],[2.43,-4.773,2,2,2,"15 a 19",0],[2.755,-4.71,0,0,0,"60 a 64",0],[2.719,-4.689,1,1,1,"25 a 29",1],[2.622,-5.148,0,0,1,"50 a 54",0],[2.442,-4.752,1,1,2,"40 a 44",1],[2.634,-4.669,0,0,0,"35 a 39",1],[2.598,-5.148,1,1,1,"30 a 34",0],[2.658,-4.669,2,2,2,"25 a 29",1],[2.574,-5.148,0,0,0,"30 a 34",1],[2.514,-5.128,1,1,1,"45 a 49",0],[2.478,-5.107,0,0,0,"30 a 34",1],[2.454,-4.731,0,0,2,"55 a 59",0],[2.405,-5.023,2,2,2,"75 a 79",1],[2.417,-5.044,1,1,1,"60 a 64",1],[2.683,-4.669,0,0,1,"50 a 54",1],[2.743,-4.689,1,1,1,"25 a 29",0],[2.55,-5.148,2,2,2,"15 a 19",1],[2.466,-4.71,0,0,0,"65 a 69",1],[2.707,-4.669,0,0,2,"25 a 29",0],[2.851,-4.794,0,0,0,"35 a 39",0],[2.49,-5.128,2,2,2,"25 a 29",1],[2.405,-4.773,2,2,2,"25 a 29",1],[2.393,-4.794,2,2,2,"30 a 34",0],[2.863,-4.815,1,1,1,"60 a 64",1],[2.526,-5.148,1,1,1,"70 a 74",1],[2.417,-4.752,0,1,0,"65 a 69",1],[2.767,-4.689,1,1,1,"65 a 69",1],[2.43,-4.731,1,1,1,"25 a 29",0],[2.731,-4.669,1,1,1,"25 a 29",1],[2.67,-4.648,0,1,1,"25 a 29",1],[2.393,-5.044,2,2,2,"50 a 54",0],[2.502,-5.148,2,2,2,"75 a 79",0],[2.442,-4.71,2,2,2,"15 a 19",0],[2.695,-4.648,0,0,2,"45 a 49",1],[2.875,-4.794,0,0,0,"50 a 54",1],[2.381,-4.773,0,0,0,"40 a 44",0],[2.393,-4.752,1,1,2,"25 a 29",1],[2.478,-5.148,2,2,2,"60 a 64",0],[2.405,-4.731,0,0,1,"25 a 29",1],[2.514,-5.169,2,2,2,"80 a 84",1],[2.417,-4.71,1,1,1,"45 a 49",0],[2.49,-5.169,2,2,2,"40 a 44",1],[2.43,-4.689,0,0,0,"45 a 49",0],[2.369,-4.752,2,2,2,"15 a 19",0],[2.381,-4.731,1,1,1,"40 a 44",0]]};
+const ZG = {"s":0.03011,"x0":2.357,"y0":-5.18,"c":[0,3,0,0,4,0,0,6,0,0,7,0,0,12,0,0,13,1,0,14,2,0,15,0,1,4,2,1,5,2,1,6,1,1,7,3,1,8,0,1,11,1,1,12,2,1,13,1,1,14,3,1,15,1,1,16,0,2,4,1,2,5,2,2,6,1,2,7,1,2,8,1,2,9,0,2,10,1,2,11,1,2,12,2,2,13,1,2,14,2,2,15,1,2,16,1,3,0,0,3,1,0,3,2,0,3,3,0,3,4,1,3,5,2,3,6,1,3,7,2,3,8,1,3,9,1,3,10,2,3,11,1,3,12,2,3,13,1,3,14,2,3,15,1,4,0,1,4,1,3,4,2,2,4,3,3,4,4,1,4,5,3,4,6,2,4,7,3,4,8,1,4,9,2,4,10,3,4,11,1,4,12,3,4,13,2,4,14,3,4,15,0,5,0,1,5,1,2,5,2,1,5,3,2,5,4,1,5,5,2,5,6,1,5,7,2,5,8,1,5,9,1,5,10,2,5,11,1,5,12,2,5,13,1,5,14,2,5,15,0,6,0,0,6,1,3,6,2,1,6,3,3,6,4,2,6,5,3,6,6,1,6,7,3,6,8,2,6,9,1,6,10,3,6,11,2,6,12,3,6,13,1,6,14,3,6,15,2,6,16,0,7,0,0,7,1,2,7,2,1,7,3,2,7,4,1,7,5,2,7,6,1,7,7,2,7,8,1,7,9,1,7,10,2,7,11,1,7,12,2,7,13,1,7,14,2,7,15,1,7,16,1,8,0,0,8,1,3,8,2,1,8,3,3,8,4,1,8,5,3,8,6,2,8,7,3,8,8,1,8,9,2,8,10,3,8,11,1,8,12,3,8,13,2,8,14,3,8,15,1,8,16,2,8,17,0,9,3,1,9,4,2,9,5,3,9,6,1,9,7,3,9,8,2,9,9,1,9,10,3,9,11,2,9,12,3,9,13,1,9,14,3,9,15,2,9,16,3,9,17,0,10,4,0,10,5,0,10,6,1,10,7,2,10,8,1,10,9,1,10,10,2,10,11,1,10,12,2,10,13,1,10,14,2,10,15,1,10,16,2,10,17,1,11,7,1,11,8,1,11,9,1,11,10,2,11,11,1,11,12,2,11,13,1,11,14,2,11,15,1,11,16,2,11,17,1,12,8,1,12,9,1,12,10,3,12,11,1,12,12,3,12,13,2,12,14,3,12,15,1,12,16,3,12,17,0,13,10,2,13,11,1,13,12,2,13,13,1,13,14,2,13,15,1,13,16,1,14,10,0,14,11,2,14,12,3,14,13,1,14,14,1,14,15,0,15,11,0,15,12,2,15,13,1,16,12,2,17,12,1]};
+const IMGS = {"mapa":"img/muses/mapa2k.webp","gobierno":"img/muses/congreso.webp","campana":"img/muses/campana.webp","marcas":"img/muses/marcas.webp","encuestas":"img/muses/encuestas.webp"};
+const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+let L = 'es';
+const T = (es, en) => L === 'es' ? es : en;
+const I = () => L === 'es' ? 0 : 1;
+const ease = x => { x = Math.min(1, Math.max(0, x)); return 1 - Math.pow(1 - x, 3) };
+
+function idioma(l) {
+  L = l; document.documentElement.lang = l;
+  document.querySelectorAll('[data-es]').forEach(e => e.innerHTML = e.dataset[l]);
+  for (const b of ['es', 'en']) document.getElementById(b).setAttribute('aria-pressed', String(b === l));
+  try { localStorage.setItem('blister-idioma', l) } catch (e) {}
+  casos(); rueda(); capas(); segmento();
+}
+document.getElementById('es').onclick = () => idioma('es');
+document.getElementById('en').onclick = () => idioma('en');
+
+const S = CELDAS.s;
+let seed = 11; const rnd = () => (seed = (seed * 16807) % 2147483647) / 2147483647;
+
+/* ---------- Hero: el dibujo, la zona en cubos y su gente ---------- */
+// contornos en unidades del mapa (y crece hacia el sur, como en la ilustración)
+const anillos = r => { const o = []; for (let i = 0; i < r.length - 1; i += 2) o.push([r[i], r[i + 1]]); return o };
+const PAIS = CONT.map(r => anillos(r).map(([u, v]) => [u * S, v * S]));
+const Z_SF = ZONA.sf.map(anillos), Z_ROS = ZONA.ros.map(anillos), Z_VEC = ZONA.neigh.map(anillos);
+let Xmin = 1e9, Xmax = -1e9, Ymin = 1e9, Ymax = -1e9;
+for (const r of PAIS) for (const [x, y] of r) { Xmin = Math.min(Xmin, x); Xmax = Math.max(Xmax, x); Ymin = Math.min(Ymin, y); Ymax = Math.max(Ymax, y) }
+const ROS = (() => { let a = 0, b = 0, n = 0; for (const [x, y] of Z_ROS[0]) { a += x; b += y; n++ } return [a / n, b / n] })();
+// celdas de la zona, con cuántos agentes caen en cada una
+const CZ = []; let maxz = 1;
+for (let q = 0; q < ZG.c.length; q += 3) { const n = ZG.c[q + 2]; maxz = Math.max(maxz, n); CZ.push({ i: ZG.c[q], j: ZG.c[q + 1], n, r: rnd(), lift: 0, h: 0, sy: 0 }) }
+const celda = {}; for (const c of CZ) celda[c.i + ',' + c.j] = c;
+for (const c of CZ) c.g = [];
+const GENTE = ZONA.ag.map(a => {
+  const i = Math.floor((a[0] - ZG.x0) / ZG.s), j = Math.floor((a[1] - ZG.y0) / ZG.s), c = celda[i + ',' + j];
+  const g = { x: a[0], y: a[1], c, st: a[2], edad: a[5], mujer: a[6], r: rnd(), col0: 0 };
+  if (c) c.g.push(g); return g;
+});
+
+const MAPA = new Image(); MAPA.src = IMGS.mapa;
+let caja = null;
+MAPA.onload = () => {
+  const w = 600, h = Math.round(MAPA.naturalHeight * w / MAPA.naturalWidth);
+  const o = document.createElement('canvas'); o.width = w; o.height = h;
+  const x = o.getContext('2d'); x.drawImage(MAPA, 0, 0, w, h);
+  let px; try { px = x.getImageData(0, 0, w, h).data } catch (e) { caja = [0, 0, MAPA.naturalWidth, MAPA.naturalHeight]; return }
+  let x0 = w, y0 = h, x1 = 0, y1 = 0;
+  for (let i = 0; i < w * h; i++) if (px[i * 4 + 3] > 40) { const xx = i % w, yy = (i / w) | 0; if (xx < x0) x0 = xx; if (xx > x1) x1 = xx; if (yy < y0) y0 = yy; if (yy > y1) y1 = yy }
+  const f = MAPA.naturalWidth / w; caja = [x0 * f, y0 * f, x1 * f, y1 * f];
+};
+
+const cv = document.getElementById('cv'), ctx = cv.getContext('2d');
+let W = 0, H = 0, dpr = 1;
+function medir() { const r = cv.getBoundingClientRect(); dpr = Math.min(2, devicePixelRatio || 1); W = cv.width = Math.round(r.width * dpr); H = cv.height = Math.round(r.height * dpr) }
+medir(); addEventListener('resize', medir);
+
+const CASOS = [
+  { t: ['Marca', 'Brand'], q: ['¿Qué nombre le ponemos a la bebida nueva?', 'What do we name the new drink?'],
+    o: [[['Plena', 'Plena'], 34, 12], [['Wenga', 'Wenga'], 22, 15], [['Pampa Fresh', 'Pampa Fresh'], 18, 20]] },
+  { t: ['Producto', 'Product'], q: ['¿Qué te pareció el nuevo untable dietético?', 'What did you think of the new diet spread?'],
+    o: [[['Más ácido que el original', 'Tangier than the original'], 18, 31], [['Más sabroso que el original', 'Tastier than the original'], 34, 14], [['Más cremoso que el original', 'Creamier than the original'], 27, 19]] },
+  { t: ['Gobierno', 'Government'], q: ['¿Cómo anunciamos el aumento del boleto?', 'How do we announce the bus fare increase?'],
+    o: [[['Sube por la inflación', 'It rises with inflation'], 12, 41], [['Aumenta para que haya más frecuencias', 'It goes up to add more buses'], 29, 24], [['Se mantiene en las tarifas sociales', 'Social fares stay the same'], 33, 19]] }
+];
+let caso = 0, opc = 2, msgT = -1;
+function casos() {
+  document.getElementById('casos').innerHTML = CASOS.map((c, i) => `<button aria-pressed="${i === caso}" data-i="${i}">${c.t[I()]}</button>`).join('');
+  document.querySelectorAll('#casos button').forEach(b => b.onclick = () => { caso = +b.dataset.i; opc = 2; msgT = performance.now(); casos() });
+  const c = CASOS[caso];
+  document.getElementById('casoQ').textContent = c.q[I()];
+  document.querySelectorAll('.mensajes .op').forEach(b => {
+    const i = +b.dataset.i, o = c.o[i];
+    b.innerHTML = `<span>${o[0][I()]}</span><span class="v">${o[1]}%</span>`; b.setAttribute('aria-pressed', String(i === opc));
+    b.onclick = () => { opc = i; msgT = performance.now(); casos() };
+  });
+  const [, f, r] = c.o[opc];
+  document.getElementById('bf').style.cssText = `flex-grow:${f};background:var(--cobalto)`;
+  document.getElementById('bn').style.cssText = `flex-grow:${100 - f - r};background:var(--linea)`;
+  document.getElementById('bc').style.cssText = `flex-grow:${r};background:var(--bermellon)`;
+}
+
+let mouse = null;
+cv.addEventListener('pointermove', e => { const r = cv.getBoundingClientRect(); mouse = [(e.clientX - r.left) * dpr, (e.clientY - r.top) * dpr] });
+cv.addEventListener('pointerleave', () => { mouse = null; fichaEl.classList.remove('on') });
+const rec = document.getElementById('recorrido');
+let prog = 0, ultimoY = -1;
+function leerScroll() {
+  ultimoY = scrollY;
+  const r = rec.getBoundingClientRect();
+  prog = Math.min(1, Math.max(0, -r.top / (r.height - innerHeight)));
+  document.getElementById('progreso').style.width = (scrollY / (document.documentElement.scrollHeight - innerHeight) * 100) + '%';
+  const paso = prog < .06 ? 0 : prog < .3 ? 1 : prog < .52 ? 2 : prog < .7 ? 3 : 4;
+  const t = document.getElementById('titulo');
+  const fuera = ease((prog - .64) / .06); t.style.opacity = 1 - fuera; t.style.transform = `translateY(${-30 * fuera}px)`;
+  document.getElementById('bajar').style.opacity = prog < .68 ? 1 : 0;
+  document.getElementById('mensajes').classList.toggle('on', paso === 4);
+  if (paso === 4 && msgT < 0) msgT = performance.now();
+  giro();
+}
+addEventListener('scroll', leerScroll, { passive: true });
+const fichaEl = document.getElementById('ficha');
+function ficha(titulo, desc, x, y) {
+  fichaEl.querySelector('.r').textContent = titulo; fichaEl.querySelector('.d').textContent = desc;
+  const w = cv.clientWidth;
+  fichaEl.style.left = (x + 290 < w ? x + 22 : x - 282) + 'px';
+  fichaEl.style.top = Math.min(cv.clientHeight - 120, Math.max(80, y - 50)) + 'px';
+  fichaEl.classList.add('on');
+}
+function poly(pts) { ctx.beginPath(); ctx.moveTo(pts[0][0], pts[0][1]); for (let n = 1; n < pts.length; n++) ctx.lineTo(pts[n][0], pts[n][1]); ctx.closePath() }
+const TINTE = [null, ['#C9D2F6', '#8FA0EC', '#2F4BD8'], ['#F6CFC7', '#EE9A8B', '#E2492F']];   // azul y rojo, por cuánta gente de la manzana coincide
+
+function frame(now) {
+  if (scrollY !== ultimoY) leerScroll();   // ponytail: el evento scroll no siempre llega; se lee la posición en cada cuadro
+  const p = reduce ? Math.max(prog, .72) : prog;
+  const zoomE = ease((p - .06) / .24);               // 1. la cámara se acerca a Rosario, despacio
+  const lin = ease((p - .08) / .07);                  //    aparecen los contornos de la zona, antes de que el dibujo se pixele
+  const iso = ease((p - .3) / .18);                   // 2. la zona gira y se vuelve una maqueta de cubos
+  const verImg = 1 - ease((p - .1) / .07);           //    el dibujo se apaga entre 3x y 13x de zoom, cuando todavía se ve bien
+  const pts = ease((p - .46) / .08);                  // 3. aparece la gente sobre los cubos
+  const postura = ease((p - .56) / .06);              //    y cada uno muestra su postura
+  const panel = ease((p - .7) / .06);                 // 4. el test, acá mismo
+  const angosto = W / dpr < 760;
+  const B = Math.min(W, 1240 * dpr), cx = W / 2;
+  ctx.clearRect(0, 0, W, H);
+
+  // la ilustración, a la derecha del título dentro de la columna central, y al centro cuando empieza el viaje
+  const centro = ease(p / .1);
+  const ih = H * (angosto ? .58 : .86), iw = MAPA.naturalWidth ? ih * MAPA.naturalWidth / MAPA.naturalHeight : ih * .56;
+  const icx = angosto ? cx : cx + B * .17, icy = H * (angosto ? .64 : .55);
+  const ix = icx - iw / 2, iy = icy - ih / 2;
+  const cb = caja || [0, 0, 1, 1], sc = ih / (MAPA.naturalHeight || 1);
+  const bx0 = ix + cb[0] * sc, by0 = iy + cb[1] * sc, bx1 = ix + cb[2] * sc, by1 = iy + cb[3] * sc;
+  const kx = (bx1 - bx0) / (Xmax - Xmin), ky = (by1 - by0) / (Ymax - Ymin);
+  const M = (mx, my) => [bx0 + (mx - Xmin) * kx, by0 + (my - Ymin) * ky];
+  // cámara: zoom a Rosario, después giro y tumbado a isometría
+  const R = M(ROS[0], ROS[1]), Z = (1 + 25 * zoomE) * (1 + (angosto ? .5 : .9) * iso), A = Math.PI / 4 * iso, tilt = 1 - .5 * iso, cs = Math.cos(A), sn = Math.sin(A);
+  const Fx = R[0] + (cx + (angosto ? 0 : B * .17) - R[0]) * zoomE, Fy = R[1] + (H * (angosto ? .64 - .28 * panel : .58) - R[1]) * zoomE;
+  const cpx = ZG.s * ky * Z;                          // una celda de la zona, en píxeles
+  const P = (mx, my, h) => {
+    const [x, y] = M(mx, my), dx = (x - R[0]) * Z, dy = (y - R[1]) * Z;
+    return [Fx + dx * cs - dy * sn, Fy + (dx * sn + dy * cs) * tilt - h * cpx];
+  };
+  if (verImg > .01 && MAPA.complete && MAPA.naturalWidth) {
+    ctx.save(); ctx.translate(Fx, Fy); ctx.scale(1, tilt); ctx.rotate(A); ctx.scale(Z, Z); ctx.translate(-R[0], -R[1]);
+    ctx.globalAlpha = verImg; ctx.drawImage(MAPA, ix, iy, iw, ih); ctx.restore(); ctx.globalAlpha = 1;
+  }
+  // contornos: el país y la provincia se van, los vecinos quedan de fondo, Rosario es la losa
+  const trazo = (rings, color, ancho, relleno) => {
+    ctx.strokeStyle = color; ctx.lineWidth = ancho * dpr;
+    for (const r of rings) { ctx.beginPath(); r.forEach(([u, v], q) => { const [x, y] = P(u, v, 0); q ? ctx.lineTo(x, y) : ctx.moveTo(x, y) }); ctx.closePath(); if (relleno) { ctx.fillStyle = relleno; ctx.fill() } ctx.stroke() }
+  };
+  if (lin > .01) {
+    ctx.globalAlpha = lin * (1 - iso);
+    trazo(PAIS, 'rgba(23,25,27,.28)', 1); trazo(Z_SF, 'rgba(23,25,27,.6)', 1.3);
+    ctx.globalAlpha = lin;
+    trazo(Z_VEC, `rgba(23,25,27,${.32 - .2 * iso})`, .8);
+    trazo(Z_ROS, '#17191B', 1.8 - .8 * iso, `rgba(255,255,255,${.75 + .25 * iso})`);
+    ctx.globalAlpha = 1;
+  }
+  // los cubos de la zona
+  let near = null, nd = 1e9;
+  if (iso > .01) {
+    const m = CASOS[caso].o[opc], wave = msgT > 0 ? (now - msgT) / 1000 : -1;
+    // color de cada manzana: la postura que más se repite entre su gente (y, con un mensaje, cómo reaccionan)
+    for (const c of CZ) {
+      let f = 0, r = 0;
+      for (const g of c.g) { let st = postura > .5 ? g.st : 0; if (wave >= 0 && panel > .5) { if (wave > Math.hypot(g.x - ROS[0], g.y - ROS[1]) / ZG.s / 9) g.col0 = g.r < m[1] / 100 ? 1 : g.r > 1 - m[2] / 100 ? 2 : 0; st = g.col0 } if (st === 1) f++; else if (st === 2) r++ }
+      c.col = !c.g.length || (!f && !r) ? 0 : f >= r ? 1 : 2; c.fuerza = c.g.length ? Math.max(f, r) / c.g.length : 0;
+      const u = ZG.x0 + (c.i + .5) * ZG.s, v = ZG.y0 + (c.j + .5) * ZG.s;
+      const b = P(u, v, 0); c.sy = b[1];
+      let lift = 0;
+      if (mouse && iso > .95) { const d = Math.hypot(b[0] - mouse[0], b[1] - mouse[1]); if (d < 70 * dpr) lift = Math.pow(1 - d / 70 / dpr, 2) * .9; if (d < nd) { nd = d; near = c } }
+      c.lift += (lift - c.lift) * .15;
+      const cae = reduce ? 1 : ease(iso * 1.6 - c.r * .6);
+      c.h = (.18 + .8 * c.n / maxz) * cae + c.lift;
+    }
+    CZ.sort((a, b) => a.sy - b.sy);
+    ctx.lineWidth = Math.max(1, .8 * dpr); ctx.lineJoin = 'round';
+    for (const c of CZ) {
+      const x0 = ZG.x0 + c.i * ZG.s, y0 = ZG.y0 + c.j * ZG.s, x1 = x0 + ZG.s, y1 = y0 + ZG.s;
+      const g = [P(x0, y0, 0), P(x1, y0, 0), P(x1, y1, 0), P(x0, y1, 0)], t = [P(x0, y0, c.h), P(x1, y0, c.h), P(x1, y1, c.h), P(x0, y1, c.h)];
+      const cy = (g[0][1] + g[2][1]) / 2;
+      const caras = [0, 1, 2, 3].map(k => ({ k, y: (g[k][1] + g[(k + 1) % 4][1]) / 2 })).filter(f => f.y >= cy - .5).sort((a, b) => a.y - b.y);
+      ctx.globalAlpha = Math.min(1, iso * 1.5);
+      for (const f of caras) { const k = f.k, k2 = (k + 1) % 4; poly([t[k], t[k2], g[k2], g[k]]); ctx.fillStyle = k % 2 ? '#E2E2DD' : '#ECECE8'; ctx.fill(); ctx.strokeStyle = '#A9ACAE'; ctx.stroke() }
+      const ap = reduce ? 1 : ease(pts * 1.7 - c.r * .7);
+      poly(t); ctx.fillStyle = c.col && ap > 0 ? TINTE[c.col][Math.min(2, Math.round(c.fuerza * 2))] : (c.g.length && ap > 0 ? '#E9E9E4' : '#FCFCFA'); ctx.fill(); ctx.strokeStyle = c.lift > .15 ? '#17191B' : '#7E8285'; ctx.stroke();
+    }
+    ctx.globalAlpha = 1;
+  }
+  if (near && nd < 40 * dpr && iso > .95) {
+    const pos = [T('sin postura', 'undecided'), T('a favor', 'in favor'), T('en contra', 'against')];
+    const quienes = near.g.map(g => `${g.mujer ? T('Mujer', 'Woman') : T('Varón', 'Man')}, ${g.edad}` + (postura > .5 ? ` · ${pos[panel > .5 && msgT > 0 ? g.col0 : g.st]}` : '')).join(' · ');
+    ficha(near.g.length ? T(`${near.g.length} ${near.g.length === 1 ? 'agente' : 'agentes'}`, `${near.g.length} simulated ${near.g.length === 1 ? 'person' : 'people'}`) : T('Sin gente sorteada acá', 'Nobody drawn here'), near.g.length ? quienes : T('La altura es cuánta gente vive ahí.', 'Height is how many people live there.'), mouse[0] / dpr, mouse[1] / dpr);
+  } else fichaEl.classList.remove('on');
+  requestAnimationFrame(frame);
+}
+requestAnimationFrame(frame);
+
+/* ---------- El giro: el texto llega de a poco ---------- */
+const manifEl = document.getElementById('manif');
+function giro() {
+  const r = manifEl.getBoundingClientRect(), p = Math.min(1, Math.max(0, -r.top / (r.height - innerHeight)));
+  document.querySelectorAll('.giro .ln').forEach((l, i) => { const on = p > .18 + i * .2; l.classList.toggle('on', on); l.classList.toggle('off', on && p > .18 + (i + 1) * .2 && i < 2) });
+}
+
+/* ---------- Modelo propio ---------- */
+const PASOS_R = [
+  [['Preguntamos', 'We ask'], ['Cada semana, preguntas nuevas sobre poblaciones de las que hay encuestas reales.', 'Every week, new questions about populations with real survey data.']],
+  [['Comparamos', 'We compare'], ['Lo que responde el panel, al lado de lo que respondió la gente real, segmento por segmento.', 'What the panel answers, next to what real people answered, segment by segment.']],
+  [['Corregimos', 'We correct'], ['Donde la distancia es mayor, se recalibra cuánto pesa cada rasgo.', 'Where the gap is largest, we recalibrate how much each trait weighs.']],
+  [['Actualizamos', 'We update'], ['Entra lo que cambió en la semana y se renueva lo que envejece. Otra vuelta.', 'What changed during the week comes in and stale data is refreshed. Another cycle.']]
+];
+let pasoR = 0, parar = false;
+function rueda() {
+  const svg = document.getElementById('ruedaSvg'), Rr = 158, c = 200, L2 = 2 * Math.PI * Rr;
+  const a0 = -Math.PI / 2 + (pasoR - 1) * Math.PI / 2, a1 = a0 + Math.PI / 2;
+  let h = `<circle class="arco" cx="${c}" cy="${c}" r="${Rr}"/><path class="avance" d="M${c + Rr * Math.cos(a0)} ${c + Rr * Math.sin(a0)} A${Rr} ${Rr} 0 0 1 ${c + Rr * Math.cos(a1)} ${c + Rr * Math.sin(a1)}"/>`;
+  PASOS_R.forEach((p, i) => {
+    const a = -Math.PI / 2 + i * Math.PI / 2, x = c + Rr * Math.cos(a), y = c + Rr * Math.sin(a);
+    // la etiqueta va adentro del círculo, hacia el centro, así nunca se sale ni pisa el texto de al lado
+    const tx = x + (i === 1 ? 20 : i === 3 ? -20 : 0), ty = y + (i === 0 ? -22 : i === 2 ? 34 : 5), an = i === 1 ? 'start' : i === 3 ? 'end' : 'middle';
+    h += `<g class="nodo${i === pasoR ? ' on' : ''}" data-i="${i}"><circle cx="${x}" cy="${y}" r="11"/><text x="${tx}" y="${ty}" text-anchor="${an}">${p[0][I()]}</text></g>`;
+  });
+  svg.innerHTML = h;
+  svg.querySelectorAll('.nodo').forEach(n => n.onclick = n.onmouseenter = () => { pasoR = +n.dataset.i; parar = true; rueda() });
+  document.querySelectorAll('.centro-f .fig').forEach((f, i) => f.classList.toggle('on', i === pasoR));
+  document.getElementById('pasoTxt').innerHTML = `<b>${PASOS_R[pasoR][0][I()]}</b><span>${PASOS_R[pasoR][1][I()]}</span>`;
+}
+setInterval(() => { if (!parar && !reduce) { pasoR = (pasoR + 1) % 4; rueda() } }, 2600);
+document.getElementById('rueda').addEventListener('pointerleave', () => parar = false);
+
+/* ---------- Capas de una persona ---------- */
+const CAPAS = [
+  [['Dónde vive', 'Where they live'], ['Provincia, ciudad y barrio. Cada lugar tiene la gente que tiene.', 'Province, city and neighborhood. Each place has the people it really has.'], [['Ciudad grande', 'Large city'], ['Zona sur', 'South side'], ['Barrio de casas', 'Residential area']]],
+  [['Quién es', 'Who they are'], ['Edad, género y con quién vive. De bases demográficas públicas.', 'Age, gender and who they live with. From public demographic census.'], [['34 años', '34 years old'], ['Mujer', 'Woman'], ['Vive con su hija', 'Lives with her daughter']]],
+  [['Trabajo e ingreso', 'Work and income'], ['De qué trabaja y cuánto gana. Sale de las encuestas de hogares.', 'What they do and what they earn. It comes from household surveys.'], [['Docente', 'Teacher'], ['Ingreso medio', 'Middle income']]],
+  [['Historia', 'History'], ['Cómo votó, qué le pasó y qué la marcó. Sale de resultados electorales y encuestas de opinión.', 'How they voted, what happened to them and what shaped them. It comes from election results and opinion surveys.'], [['Votó distinto 3 veces', 'Switched vote 3 times'], ['Le robaron hace un año', 'Was robbed a year ago']]],
+  [['Cómo se informa', 'How they get informed'], ['Qué mira, qué lee y a quién le cree. Sale de estudios de consumo de medios y de la escucha.', 'What they watch, read and who they trust. It comes from media studies and listening.'], [['Radio', 'Radio'], ['WhatsApp', 'WhatsApp'], ['Le cree a un vecino', 'Trusts a neighbor']]],
+  [['Cómo cambia', 'How they change'], ['Qué la mueve, cuánto y cuánto le dura. Se corrige todas las semanas.', 'What moves them, how much and for how long. Corrected every week.'], [['Cambia despacio', 'Changes slowly'], ['Vuelve si no ve resultados', 'Reverts without results']]]
+];
+let capaOn = -1;
+function capas() {
+  const pila = document.getElementById('pila'), gap = innerWidth < 860 ? 26 : 46, cima = CAPAS.length * gap + (innerWidth < 860 ? 24 : 60);
+  pila.innerHTML = CAPAS.map((c, i) => `<div class="placa${i === capaOn ? ' on' : ''}" data-i="${i}" style="transform:translateZ(${i * gap + (capaOn >= 0 && i > capaOn ? 44 : 0)}px)"></div>`).join('') + `<div class="punto3" style="transform:translateZ(${cima}px)"></div>`;
+  pila.classList.toggle('dim', capaOn >= 0);
+  pila.querySelectorAll('.placa').forEach(p => { p.onmouseenter = () => { capaOn = +p.dataset.i; capas() } });
+  document.getElementById('lista3').innerHTML = CAPAS.map((c, i) => `<div class="it3${i === capaOn ? ' on' : ''}" data-i="${i}"><span class="i">0${i + 1}</span><div><h3>${c[0][I()]}</h3><p>${c[1][I()]}</p><div class="chips">${c[2].map(x => `<span>${x[I()]}</span>`).join('')}</div></div></div>`).join('');
+  document.querySelectorAll('.it3').forEach(p => { p.onmouseenter = p.onclick = () => { capaOn = +p.dataset.i; capas() } });
+}
+document.getElementById('escena3').addEventListener('pointerleave', () => { capaOn = -1; capas() });
+
+/* ---------- Para quién: avanza solo ---------- */
+const SEGS = [
+  { img: 'marcas', t: ['Marcas', 'Brands'], q: ['¿Qué packaging lleva la línea nueva?', 'Which packaging does the new line get?'], d: ['Tres diseños antes de imprimir una sola caja.', 'Three designs before printing a single box.'], m: ['lo elegiría', 'would pick it'],
+    o: [[['Verde y natural', 'Green and natural'], 31], [['Blanco y minimalista', 'White and minimal'], 26], [['Colores fuertes', 'Bold colors'], 22]], l: ['El verde gana en todo el país. Los colores fuertes funcionan solo entre los más jóvenes.', 'Green wins nationwide. Bold colors only work with the youngest.'] },
+  { img: 'encuestas', t: ['Encuestadoras', 'Pollsters'], q: ['¿Cómo conviene preguntar?', 'How should we word it?'], d: ['La misma pregunta, escrita de tres maneras.', 'The same question, worded three ways.'], m: ['responde que sí', 'answer yes'],
+    o: [[['¿Aprueba la gestión?', 'Do you approve of the government?'], 46], [['¿Cómo calificaría la gestión?', 'How would you rate the government?'], 39], [['¿La gestión cumplió lo prometido?', 'Has the government kept its promises?'], 31]], l: ['Cambiar las palabras mueve el resultado 15 puntos.', 'Changing the words moves the result 15 points.'] },
+  { img: 'gobierno', t: ['Gobiernos', 'Governments'], q: ['¿Cómo anunciamos el plan de seguridad?', 'How do we announce the safety plan?'], d: ['Tres formas de anunciar la misma medida.', 'Three ways to announce the same policy.'], m: ['le convence', 'convinced'],
+    o: [[['Video explicando las medidas', 'A video explaining the measures'], 19], [['Acto con cobertura de prensa y presentación de equipamiento', 'A press event unveiling the new equipment'], 24], [['Voces de las personas que van a ser beneficiadas', 'The voices of the people who will benefit'], 31]], l: ['Ganan las voces de los vecinos: mueven a mujeres de 25 a 44 y al centro del país.', 'The neighbors’ voices win: they move women 25 to 44 and the center of the country.'] },
+  { img: 'campana', t: ['Campañas', 'Campaigns'], q: ['¿Con qué frase cerramos la campaña?', 'Which line closes the campaign?'], d: ['Tres frases, el mismo candidato.', 'Three lines, the same candidate.'], m: ['le convence', 'convinced'],
+    o: [[['«Vamos a cuidar lo que es tuyo»', '“We will protect what is yours”'], 28], [['«Un país que trabaja»', '“A country that works”'], 33], [['«Basta de promesas»', '“No more promises”'], 24]], l: ['«Un país que trabaja» suma indecisos sin perder a los propios.', '“A country that works” wins undecided voters without losing the base.'] }
+];
+const DUR = 5500;
+let segN = 0, segT0 = performance.now(), segPausa = false, segVisible = false, midiendo = false;
+function segmento() {
+  document.getElementById('lineaT').innerHTML = SEGS.map((s, i) => `<button aria-current="${i === segN}" data-i="${i}"><span class="pb"><i style="width:${i < segN ? 100 : 0}%"></i></span><span>${s.t[I()]}</span></button>`).join('');
+  document.querySelectorAll('#lineaT button').forEach(b => b.onclick = () => { segN = +b.dataset.i; segT0 = performance.now(); segmento() });
+  const s = SEGS[segN], img = document.getElementById('segImg');
+  if (!midiendo && !img.src.endsWith(IMGS[s.img])) { img.style.opacity = 0; setTimeout(() => { img.src = IMGS[s.img]; img.alt = s.t[I()]; img.style.opacity = 1 }, 200) }
+  const max = Math.max(...s.o.map(o => o[1]));
+  document.getElementById('prueba').innerHTML = `<span class="q">${s.q[I()]}</span><span class="d">${s.d[I()]}</span>` +
+    s.o.map(o => `<div class="opcion${o[1] === max ? ' gana' : ''}"><span class="f"><span>${o[0][I()]}</span><b>${o[1]}% ${s.m[I()]}</b></span><span class="b"><span data-w="${o[1] / max}"></span></span></div>`).join('') + `<p class="lect">${s.l[I()]}</p>` + `<p class="pie-nota">${T('Ejemplo ilustrativo', 'Illustrative example')}</p>`;
+  requestAnimationFrame(() => requestAnimationFrame(() => document.querySelectorAll('.opcion .b span').forEach(x => x.style.transform = `scaleX(${x.dataset.w})`)));
+}
+function relojSeg(now) {
+  if (segVisible && !segPausa && !reduce) {
+    const t = (now - segT0) / DUR, bar = document.querySelector(`#lineaT button[data-i="${segN}"] .pb i`);
+    if (bar) bar.style.width = Math.min(100, t * 100) + '%';
+    if (t >= 1) { segN = (segN + 1) % SEGS.length; segT0 = now; segmento() }
+  } else if (segPausa) segT0 = now - (parseFloat(document.querySelector(`#lineaT button[data-i="${segN}"] .pb i`)?.style.width || 0) / 100) * DUR;
+  requestAnimationFrame(relojSeg);
+}
+requestAnimationFrame(relojSeg);
+const segBox = document.getElementById('segBox');
+segBox.addEventListener('pointerenter', () => segPausa = true);
+segBox.addEventListener('pointerleave', () => segPausa = false);
+new IntersectionObserver(es => { segVisible = es.some(e => e.isIntersecting) }, { threshold: .3 }).observe(segBox);
+(function () {
+  const w = document.getElementById('segImgW'), im = document.getElementById('segImg');
+  if (reduce) return;
+  w.addEventListener('pointermove', e => { const r = w.getBoundingClientRect(), x = (e.clientX - r.left) / r.width - .5, y = (e.clientY - r.top) / r.height - .5; im.style.transform = `rotateX(${-y * 8}deg) rotateY(${x * 10}deg) translateY(-6px)` });
+  w.addEventListener('pointerleave', () => im.style.transform = '');
+})();
+
+/* ---------- Menú en celular ---------- */
+const navEl = document.querySelector('nav'), menuBtn = document.getElementById('menuBtn');
+menuBtn.onclick = () => { const abierto = navEl.classList.toggle('open'); menuBtn.setAttribute('aria-expanded', String(abierto)) };
+document.querySelectorAll('#menuLinks a, #menuLinks button').forEach(a => a.addEventListener('click', () => { navEl.classList.remove('open'); menuBtn.setAttribute('aria-expanded', 'false') }));
+
+/* ---------- Contacto en ventana ---------- */
+const dlg = document.getElementById('contacto');
+document.querySelectorAll('.abrir-c').forEach(b => b.addEventListener('click', e => { e.preventDefault(); dlg.showModal(); document.getElementById('fNom').focus() }));
+document.getElementById('cerrarC').onclick = () => dlg.close();
+dlg.addEventListener('click', e => { if (e.target === dlg) dlg.close() });
+document.getElementById('form').addEventListener('submit', e => {
+  e.preventDefault();
+  const mail = document.getElementById('fMail'), nom = document.getElementById('fNom'), av = document.getElementById('aviso');
+  if (!nom.value.trim()) { av.textContent = T('Falta tu nombre.', 'Your name is missing.'); nom.focus(); return }
+  if (!mail.value || !mail.checkValidity()) { av.textContent = T('Revisá el email: así no te podemos escribir.', 'Check your email: we can\'t reach you like this.'); mail.focus(); return }
+  const campos = [...document.querySelectorAll('#form input, #form textarea, #form select')].map(c => (c.labels && c.labels[0] ? c.labels[0].textContent.trim() : c.name || c.id) + ': ' + c.value).join('
+');
+  location.href = 'mailto:hola@useproteo.com?subject=' + encodeURIComponent(T('Quiero probar Proteo', 'I want to try Proteo')) + '&body=' + encodeURIComponent(campos);
+  av.textContent = T('Se abre tu correo con el mensaje armado. Si no se abre, escribinos a hola@useproteo.com.', 'Your mail app opens with the message ready. If it does not, write to hola@useproteo.com.');
+});
+
+let inicial = (navigator.language || 'es').toLowerCase().startsWith('es') ? 'es' : 'en';
+try { inicial = localStorage.getItem('blister-idioma') || inicial } catch (e) {}
+idioma(inicial); leerScroll();
+
+/* ---------- Misma altura en español y en inglés: el texto más largo fija el alto, así nada se corre al cambiar de idioma ---------- */
+let tNiv;
+function nivelar() {
+  const els = [...document.querySelectorAll('[data-es][data-en]')].filter(e => { const d = getComputedStyle(e).display; return d !== 'inline' && d !== 'none' });
+  const actual = document.documentElement.lang || 'es', h = {};
+  els.forEach(e => e.style.minHeight = '');
+  for (const l of ['es', 'en']) { els.forEach(e => e.innerHTML = e.dataset[l]); h[l] = els.map(e => e.getBoundingClientRect().height) }
+  els.forEach((e, i) => { if (h.es[i] !== h.en[i]) e.style.minHeight = Math.max(h.es[i], h.en[i]) + 'px' });
+  els.forEach(e => e.innerHTML = e.dataset[actual]);
+  // lo que arma el JS: las capas y el ejemplo de "Para quién", medidos en los dos idiomas y en sus cuatro casos
+  const lista = document.getElementById('lista3'), prueba = document.getElementById('prueba'), L0 = L, seg0 = segN;
+  lista.style.minHeight = prueba.style.minHeight = '';
+  let hl = 0, hp = 0; midiendo = true;
+  for (const l of ['es', 'en']) { L = l; capas(); hl = Math.max(hl, lista.getBoundingClientRect().height); for (segN = 0; segN < SEGS.length; segN++) { segmento(); hp = Math.max(hp, prueba.getBoundingClientRect().height) } }
+  L = L0; segN = seg0; midiendo = false; capas(); segmento();
+  lista.style.minHeight = hl + 'px'; prueba.style.minHeight = hp + 'px';
+}
+document.fonts.ready.then(nivelar);
+addEventListener('resize', () => { clearTimeout(tNiv); tNiv = setTimeout(nivelar, 150) });
+</script>
+
+<!-- Figuras de línea que responden al puntero: hairline 0.5.0 (MIT, lucasmarkes/hairline) -->
+<script type="module">
+import * as H from 'https://cdn.jsdelivr.net/npm/@lucasmarkes/hairline@0.5.0/dist/index.js';
+for (const el of document.querySelectorAll('[data-fig]')) { const f = H[el.dataset.fig]; if (f) f(el, { theme: 'light', intensity: .7, play: true }) }
+</script>
+
+<script>
+/* ---------- No todos pesan igual: la fuerza de cada persona y cómo se contagia una idea ---------- */
+(() => {
+  const svg = document.getElementById('fzRed'), quien = document.getElementById('fzQuien');
+  if (!svg) return;
+  let s = 11; const rnd = () => (s = (s * 16807) % 2147483647) / 2147483647;
+  const NOM = ['Laura', 'Diego', 'Marta', 'Nico', 'Sofía', 'Raúl', 'Ana', 'Julián', 'Carla', 'Hugo', 'Paula', 'Martín', 'Lucía', 'Omar', 'Vero', 'Tomás', 'Inés', 'Ramiro', 'Belén', 'Sergio', 'Flor', 'Gabriel'];
+  const P = [];
+  for (let f = 0; f < 4; f++) for (let c = 0; c < 11; c++) P.push({ x: 34 + c * 57 + (rnd() - .5) * 34 + (f % 2) * 20, y: 52 + f * 92 + (rnd() - .5) * 40, res: .25 + rnd() * .6, nom: NOM[Math.floor(rnd() * NOM.length)], edad: 19 + Math.floor(rnd() * 52), v: new Set() });
+  const dist = (a, b) => Math.hypot(a.x - b.x, a.y - b.y), E = [], une = (i, j) => { if (i === j || P[i].v.has(j)) return; P[i].v.add(j); P[j].v.add(i); E.push([i, j]) };
+  P.forEach((p, i) => P.map((q, j) => [dist(p, q), j]).sort((a, b) => a[0] - b[0]).slice(1, 3).forEach(([, j]) => une(i, j)));
+  const HUB = [5, 26, 37, 13];   // unas pocas personas con mucha llegada
+  HUB.forEach(h => P.map((q, j) => [dist(P[h], q), j]).filter(([d]) => d < 175).sort((a, b) => a[0] - b[0]).slice(0, 9).forEach(([, j]) => une(h, j)));
+  P.forEach(p => { p.f = p.v.size; p.r = Math.min(17, 3.5 + p.f * 1.25) });
+  const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  let est, linea, sel = HUB[0], quieto = 0;
+  const lado = { az: 'az', ro: 'ro' };
+  function reiniciar() { est = P.map(() => ''); linea = E.map(() => ''); est[HUB[0]] = 'az'; est[HUB[1]] = 'ro'; quieto = 0 }
+  function paso() {
+    const nuevo = est.slice(); let cambio = false;
+    P.forEach((p, i) => {
+      if (est[i]) return;
+      const pr = { az: 0, ro: 0 };
+      p.v.forEach(j => { if (est[j]) pr[est[j]] += P[j].f });
+      const k = pr.az >= pr.ro ? 'az' : 'ro';
+      if (pr[k] > p.res * 7) { nuevo[i] = k; cambio = true; p.v.forEach(j => { if (est[j] === k) { const e = E.findIndex(([a, b]) => (a === i && b === j) || (a === j && b === i)); linea[e] = k } }) }
+    });
+    est = nuevo; return cambio;
+  }
+  function texto() {
+    const p = P[sel], conv = p.res > .6 ? T('Le cuesta cambiar de opinión.', 'Hard to change their mind.') : p.res < .4 ? T('Se deja convencer fácil.', 'Easily persuaded.') : T('Cambia si varios le insisten.', 'Changes if several insist.');
+    quien.innerHTML = '<b>' + p.nom + ', ' + p.edad + '</b><span>' + T('Influye en ' + p.f + ' personas. ', 'Reaches ' + p.f + ' people. ') + conv + '</span>';
+  }
+  function dibujar() {
+    svg.innerHTML = E.map(([i, j], e) => '<line class="' + linea[e] + '" x1="' + P[i].x.toFixed(1) + '" y1="' + P[i].y.toFixed(1) + '" x2="' + P[j].x.toFixed(1) + '" y2="' + P[j].y.toFixed(1) + '"/>').join('') +
+      P.map((p, i) => '<circle data-i="' + i + '" class="' + est[i] + (i === sel ? ' sel' : '') + '" cx="' + p.x.toFixed(1) + '" cy="' + p.y.toFixed(1) + '" r="' + p.r.toFixed(1) + '"/>').join('');
+    svg.querySelectorAll('circle').forEach(c => c.onmouseenter = c.onclick = () => { sel = +c.dataset.i; texto(); dibujar() });
+  }
+  reiniciar();
+  if (reduce) { while (paso()); dibujar(); texto(); return }
+  dibujar(); texto();
+  setInterval(() => { if (!paso()) { if (++quieto > 4) reiniciar() } dibujar() }, 800);
+  const id0 = idioma; idioma = l => { id0(l); texto() };
+})();
+</script>

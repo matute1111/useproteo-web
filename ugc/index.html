@@ -10,28 +10,331 @@
 <link rel="apple-touch-icon" sizes="180x180" href="/icon/apple-touch-icon.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,700&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Geist:wght@300..800&family=Geist+Mono:wght@400&family=Bricolage+Grotesque:opsz,wght@12..96,400..800&display=swap">
 <style>
+:root {
+  color-scheme: light;
+  --fondo: #F6F6F3; --tinta: #17191B; --gris: #6B6F72; --linea: #E2E2DD; --panel: #FFFFFF; --trazo: #8E9295;
+  --bermellon: #E2492F; --cobalto: #2F4BD8; --cobalto-100: #C9D2F6;
+  --titulo: "Bricolage Grotesque", "Segoe UI", sans-serif; --text: "Geist", "Segoe UI", Arial, sans-serif; --mono: "Geist Mono", Consolas, monospace;
+}
 * { box-sizing: border-box }
-body { margin: 0; background: #F6F6F3; color: #17191B; font-family: "Segoe UI", Arial, sans-serif }
-main { max-width: 1120px; margin: 0 auto; padding: 40px 32px 48px; display: grid; gap: 32px }
-h1 { margin: 0; font: 700 clamp(36px, 5vw, 58px)/1.04 "Bricolage Grotesque", "Segoe UI", sans-serif; letter-spacing: -0.03em }
-.videos { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 20px }
-video { width: 100%; aspect-ratio: 9 / 16; display: block; border-radius: 20px; background: #17191B; object-fit: cover }
-@media (max-width: 760px) { main { padding: 24px 16px 32px; gap: 20px } .videos { grid-template-columns: minmax(0, 1fr) } }
+html, body { margin: 0; height: 100%; background: #DADAD5 }
+body { font: 400 18px/1.5 var(--text); color: var(--tinta); -webkit-font-smoothing: antialiased; overflow: hidden }
+h1, h2, h3 { font-family: var(--titulo); font-weight: 700; letter-spacing: -0.03em; margin: 0; text-wrap: balance }
+p { margin: 0 }
+
+.escenario { position: fixed; inset: 0; overflow: hidden }
+.hoja { width: 1600px; height: 900px; position: absolute; left: 50%; top: 50%; background: var(--fondo); overflow: hidden; transform-origin: center; box-shadow: 0 30px 80px rgba(23,25,27,.18) }
+.p { position: absolute; inset: 0; display: none }
+.p.on { display: block }
+.cab { position: absolute; left: 80px; right: 80px; top: 56px; display: flex; justify-content: space-between; align-items: center; z-index: 3 }
+.cab .der { display: flex; gap: 28px; align-items: center }
+.pie { position: absolute; left: 80px; right: 80px; bottom: 44px; display: flex; justify-content: space-between; font-size: 13px; color: var(--gris); z-index: 3 }
+.logo { font: 700 28px/1 var(--titulo); letter-spacing: -0.03em; color: var(--tinta) }
+.logo b { color: var(--bermellon) }
+.num, .sec { font: 400 12px/1 var(--mono); letter-spacing: .1em; color: var(--gris); text-transform: uppercase }
+.oscura { background: var(--tinta); color: var(--fondo) }
+.oscura .logo, .oscura .num, .oscura .sec, .oscura .pie { color: var(--fondo) }
+.oscura .num, .oscura .sec, .oscura .pie { opacity: .6 }
+.azul { background: var(--cobalto); color: #fff }
+.azul .logo, .azul .num, .azul .sec, .azul .pie { color: #fff }
+.azul .logo b { color: #fff }
+.azul .num, .azul .sec, .azul .pie { opacity: .7 }
+
+.giga { font-size: 104px; line-height: .96; letter-spacing: -0.045em; max-width: 13ch }
+.big { font-size: 64px; line-height: 1.02; max-width: 16ch }
+.lead { font-size: 22px; line-height: 1.45; color: var(--gris); max-width: 44ch }
+.oscura .lead, .azul .lead { color: inherit; opacity: .8 }
+.rojo { color: var(--bermellon) }
+.ac { font-style: normal; color: var(--cobalto) }
+.oscura .ac, .azul .ac { color: var(--cobalto-100) }
+
+/* imagen grande sin fondo, texto al lado. Altura explícita: en un img absoluto, bottom no cuenta */
+.img { position: absolute; top: 40px; height: 820px; right: -60px; width: 56%; object-fit: contain; object-position: right center; filter: drop-shadow(0 30px 40px rgba(23,25,27,.16)) }
+.azul .img, .oscura .img { filter: drop-shadow(0 30px 40px rgba(0,0,0,.35)) }
+.texto { position: absolute; left: 80px; top: 50%; transform: translateY(-50%); width: 42%; display: grid; gap: 22px }
+.img.izq { right: auto; left: -60px; object-position: left center }
+.texto.der { left: auto; right: 80px }
+.img.centro { right: 0; left: 0; width: auto; top: 330px; height: 640px; object-position: center top }
+.texto.arriba { top: 130px; transform: none; width: 90%; gap: 14px }
+.texto.arriba h2 { max-width: none }
+
+/* el recorrido: cuatro cajas en fila */
+.viaje { position: absolute; left: 80px; right: 80px; bottom: 130px; display: grid; grid-template-columns: 1.15fr 36px 1fr 36px 1fr 36px 1fr; align-items: center }
+.viaje .caja { border: 1px solid rgba(246,246,243,.25); border-radius: 18px; padding: 22px 24px; display: grid; gap: 6px; min-height: 150px; align-content: start }
+.viaje .caja b { font: 700 24px/1.1 var(--titulo); letter-spacing: -0.03em }
+.viaje .caja span { font-size: 15px; line-height: 1.4; opacity: .7 }
+.viaje .caja.pro { background: var(--cobalto); border-color: var(--cobalto) }
+.viaje .caja.pro span { opacity: .85 }
+.viaje .lin { height: 1px; background: rgba(246,246,243,.35) }
+
+/* capas de una persona */
+.capas3 { position: absolute; left: 80px; width: 50%; top: 290px; display: grid }
+.capa { display: grid; grid-template-columns: 56px 1fr; gap: 14px; padding: 18px 0; border-top: 1px solid var(--linea) }
+.capa i { font: 400 13px/1 var(--mono); color: var(--cobalto); font-style: normal; padding-top: 7px }
+.capa b { font: 700 24px/1.1 var(--titulo); letter-spacing: -0.03em; display: block }
+.capa span { color: var(--gris); font-size: 16px; line-height: 1.45; display: block; margin-top: 5px }
+
+/* el número: barras */
+.barras { position: absolute; left: 80px; right: 80px; top: 400px; display: grid; gap: 10px }
+.barra { position: relative; height: 74px; border: 1px solid rgba(246,246,243,.15); display: flex; align-items: center; justify-content: space-between; padding: 0 30px; font-size: 21px; overflow: hidden }
+.barra::before { content: ""; position: absolute; left: 0; top: 0; bottom: 0; width: var(--w); background: linear-gradient(90deg, rgba(246,246,243,.06), rgba(246,246,243,.3)) }
+.barra.top::before { background: linear-gradient(90deg, var(--cobalto), #6B82E6) }
+.barra span, .barra b { position: relative }
+.barra b { font: 700 40px/1 var(--titulo); letter-spacing: -0.04em }
+.barra span small { display: block; font-size: 14px; opacity: .6 }
+.temas { position: absolute; left: 80px; right: 80px; bottom: 105px; display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 20px; border-top: 1px solid rgba(246,246,243,.2); padding-top: 18px }
+.temas div { display: grid; gap: 2px }
+.temas b { font: 700 30px/1 var(--titulo); letter-spacing: -0.04em }
+.temas span { font-size: 14px; opacity: .65 }
+
+/* hoy, próximo, después */
+.tres { position: absolute; left: 80px; right: 80px; top: 300px; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 18px }
+.tres div { background: var(--panel); border: 1px solid var(--linea); border-radius: 22px; padding: 28px; display: grid; gap: 10px; align-content: start; min-height: 330px }
+.tres i { font: 400 12px/1 var(--mono); letter-spacing: .1em; color: var(--cobalto); font-style: normal; text-transform: uppercase }
+.tres b { font: 700 27px/1.1 var(--titulo); letter-spacing: -0.03em }
+.tres span { color: var(--gris); font-size: 16px; line-height: 1.5 }
+.tres div.ahora { background: var(--cobalto); color: #fff; border-color: var(--cobalto) }
+.tres .ahora i, .tres .ahora span { color: #fff; opacity: .85 }
+
+/* lista numerada a la izquierda, tarjeta oscura a la derecha */
+.lista { position: absolute; left: 80px; width: 44%; top: 290px; display: grid }
+.lista > div { display: grid; grid-template-columns: 44px 1fr; gap: 12px; padding: 13px 0; border-top: 1px solid var(--linea); align-items: start }
+.lista i { font: 400 13px/1 var(--mono); color: var(--cobalto); font-style: normal; padding-top: 6px }
+.lista b { font: 700 21px/1.15 var(--titulo); letter-spacing: -0.03em; display: block }
+.lista span { color: var(--gris); font-size: 15px; line-height: 1.4; display: block; margin-top: 3px }
+.tarjeta { position: absolute; right: 80px; top: 140px; width: 640px; background: var(--tinta); color: var(--fondo); border-radius: 26px; padding: 34px 36px; display: grid; gap: 12px; align-content: start; box-shadow: 0 30px 60px rgba(23,25,27,.25) }
+.tarjeta i { font: 400 12px/1 var(--mono); letter-spacing: .1em; opacity: .55; font-style: normal; text-transform: uppercase }
+.tarjeta h3 { font-size: 26px; line-height: 1.15 }
+.tarjeta .fila { display: grid; grid-template-columns: 1fr auto; gap: 14px; padding: 12px 0; border-top: 1px solid rgba(246,246,243,.15); font-size: 17px; align-items: center }
+.tarjeta .fila b { font: 400 14px var(--mono); opacity: .75; white-space: nowrap }
+.tarjeta .fila.gana { color: var(--cobalto-100) }
+.tarjeta .fila.gana span { font-family: var(--titulo); font-weight: 700; font-size: 20px }
+.tarjeta .fila.gana b { opacity: 1 }
+.tarjeta q { display: block; font-size: 16px; line-height: 1.45; opacity: .85; border-left: 2px solid var(--cobalto-100); padding-left: 12px; quotes: "«" "»"; margin-top: 6px }
+.tarjeta q small { display: block; font: 400 12px var(--mono); opacity: .6; margin-top: 6px }
+.tarjeta .chips { display: flex; flex-wrap: wrap; gap: 8px }
+.tarjeta .chips span { font: 400 13px var(--mono); border: 1px solid rgba(246,246,243,.25); border-radius: 99px; padding: 6px 12px }
+.tarjeta .grande { background: rgba(246,246,243,.07); border-radius: 16px; padding: 18px 22px; margin: 6px 0 }
+.tarjeta .grande b { font: 700 46px/1 var(--titulo); letter-spacing: -0.04em; display: block }
+.tarjeta .grande span { font: 400 12px var(--mono); letter-spacing: .08em; opacity: .6; text-transform: uppercase }
+
+/* costo: tabla comparativa y reglas */
+.tabla { position: absolute; left: 80px; right: 80px; top: 292px; font-size: 17px }
+.tabla .enc, .tabla .fil { display: grid; grid-template-columns: 1.3fr 1fr 1fr 1.4fr; align-items: center }
+.tabla .enc span { font: 400 12px/1 var(--mono); letter-spacing: .1em; text-transform: uppercase; opacity: .6; padding: 0 18px 12px 0 }
+.tabla .fil span { padding: 9px 18px 9px 0; border-top: 1px solid rgba(246,246,243,.15); opacity: .8 }
+.tabla .fil span:first-child { opacity: 1 }
+.tabla span.pro { background: var(--cobalto); padding-left: 18px; opacity: 1; color: #fff }
+.tabla .enc span.pro { padding-top: 12px; border-radius: 14px 14px 0 0; font-weight: 400 }
+.tabla .fil:last-child span.pro { border-radius: 0 0 14px 14px; padding-bottom: 14px }
+.tabla .fil span.pro { border-top-color: rgba(255,255,255,.2) }
+.tabla .fil span.si { color: var(--cobalto-100) }
+.reglas { position: absolute; left: 80px; right: 80px; bottom: 92px; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 24px; font-size: 16px }
+.reglas div { border-top: 1px solid rgba(246,246,243,.25); padding-top: 12px; display: grid; gap: 3px }
+.reglas b { font: 700 20px/1.1 var(--titulo); letter-spacing: -0.03em }
+.reglas span { opacity: .7 }
+
+/* cómo corre: dos grafos */
+.grafos { position: absolute; left: 80px; right: 80px; top: 330px; bottom: 90px; display: grid; grid-template-columns: 1fr 1fr; gap: 24px }
+.grafos figure { margin: 0; background: var(--panel); border: 1px solid var(--linea); border-radius: 22px; padding: 18px 22px; display: grid; grid-template-rows: auto 1fr; gap: 8px; min-height: 0 }
+.grafos figcaption { display: flex; justify-content: space-between; align-items: baseline; font-size: 14px; color: var(--gris) }
+.grafos figcaption b { font: 700 24px/1 var(--titulo); letter-spacing: -0.03em; color: var(--tinta) }
+.grafos svg { width: 100%; height: 100%; min-height: 0 }
+.pt { display: inline-block; width: 9px; height: 9px; border-radius: 50%; margin: 0 4px 0 8px; vertical-align: middle }
+/* el modelo: un número grande */
+.numero { position: absolute; right: 80px; top: 50%; transform: translateY(-50%); width: 560px; display: grid; gap: 8px; border-left: 1px solid rgba(246,246,243,.25); padding-left: 48px }
+.numero b { font: 700 240px/.9 var(--titulo); letter-spacing: -0.06em; color: var(--cobalto-100) }
+.numero b small { font-size: 100px; letter-spacing: -0.03em; margin-left: 6px }
+.numero span { font: 700 30px/1.1 var(--titulo); letter-spacing: -0.03em }
+.numero p { font-size: 17px; opacity: .7; max-width: 40ch; margin-top: 6px }
+/* la tarjeta con barras */
+.tarjeta .bar { display: grid; grid-template-columns: 1fr 160px auto; gap: 14px; align-items: center; padding: 11px 0; border-top: 1px solid rgba(246,246,243,.15); font-size: 16px }
+.tarjeta .bar em { display: block; height: 10px; border-radius: 99px; background: rgba(246,246,243,.15); position: relative; overflow: hidden }
+.tarjeta .bar em::after { content: ""; position: absolute; left: 0; top: 0; bottom: 0; width: var(--w); background: rgba(246,246,243,.6); border-radius: 99px }
+.tarjeta .bar b { font: 400 15px var(--mono); opacity: .8; min-width: 32px; text-align: right }
+.tarjeta .bar.gana { color: var(--cobalto-100) }
+.tarjeta .bar.gana span { font-family: var(--titulo); font-weight: 700; font-size: 19px }
+.tarjeta .bar.gana em::after { background: var(--cobalto) }
+.tarjeta .bar.gana b { opacity: 1; font-weight: 700 }
+.tarjeta .quien { display: grid; gap: 2px; padding: 12px 0 2px; border-top: 1px solid rgba(246,246,243,.15); font-size: 13px; opacity: .85 }
+.tarjeta .quien b { font: 700 17px/1.2 var(--titulo); letter-spacing: -0.02em }
+/* el árbol */
+.arbol { position: absolute; right: 80px; top: 120px; width: 780px; bottom: 90px; background: var(--panel); border: 1px solid var(--linea); border-radius: 22px; padding: 22px 26px }
+.arbol svg { width: 100%; height: 100% }
+/* para quién, con detalle */
+.col ul { margin: 10px 0 0; padding: 10px 0 0; list-style: none; border-top: 1px solid var(--linea); display: grid; gap: 4px; font-size: 14px; color: var(--gris) }
+.col li::before { content: "·"; color: var(--cobalto); font-weight: 700; margin-right: 6px }
+
+/* qué es: tres fuentes, un nexo y la ficha de una persona */
+.fuentes { position: absolute; left: 80px; top: 400px; width: 520px; display: grid; gap: 14px }
+.fu { background: var(--panel); border: 1px solid var(--linea); border-radius: 18px; padding: 16px 20px; display: grid; gap: 3px }
+.fu i { font: 400 11px/1 var(--mono); letter-spacing: .1em; text-transform: uppercase; color: var(--cobalto); font-style: normal }
+.fu b { font: 700 22px/1.1 var(--titulo); letter-spacing: -0.03em }
+.fu span { color: var(--gris); font-size: 14.5px; line-height: 1.4 }
+.nexo { position: absolute; left: 600px; top: 400px; width: 220px; height: 460px }
+.pila { position: absolute; left: 860px; top: 330px; width: 660px }
+.pila .sombra { position: absolute; left: 0; right: 0; top: 0; height: 100%; background: var(--tinta); border-radius: 26px; opacity: .18 }
+.pila .s1 { transform: translate(16px, 16px) } .pila .s2 { transform: translate(32px, 32px); opacity: .09 }
+.persona { position: relative; background: var(--tinta); color: var(--fondo); border-radius: 26px; padding: 30px 34px; display: grid; gap: 16px; box-shadow: 0 30px 60px rgba(23,25,27,.22) }
+.persona .top { display: grid; grid-template-columns: 56px 1fr auto; gap: 16px; align-items: center }
+.persona .av { width: 56px; height: 56px; border-radius: 50%; background: var(--cobalto); display: grid; place-items: center; font: 700 24px var(--titulo) }
+.persona .top b { font: 700 26px/1.1 var(--titulo); letter-spacing: -0.03em; display: block }
+.persona .top small { font: 400 13px var(--mono); opacity: .65; display: block; margin-top: 4px }
+.persona .top em { font: 400 12px/1 var(--mono); letter-spacing: .08em; text-transform: uppercase; font-style: normal; color: var(--cobalto-100); border: 1px solid rgba(201,210,246,.5); border-radius: 999px; padding: 8px 12px }
+.persona .datos { display: grid; grid-template-columns: 1fr 1fr; gap: 10px 24px; border-top: 1px solid rgba(246,246,243,.15); padding-top: 14px }
+.persona .datos i { font: 400 11px/1 var(--mono); letter-spacing: .1em; text-transform: uppercase; opacity: .55; font-style: normal; display: block; margin-bottom: 4px }
+.persona .datos span { font-size: 15px; line-height: 1.35 }
+.persona q { display: block; font-size: 17px; line-height: 1.4; border-left: 2px solid var(--cobalto-100); padding-left: 12px; quotes: "«" "»"; opacity: .9 }
+.persona .red { display: flex; flex-wrap: wrap; gap: 8px }
+.persona .red span { font: 400 12px/1 var(--mono); border: 1px solid rgba(246,246,243,.25); border-radius: 999px; padding: 7px 11px; opacity: .85 }
+
+/* el problema y la solución (pantalla 2) */
+.prob { position: absolute; left: 80px; right: 80px; top: 450px; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 18px }
+.prob div { border: 1px solid rgba(246,246,243,.22); border-radius: 18px; padding: 18px 22px; display: grid; gap: 4px; align-content: start }
+.prob b { font: 700 22px/1.1 var(--titulo); letter-spacing: -0.03em }
+.prob span { font-size: 15px; line-height: 1.4; opacity: .7 }
+.sol { position: absolute; left: 80px; right: 80px; bottom: 96px; background: var(--cobalto); color: #fff; border-radius: 24px; padding: 30px 36px; display: grid; grid-template-columns: 150px 1fr; gap: 24px; align-items: center }
+.sol i { font: 400 12px/1.5 var(--mono); letter-spacing: .12em; text-transform: uppercase; color: var(--cobalto-100); font-style: normal }
+.sol b { font: 700 40px/1.05 var(--titulo); letter-spacing: -0.035em; display: block }
+.sol span { display: block; font-size: 19px; line-height: 1.4; color: rgba(255,255,255,.85); margin-top: 8px; max-width: 70ch }
+
+/* por qué creernos: cuatro pasos */
+.pasos { position: absolute; left: 80px; top: 300px; width: 820px; display: grid }
+.pasos > div { display: grid; grid-template-columns: 150px 1fr; gap: 16px; padding: 15px 0; border-top: 1px solid rgba(246,246,243,.15) }
+.pasos i { font: 400 12px/1.6 var(--mono); letter-spacing: .1em; text-transform: uppercase; color: var(--cobalto-100); font-style: normal; padding-top: 3px }
+.pasos b { font: 700 21px/1.15 var(--titulo); letter-spacing: -0.03em; display: block }
+.pasos span { display: block; font-size: 15.5px; line-height: 1.4; opacity: .7; margin-top: 4px }
+/* la tabla sobre fondo claro (pantalla del mercado) */
+.p:not(.oscura) .tabla .enc span { opacity: .55 }
+.p:not(.oscura) .tabla .fil span { border-top-color: var(--linea); opacity: .85 }
+.p:not(.oscura) .tabla .fil span:first-child { opacity: 1; font-weight: 500 }
+.p:not(.oscura) .reglas div { border-top-color: var(--linea) }
+.p:not(.oscura) .reglas span { color: var(--gris); opacity: 1 }
+.p:not(.oscura) .dos p { border-color: var(--linea) }
+/* el planisferio y el diferencial (pantalla del mercado) */
+.mapa { position: absolute; left: 180px; width: 1240px; top: 212px }
+.mapa svg { width: 100%; height: auto; display: block }
+.dif { position: absolute; left: 80px; right: 80px; bottom: 80px; display: grid; grid-template-columns: 170px 1fr 1fr 1fr; gap: 30px; background: var(--cobalto); color: #fff; border-radius: 22px; padding: 26px 32px }
+.dif .k { font: 400 12px/1.5 var(--mono); letter-spacing: .12em; text-transform: uppercase; color: var(--cobalto-100) }
+.dif div { display: grid; gap: 4px; align-content: start }
+.dif b { font: 700 22px/1.1 var(--titulo); letter-spacing: -0.03em }
+.dif span { color: rgba(255,255,255,.82); font-size: 15px; line-height: 1.4 }
+.mapa { top: 252px; width: 1100px; left: 250px }
+/* ventana con la plataforma real */
+.tx-d { position: absolute; left: 80px; top: 130px; width: 350px; display: grid; gap: 16px; z-index: 2 }
+.tx-d .big { font-size: 44px; line-height: 1.04; max-width: none }
+.tx-d .lead { font-size: 18px; line-height: 1.42; max-width: none }
+.hechos { display: grid; gap: 10px; margin-top: 8px }
+.hechos > div { display: grid; grid-template-columns: 96px 1fr; align-items: baseline; gap: 10px; border-top: 1px solid var(--linea); padding-top: 10px }
+.hechos b { font: 700 32px/1 var(--titulo); letter-spacing: -0.03em; color: var(--cobalto) }
+.hechos span { font-size: 15px; color: var(--gris); line-height: 1.3 }
+.tx-d .capas3 .capa b { font-size: 18px }
+.tx-d .capas3 .capa { padding-top: 9px; padding-bottom: 9px }
+.tx-d .capas3 .capa span { font-size: 14px; line-height: 1.32 }
+.ventana { position: absolute; top: 112px; background: #fff; border: 1px solid var(--linea); border-radius: 14px; overflow: hidden; box-shadow: 0 24px 60px rgba(23,25,27,.14); z-index: 2 }
+.v-demo { left: 470px; width: 1050px }
+.v-inf { left: 560px; width: 960px }
+.v-sim { left: 416px; width: 1104px }
+.v-sim .cuerpo { height: 690px }
+.vbar { height: 28px; display: flex; align-items: center; gap: 6px; padding: 0 12px; background: #ECECE7; border-bottom: 1px solid var(--linea) }
+.vbar i { width: 9px; height: 9px; border-radius: 50%; background: #CFCFC8 }
+.cuerpo { display: flex; height: 656px; background: #fff; overflow: hidden }
+.lado { flex: none; background: #F4F4EF; overflow: hidden }
+.vista { flex: 1; min-width: 0; overflow: hidden }
+.pan { display: block; max-width: none }
+.p.on .pan-e { animation: panE 16s ease-in-out infinite }
+.p.on .pan-i { animation: panI 44s ease-in-out infinite }
+@keyframes panE { 0%, 18% { transform: translateY(0) } 55%, 85% { transform: translateY(-320px) } 100% { transform: translateY(0) } }
+@keyframes panI { 0%, 8% { transform: translateY(0) } 17%, 26% { transform: translateY(-682px) } 35%, 44% { transform: translateY(-1754px) } 52%, 61% { transform: translateY(-2071px) } 72%, 94% { transform: translateY(-2522px) } 100% { transform: translateY(0) } }
+@media (prefers-reduced-motion: reduce) { .p.on .pan-e, .p.on .pan-i { animation: none } }
+.cab .sec { display: none } /* dos columnas: sirve y no sirve, o chat contra población */
+.dos { position: absolute; left: 80px; right: 80px; top: 290px; display: grid; grid-template-columns: 1fr 1fr; gap: 60px }
+.dos > div { display: grid; align-content: start }
+.dos h3 { font-size: 30px; margin-bottom: 12px }
+.dos .no h3 { color: var(--bermellon) }
+.dos p { padding: 13px 0; border-top: 1px solid var(--linea); font-size: 19px; line-height: 1.4 }
+.oscura .dos p { border-color: rgba(246,246,243,.18) }
+.oscura .dos .no h3 { color: #FF8A73 }
+
+/* dónde rinde: seis etapas */
+.ciclo { position: absolute; left: 80px; right: 80px; top: 290px; display: grid; grid-template-columns: repeat(6, minmax(0, 1fr)); gap: 16px }
+.ciclo div { border-top: 2px solid var(--linea); padding-top: 14px; display: grid; gap: 6px; align-content: start }
+.ciclo img { width: 100%; height: 190px; object-fit: contain; filter: drop-shadow(0 16px 20px rgba(23,25,27,.12)); margin-bottom: 8px }
+.ciclo i { font: 400 12px/1 var(--mono); letter-spacing: .1em; color: var(--gris); font-style: normal }
+.ciclo b { font: 700 24px/1.1 var(--titulo); letter-spacing: -0.03em }
+.ciclo span { color: var(--gris); font-size: 15px; line-height: 1.4 }
+.ciclo div.si { border-color: var(--cobalto) }
+.ciclo .si i { color: var(--cobalto) }
+
+/* para quién: cuatro columnas */
+.cols4 { position: absolute; left: 80px; right: 80px; top: 270px; bottom: 100px; display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 18px }
+.col { border-radius: 22px; overflow: hidden; background: var(--panel); border: 1px solid var(--linea); display: grid; grid-template-rows: 250px 1fr; align-content: start; padding: 18px; gap: 14px; min-width: 0 }
+.col img { width: 100%; height: 100%; object-fit: contain; min-height: 0 }
+.col b { font: 700 25px/1.1 var(--titulo); letter-spacing: -0.03em; display: block }
+.col span { color: var(--gris); font-size: 16px; line-height: 1.4; display: block; margin-top: 4px; min-height: 45px }
+
+/* packs */
+.packs { position: absolute; left: 80px; right: 80px; top: 270px; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 20px }
+.pack { position: relative; background: var(--panel); border: 1px solid var(--linea); border-radius: 26px; padding: 30px; display: grid; gap: 16px; align-content: start; min-height: 460px }
+.pack.rec { background: var(--tinta); color: var(--fondo); border-color: var(--tinta) }
+.pack h3 { font-size: 30px }
+.pack .precio b { font: 700 46px/1 var(--titulo); letter-spacing: -0.04em; display: block }
+.pack .precio span { font: 400 13px var(--mono); opacity: .7 }
+.pack .para { opacity: .75; font-size: 18px }
+.pack ul { margin: 0; padding: 16px 0 0; list-style: none; display: grid; gap: 9px; border-top: 1px solid var(--linea); font-size: 16px }
+.pack.rec ul { border-color: rgba(246,246,243,.25) }
+.pack li::before { content: "·"; color: var(--cobalto); font-weight: 700; margin-right: 8px }
+.pack.rec li::before { color: var(--cobalto-100) }
+.pack li.no { opacity: .45 }
+.pack li.no::before { content: "–" }
+
+/* costo */
+.vs { position: absolute; left: 80px; right: 80px; top: 300px; display: grid; grid-template-columns: 1fr auto 1fr; gap: 50px; align-items: center }
+.vs .lado { display: grid; gap: 10px }
+.vs .lado i { font-size: 16px; opacity: .6; font-style: normal }
+.vs .lado b { font: 700 96px/1 var(--titulo); letter-spacing: -0.045em }
+.vs .lado span { font-size: 20px; opacity: .8; max-width: 24ch }
+.vs .mas { font: 300 120px/1 var(--text); opacity: .4 }
+.filas { position: absolute; left: 80px; right: 80px; bottom: 110px; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 20px; font-size: 17px }
+.filas div { border-top: 1px solid rgba(255,255,255,.25); padding-top: 14px; display: grid; gap: 4px; align-content: start }
+.filas b { font-family: var(--titulo); font-size: 22px }
+.filas span { opacity: .75 }
+.contacto { display: grid; gap: 6px; font-size: 22px; opacity: .85 }
+
+.ctl { position: fixed; left: 50%; bottom: 14px; transform: translateX(-50%); display: flex; gap: 8px; align-items: center; background: rgba(255,255,255,.9); border: 1px solid var(--linea); border-radius: 99px; padding: 6px 10px; font: 400 12px/1 var(--mono); color: var(--gris); z-index: 5 }
+.ctl button { background: none; border: 1px solid var(--linea); border-radius: 99px; width: 32px; height: 32px; cursor: pointer; font-size: 16px; color: var(--tinta) }
+@media print { html, body { background: #fff; overflow: visible; height: auto } .escenario { position: static; display: block } .hoja { transform: none !important; margin: 0 auto; page-break-after: always; box-shadow: none } .p { display: block !important; position: relative; height: 900px } .ctl { display: none } }
+</style><style>
+.ugc-col { position: absolute; left: 80px; top: 130px; z-index: 2 }
+.ugc-col .big { font-size: 58px; line-height: 1.02; margin: 0 }
+.ugc { position: absolute; left: 300px; right: 80px; top: 130px; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 40px; z-index: 2 }
+.ugc video { width: 100%; aspect-ratio: 9 / 16; display: block; object-fit: cover; background: var(--tinta); border: 1px solid var(--linea); border-radius: 14px; box-shadow: 0 24px 60px rgba(23,25,27,.14) }
+@media (max-width: 760px) {
+  html, body { height: auto !important; overflow: auto !important }
+  .escenario { position: static !important; display: block !important; height: auto !important; padding: 0 !important; overflow: visible !important }
+  .hoja { position: static !important; transform: none !important; width: auto !important; height: auto !important; box-shadow: none !important; overflow: visible !important }
+  .p { position: static !important; height: auto !important; padding: 24px 16px 32px }
+  .cab { position: static !important; margin-bottom: 28px }
+  .ugc-col, .ugc { position: static }
+  .ugc-col .big { font-size: 44px; margin-bottom: 20px }
+  .ugc { grid-template-columns: minmax(0, 1fr); gap: 20px }
+}
 </style>
-</head>
-<body>
-<main>
-  <h1>UGC</h1>
-  <div class="videos">
-    <video src="ugc1.mp4" poster="ugc1.webp" controls playsinline preload="metadata" aria-label="Video UGC 1"></video>
-    <video src="ugc2.mp4" poster="ugc2.webp" controls playsinline preload="metadata" aria-label="Video UGC 2"></video>
-    <video src="ugc3.mp4" poster="ugc3.webp" controls playsinline preload="metadata" aria-label="Video UGC 3"></video>
-  </div>
-</main>
+
+<div class="escenario"><div class="hoja" id="hoja">
+
+<section class="p on">
+  <div class="cab"><span class="logo">Proteo<b>.</b></span></div>
+  <div class="ugc-col"><h2 class="big"><em class="ac">UGC</em></h2></div>
+  <div class="ugc"><video src="ugc1.mp4" poster="ugc1.webp" controls playsinline preload="metadata" aria-label="Video UGC 1"></video><video src="ugc2.mp4" poster="ugc2.webp" controls playsinline preload="metadata" aria-label="Video UGC 2"></video><video src="ugc3.mp4" poster="ugc3.webp" controls playsinline preload="metadata" aria-label="Video UGC 3"></video></div>
+</section>
+</div></div>
 <script>
-// Suena uno por vez
+const hoja = document.getElementById('hoja'), esc = hoja.parentElement;
+function escalar() { if (innerWidth <= 760) { hoja.style.transform = ''; return } const r = esc.getBoundingClientRect(); const s = Math.min(r.width / 1600, r.height / 900) * .96; hoja.style.transform = 'translate(-50%, -50%) scale(' + s + ')' }
+escalar(); addEventListener('resize', escalar); new ResizeObserver(escalar).observe(esc);
 const vs = [...document.querySelectorAll('video')];
 vs.forEach((v) => v.addEventListener('play', () => vs.forEach((o) => { if (o !== v) o.pause() })));
 </script>

@@ -378,6 +378,12 @@ p { margin: 0 }
 .c-fila b { font: 700 18px var(--mono); text-align: right }
 .c-fila .esc { height: 20px }
 .contra .esc-l { grid-template-columns: repeat(4, auto); justify-content: start; gap: 18px; font-size: 13px; padding-left: 124px }
+.contra.vs3 { display: grid; grid-template-columns: 540px minmax(0, 1fr); gap: 32px; align-items: center; padding: 26px 30px }
+.contra.vs3 .vs3-img { width: 100%; display: block; border: 1px solid var(--linea); border-radius: 14px; background: #fff }
+.vs3-b { display: grid; gap: 18px; align-content: center }
+.vs3-b .c-fila { grid-template-columns: 80px minmax(0, 1fr) 60px; font-size: 17px }
+.vs3-b .c-fila .esc { height: 26px }
+.vs3-b .esc-l { grid-template-columns: 1fr 1fr; gap: 8px 16px; padding-left: 94px; font-size: 14px }
 .quienes { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin-top: 6px }
 .quienes div { background: var(--fondo); border-radius: 14px; padding: 12px 16px; display: grid; grid-template-columns: auto 1fr; gap: 12px; align-items: center }
 .quienes b { font: 700 34px/1 var(--titulo); letter-spacing: -0.03em; color: var(--cobalto) }
@@ -562,8 +568,8 @@ p { margin: 0 }
   <div class="real5">
     <p class="r5-t">Caso real · Código Contravencional · 1.000 agentes de la Ciudad de Buenos Aires</p>
     <div class="r5-f"><div><b>El mensaje original</b><span>Hasta 90 días de arresto para cuidacoches reincidentes</span></div><div class="esc"><i style="width:18%;background:#E2492F"></i><i style="width:22%;background:#F2B1A5"></i><i style="width:27%;background:#A7B4EE"></i><i style="width:33%;background:#2F4BD8"></i></div><strong>60 %</strong></div>
-    <div class="r5-f"><div><b>Otra versión</b><span>El arresto máximo baja a 7 días</span></div><div class="esc"><i style="width:20%;background:#F2B1A5"></i><i style="width:48%;background:#A7B4EE"></i><i style="width:33%;background:#2F4BD8"></i></div><strong class="az">81 %</strong></div>
-    <div class="r5-l"><span><i style="background:#E2492F"></i>Muy en contra</span><span><i style="background:#F2B1A5"></i>Algo en contra</span><span><i style="background:#A7B4EE"></i>Algo a favor</span><span><i style="background:#2F4BD8"></i>Muy a favor</span><span class="r5-d">Diferencia: <b>+21 puntos a favor</b></span></div>
+    <div class="r5-f"><div><b>Otra versión</b><span>El arresto máximo baja a 7 días</span></div><div class="esc"><i style="width:1%;background:#E2492F"></i><i style="width:23%;background:#F2B1A5"></i><i style="width:43%;background:#A7B4EE"></i><i style="width:33%;background:#2F4BD8"></i></div><strong class="az">76 %</strong></div>
+    <div class="r5-l"><span><i style="background:#E2492F"></i>Muy en contra</span><span><i style="background:#F2B1A5"></i>Algo en contra</span><span><i style="background:#A7B4EE"></i>Algo a favor</span><span><i style="background:#2F4BD8"></i>Muy a favor</span><span class="r5-d">Diferencia: <b>+16 puntos a favor</b></span></div>
   </div>
   <div class="pie"><span></span><span></span></div>
 </section>
@@ -659,24 +665,43 @@ p { margin: 0 }
 </section>
 
 <section class="p">
-  <div class="cab"><span class="logo">Proteo<b>.</b></span><span class="der"><span class="sec">Demo · La contrapropuesta</span><span class="num"></span></span></div>
+  <div class="cab"><span class="logo">Proteo<b>.</b></span><span class="der"><span class="sec">Demo · Tres versiones</span><span class="num"></span></span></div>
   <div class="tx-d" style="width:340px;gap:14px">
-    <h2 class="big" style="font-size:40px">Con 7 días, <em class="ac">81 %</em> a favor.</h2>
-    <p class="lead" style="font-size:17px">Muchos apoyaban la medida pero sentían que 90 días era demasiado. Probamos la misma medida con 7.</p>
+    <h2 class="big" style="font-size:40px">Probamos <em class="ac">tres versiones</em>.</h2>
+    <p class="lead" style="font-size:17px">Muchos apoyaban ordenar la calle pero sentían que 90 días de arresto era demasiado. Probamos la misma medida con 60, 40 y 7 días.</p>
+    <p class="lead" style="font-size:17px">Los mismos 1.000 agentes, desde el mismo punto de partida. Cada versión es un nodo del árbol.</p>
+  </div>
+  <div class="contra vs3">
+    <img src="demo-trapitos/arbol.webp" alt="Árbol de la plataforma: la narrativa de 90 días y sus tres respuestas, con 7 días marcada como la mejor." class="vs3-img">
+    <div class="vs3-b">
+    <div class="c-fila"><span>90 días</span><div><div class="esc"><i style="width:18%;background:#E2492F"></i><i style="width:22%;background:#F2B1A5"></i><i style="width:27%;background:#A7B4EE"></i><i style="width:33%;background:#2F4BD8"></i></div></div><b>60 %</b></div>
+    <div class="c-fila"><span>60 días</span><div><div class="esc"><i style="width:9%;background:#E2492F"></i><i style="width:22%;background:#F2B1A5"></i><i style="width:36%;background:#A7B4EE"></i><i style="width:33%;background:#2F4BD8"></i></div></div><b>68 %</b></div>
+    <div class="c-fila"><span>40 días</span><div><div class="esc"><i style="width:6%;background:#E2492F"></i><i style="width:23%;background:#F2B1A5"></i><i style="width:38%;background:#A7B4EE"></i><i style="width:33%;background:#2F4BD8"></i></div></div><b>71 %</b></div>
+    <div class="c-fila"><span>7 días</span><div><div class="esc"><i style="width:1%;background:#E2492F"></i><i style="width:23%;background:#F2B1A5"></i><i style="width:43%;background:#A7B4EE"></i><i style="width:33%;background:#2F4BD8"></i></div></div><b style="color:var(--cobalto)">76 %</b></div>
+    <div class="esc-l"><span><i style="background:#E2492F"></i>Muy en contra </span><span><i style="background:#F2B1A5"></i>Algo en contra </span><span><i style="background:#A7B4EE"></i>Algo a favor </span><span><i style="background:#2F4BD8"></i>Muy a favor </span></div></div>
+  </div>
+  <div class="pie"><span></span><span></span></div>
+</section>
+
+<section class="p">
+  <div class="cab"><span class="logo">Proteo<b>.</b></span><span class="der"><span class="sec">Demo · La que gana</span><span class="num"></span></span></div>
+  <div class="tx-d" style="width:340px;gap:14px">
+    <h2 class="big" style="font-size:40px">Con 7 días, <em class="ac">76 %</em> a favor.</h2>
+    <p class="lead" style="font-size:17px">De las tres versiones, la de 7 días es la que más mueve. Quiénes cambiaron y qué dicen.</p>
     <blockquote class="narr">El Gobierno porteño acepta cambios al nuevo Código Contravencional: el arresto máximo para los cuidacoches reincidentes baja de 90 a 7 días. Jorge Macri dice que el objetivo sigue siendo ordenar la calle y terminar con el cobro compulsivo para estacionar, pero sin penas desproporcionadas.</blockquote>
   </div>
   <div class="contra">
-    <div class="c-top"><b>+21</b><span>puntos a favor contra la medida original</span></div>
+    <div class="c-top"><b>+16</b><span>puntos a favor contra la medida original</span></div>
     <div class="c-fila"><span>Con 90 días</span><div><div class="esc"><i style="width:18%;background:#E2492F"></i><i style="width:22%;background:#F2B1A5"></i><i style="width:27%;background:#A7B4EE"></i><i style="width:33%;background:#2F4BD8"></i></div></div><b>60 %</b></div>
-    <div class="c-fila"><span>Con 7 días</span><div><div class="esc"><i style="width:20%;background:#F2B1A5"></i><i style="width:48%;background:#A7B4EE"></i><i style="width:33%;background:#2F4BD8"></i></div></div><b>81 %</b></div>
+    <div class="c-fila"><span>Con 7 días</span><div><div class="esc"><i style="width:1%;background:#E2492F"></i><i style="width:23%;background:#F2B1A5"></i><i style="width:43%;background:#A7B4EE"></i><i style="width:33%;background:#2F4BD8"></i></div></div><b>76 %</b></div>
     <div class="esc-l"><span><i style="background:#E2492F"></i>Muy en contra </span><span><i style="background:#F2B1A5"></i>Algo en contra </span><span><i style="background:#A7B4EE"></i>Algo a favor </span><span><i style="background:#2F4BD8"></i>Muy a favor </span></div>
     <div class="quienes">
-      <div><b>208</b><span>pasaron de «algo en contra» a «algo a favor».</span></div>
-      <div><b>184</b><span>estaban «muy en contra» y bajaron un escalón: nadie quedó muy en contra.</span></div>
+      <div><b>165</b><span>pasaron de «algo en contra» a «algo a favor».</span></div>
+      <div><b>173</b><span>estaban «muy en contra» y bajaron un escalón. Solo 11 siguen muy en contra.</span></div>
     </div>
     <div class="citas2">
-      <p>«Esto va en la dirección correcta. Estoy a favor de ordenar la calle y de cortar el cobro a la fuerza, pero 90 días de arresto era desproporcionado y no le daba laburo a nadie. Bajarlo a 7 días me parece más razonable.»<small>Sergio Acosta, 58 · algo a favor</small></p>
-      <p>«Me parece bien que bajen el arresto de 90 a 7 días, 90 era un disparate.»<small>Gabriela López, 49 · algo a favor</small></p>
+      <p>«Bajar de 90 a 7 días ya es otra cosa, mejor. Pero igual, de qué sirve el arresto si las multas que ya existen no se cobran.»<small>Noelia Díaz, 22 · algo a favor</small></p>
+      <p>«Que baje de 90 a 7 días es un alivio, pero sigo con reparos. Si la Ciudad muestra números de multas cobradas y alternativas de trabajo concretas, lo miro con otros ojos.»<small>Agustina Aguirre, 61 · algo a favor</small></p>
     </div>
   </div>
   <div class="pie"><span></span><span></span></div>
@@ -686,15 +711,15 @@ p { margin: 0 }
   <div class="cab"><span class="logo">Proteo<b>.</b></span><span class="der"><span class="sec">Demo · Dónde cambia</span><span class="num"></span></span></div>
   <div class="tx-d" style="width:330px">
     <h2 class="big" style="font-size:40px">Y ves dónde <em class="ac">cambia</em>.</h2>
-    <p class="lead" style="font-size:17px">Cuánto sube cada grupo con los 7 días, en puntos a favor. Donde más se mueve: los votantes de UxP, de 35 % a 65 %.</p>
+    <p class="lead" style="font-size:17px">Cuánto sube cada grupo con los 7 días, en puntos a favor. Donde más se mueve: los votantes de UxP, de 35 % a 55 %.</p>
   </div>
   <div class="apertura">
-    <div class="ap-total"><b>+21</b><span>en todo el panel · de 60 % a 81 %</span></div>
+    <div class="ap-total"><b>+16</b><span>en todo el panel · de 60 % a 76 %</span></div>
     <div class="ap-cols">
-      <div class="ap-b"><i>Voto anterior</i><div class="ap-f"><span>UxP</span><em><u style="width:35%"></u><s style="left:35%;width:30%"></s></em><b>+30</b><small>35 → 65 %</small></div><div class="ap-f"><span>Otro o no votó</span><em><u style="width:56%"></u><s style="left:56%;width:21%"></s></em><b>+21</b><small>56 → 77 %</small></div><div class="ap-f"><span>JxC</span><em><u style="width:75%"></u><s style="left:75%;width:16%"></s></em><b>+16</b><small>75 → 91 %</small></div><div class="ap-f"><span>LLA</span><em><u style="width:74%"></u><s style="left:74%;width:14%"></s></em><b>+14</b><small>74 → 88 %</small></div></div>
-      <div class="ap-b"><i>Edad</i><div class="ap-f"><span>45 a 59</span><em><u style="width:58%"></u><s style="left:58%;width:25%"></s></em><b>+25</b><small>58 → 83 %</small></div><div class="ap-f"><span>30 a 44</span><em><u style="width:59%"></u><s style="left:59%;width:21%"></s></em><b>+21</b><small>59 → 80 %</small></div><div class="ap-f"><span>60 o más</span><em><u style="width:59%"></u><s style="left:59%;width:20%"></s></em><b>+20</b><small>59 → 79 %</small></div><div class="ap-f"><span>18 a 29</span><em><u style="width:64%"></u><s style="left:64%;width:16%"></s></em><b>+17</b><small>64 → 80 %</small></div></div>
-      <div class="ap-b"><i>Sexo</i><div class="ap-f"><span>Mujeres</span><em><u style="width:57%"></u><s style="left:57%;width:22%"></s></em><b>+23</b><small>57 → 79 %</small></div><div class="ap-f"><span>Varones</span><em><u style="width:63%"></u><s style="left:63%;width:19%"></s></em><b>+19</b><small>63 → 82 %</small></div></div>
-      <div class="ap-b"><i>Estudios</i><div class="ap-f"><span>Terciario o más</span><em><u style="width:60%"></u><s style="left:60%;width:22%"></s></em><b>+22</b><small>60 → 82 %</small></div><div class="ap-f"><span>Hasta primario</span><em><u style="width:55%"></u><s style="left:55%;width:19%"></s></em><b>+19</b><small>55 → 74 %</small></div><div class="ap-f"><span>Secundario</span><em><u style="width:62%"></u><s style="left:62%;width:17%"></s></em><b>+18</b><small>62 → 79 %</small></div></div>
+      <div class="ap-b"><i>Voto anterior</i><div class="ap-f"><span>UxP</span><em><u style="width:35%"></u><s style="left:35%;width:20%"></s></em><b>+20</b><small>35 → 55 %</small></div><div class="ap-f"><span>JxC</span><em><u style="width:75%"></u><s style="left:75%;width:16%"></s></em><b>+16</b><small>75 → 91 %</small></div><div class="ap-f"><span>LLA</span><em><u style="width:74%"></u><s style="left:74%;width:14%"></s></em><b>+14</b><small>74 → 88 %</small></div><div class="ap-f"><span>Otro o no votó</span><em><u style="width:56%"></u><s style="left:56%;width:13%"></s></em><b>+13</b><small>56 → 69 %</small></div></div>
+      <div class="ap-b"><i>Edad</i><div class="ap-f"><span>45 a 59</span><em><u style="width:58%"></u><s style="left:58%;width:20%"></s></em><b>+20</b><small>58 → 78 %</small></div><div class="ap-f"><span>30 a 44</span><em><u style="width:59%"></u><s style="left:59%;width:16%"></s></em><b>+16</b><small>59 → 75 %</small></div><div class="ap-f"><span>60 o más</span><em><u style="width:59%"></u><s style="left:59%;width:16%"></s></em><b>+16</b><small>59 → 75 %</small></div><div class="ap-f"><span>18 a 29</span><em><u style="width:64%"></u><s style="left:64%;width:13%"></s></em><b>+13</b><small>64 → 77 %</small></div></div>
+      <div class="ap-b"><i>Sexo</i><div class="ap-f"><span>Mujeres</span><em><u style="width:57%"></u><s style="left:57%;width:17%"></s></em><b>+17</b><small>57 → 74 %</small></div><div class="ap-f"><span>Varones</span><em><u style="width:63%"></u><s style="left:63%;width:16%"></s></em><b>+16</b><small>63 → 79 %</small></div></div>
+      <div class="ap-b"><i>Estudios</i><div class="ap-f"><span>Terciario o más</span><em><u style="width:60%"></u><s style="left:60%;width:18%"></s></em><b>+18</b><small>60 → 78 %</small></div><div class="ap-f"><span>Hasta primario</span><em><u style="width:55%"></u><s style="left:55%;width:15%"></s></em><b>+15</b><small>55 → 70 %</small></div><div class="ap-f"><span>Secundario</span><em><u style="width:62%"></u><s style="left:62%;width:14%"></s></em><b>+14</b><small>62 → 76 %</small></div></div>
     </div>
   </div>
   <div class="pie"><span></span><span></span></div>

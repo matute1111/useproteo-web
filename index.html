@@ -611,6 +611,7 @@ footer { border-top: 1px solid var(--tinta); padding-block: 56px 36px }
       <div class="campo"><label for="fMail" data-es="Email" data-en="Email">Email</label><input id="fMail" type="email" autocomplete="email"></div>
       <div class="campo"><label for="fOrg" data-es="Organización" data-en="Organization">Organización</label><input id="fOrg" autocomplete="organization"></div>
       <div class="campo"><label for="fQue" data-es="¿Qué querés probar?" data-en="What do you want to test?">¿Qué querés probar?</label><textarea id="fQue"></textarea></div>
+      <input id="fMiel" name="_honey" tabindex="-1" autocomplete="off" aria-hidden="true" style="position:absolute;left:-9999px;width:1px;height:1px;opacity:0">
       <button class="cta" type="submit" data-es="Enviar" data-en="Send">Enviar</button>
       <p class="aviso" id="aviso" aria-live="polite"></p>
     </form>
@@ -1006,9 +1007,20 @@ document.getElementById('form').addEventListener('submit', e => {
   const mail = document.getElementById('fMail'), nom = document.getElementById('fNom'), av = document.getElementById('aviso');
   if (!nom.value.trim()) { av.textContent = T('Falta tu nombre.', 'Your name is missing.'); nom.focus(); return }
   if (!mail.value || !mail.checkValidity()) { av.textContent = T('Revisá el email: así no te podemos escribir.', 'Check your email: we can\'t reach you like this.'); mail.focus(); return }
-  const campos = [...document.querySelectorAll('#form input, #form textarea, #form select')].map(c => (c.labels && c.labels[0] ? c.labels[0].textContent.trim() : c.name || c.id) + ': ' + c.value).join('\n');
-  location.href = 'mailto:hola@useproteo.com?subject=' + encodeURIComponent(T('Quiero probar Proteo', 'I want to try Proteo')) + '&body=' + encodeURIComponent(campos);
-  av.textContent = T('Se abre tu correo con el mensaje armado. Si no se abre, escribinos a hola@useproteo.com.', 'Your mail app opens with the message ready. If it does not, write to hola@useproteo.com.');
+  // El pedido sale por FormSubmit (gratis, sin registro) y llega como mail a hola@useproteo.com. No se abre el programa de correo.
+  // La primera vez, FormSubmit manda a hola@ un mail para activar el formulario: hasta que se confirme, los envíos no llegan.
+  const form = e.target, boton = form.querySelector('button[type="submit"]'), val = id => document.getElementById(id).value.trim();
+  if (document.getElementById('fMiel').value) return;   // campo trampa: lo llenan solo los robots
+  boton.disabled = true; av.textContent = T('Enviando…', 'Sending…');
+  fetch('https://formsubmit.co/ajax/hola@useproteo.com', {
+    method: 'POST', headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
+    body: JSON.stringify({ _subject: 'Hablemos: ' + (val('fOrg') || val('fNom')), _template: 'table', _captcha: 'false', _replyto: mail.value.trim(), Nombre: val('fNom'), Email: mail.value.trim(), 'Organización': val('fOrg'), 'Qué quiere probar': val('fQue'), Idioma: L })
+  }).then(r => r.json()).then(d => {
+    if (String(d.success) !== 'true') throw new Error(d.message || 'sin éxito');
+    form.reset(); av.textContent = T('Recibimos tu mensaje. Te escribimos a ese mail.', 'We got your message. We will write back to that email.');
+  }).catch(() => {
+    av.textContent = T('No pudimos enviar el mensaje. Probá de nuevo o escribinos a hola@useproteo.com.', 'We could not send the message. Try again or write to hola@useproteo.com.');
+  }).finally(() => { boton.disabled = false });
 });
 
 let inicial = (navigator.language || 'es').toLowerCase().startsWith('es') ? 'es' : 'en';
